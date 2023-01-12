@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="script.js"></script>
+</head>
+
+<body onload="tabControl(event, 'newInvoice'); setAutoHeight('invoices'); setAutoHeight('products'); setAutoHeight('customers'); loadInvoicesFromDB();">
+    <div class="form">
+        <div class="tabControl">
+            <button class="tabControlButton" id="tabNewInvoice" onclick="tabControl(event, 'newInvoice')">New Invoice</button>
+            <button class="tabControlButton" id="tabInvoices" onclick="tabControl(event, 'invoices')">Invoices</button>
+            <button class="tabControlButton" id="tabProducts" onclick="tabControl(event, 'products')">Products</button>
+            <button class="tabControlButton" id="tabCustomers"
+                onclick="tabControl(event, 'customers')">Customers</button>
+            <hr class="line">
+            <div class="tab newInvoice" id="newInvoice">
+                <div class="invoiceGroupBox">
+                    <fieldset>
+                        <legend>Invoice</legend>
+                        <div class="control">
+                            <label>Number</label>
+                            <input type="text" name="invNumber" id="invNumber">
+                        </div>
+                        <div class="control">
+                            <label>Date</label>
+                            <input type="date" name="invDate" id="invDate">
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="totalGroupBox">
+                    <fieldset>
+                        <legend>Total</legend>
+                        <div class="control">
+                            <label>Данъчна Основа</label>
+                            <input type="text" name="txtBoxDanOsnova" id="txtBoxDanOsnova">
+                        </div>
+                        <div class="control">
+                            <label>ДДС</label>
+                            <input type="radio" name="DDS20" id="DDS20">20%
+                            <input type="radio" name="DDS9" id="DDS9">9%
+                            <input type="text" name="txtBoxDDS" id="txtBoxDDS">
+                        </div>
+                        <div class="control">
+                            <label>Сума за плащане</label>
+                            <input type="text" name="txtBoxSum" id="txtBoxSum">
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="ddsShowDDSPercent">
+                    <label style="font-size: 40px; margin-left: 1em;">ДДС</label>
+                    <div><label id="labelDDS">labelDDS</label></div>
+                </div>
+                <div class="clientsGroupBox">
+                    <fieldset>
+                        <legend>Clients</legend>
+                        <select name="clientsComboBox" id="clientsComboBox"></select>
+                    </fieldset>
+                </div>
+                <div class="paymentMethodGroupBox">
+                    <fieldset>
+                        <legend>Начин на плащане</legend>
+                        <select name="paymentMethodComboBox" id="paymentMethodComboBox"></select>
+                    </fieldset>
+                </div>
+                <div class="poluchatelGroupBox">
+                    <fieldset>
+                        <legend>Получател</legend>
+                        <input type="radio">МОЛ <br>
+                        <input type="radio">...
+                    </fieldset>
+                </div>
+                <div class="productsGroupBox">
+                    <fieldset>
+                        <legend>Products</legend>
+                        <select name="productsComboBox" id="productsComboBox"></select>
+                        <button id="btnAddProduct">Add Product</button>
+                    </fieldset>
+                </div>
+                <div class="dataGridAddedProducts">
+                    <table class="addedProducts">
+                        <tr>
+                            <th>Код</th>
+                            <th>Продукт</th>
+                            <th>Мярка</th>
+                            <th>Количество</th>
+                            <th>Ед. Цена</th>
+                        </tr>
+                        <tr>
+                            <td>hi</td>
+                            <td>hi</td>
+                            <td>hi</td>
+                            <td>hi</td>
+                            <td>hi</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="buttonsRow">
+                    <div class="firstRowButtons">
+                        <button>|&#60</button>
+                        <button>&#60</button>
+                        <button>&#62</button>
+                        <button>&#62|</button>
+                    </div>
+                    <div class="secondRowButtons">
+                        <input type="text">
+                        <button>S</button>
+                    </div>
+                    <div><button>New Invoice</button></div>
+                    <div><button>Refresh</button></div>
+                    <div><button>Delete Row</button></div>
+                    <div><button>Save</button></div>
+                    <div><button>Edit Invoice</button></div>
+                    <div><button>Del Invoice</button></div>
+                    <div class="chkBoxOriginal"><input type="checkbox">Оригинал</div>
+                    <div><button>Print Preview</button></div>
+                    <div><button>Print</button></div>
+                    <div><button>Print Dialog</button></div>
+                    <div><button>Save PDF</button></div>
+                    <div><button id="btnCancel">Cancel</button></div>
+                    <div><button>Exit</button></div>
+                </div>
+            </div>
+        </div>
+        <div class="tabControl">
+            <div class="tab invoices" id="invoices">
+                <div class="invoicesDataGridShowInvoices">
+                    <table class="invoicesInDB" onclick="clickedRowNumber(); tdClick()">
+                        <tr>
+                            <th>Фактура</th>
+                            <th>Фирма</th>
+                            <th>Дата</th>
+                            <th>Дан. основа</th>
+                            <th>ДДС</th>
+                            <th>Общо</th>
+                        </tr>
+                        <!--load invoices from db-->
+                    </table>
+                </div>
+                <div class="datagridSelectedCellInvoiceInfo">
+                    <table class="selectedCellInfo">
+                        <tr>
+                            <th>Код</th>
+                            <th>Продукт</th>
+                            <th>Мярка</th>
+                            <th>Количество</th>
+                            <th>Ед. Цена</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tabControl">
+            <div class="tab products" id="products">
+                <div class="productsInputFields">
+                    <div>
+                        <label>Код на продукта*</label>
+                        <input id="kodNaProduktInput">
+                    </div>
+                    <div>
+                        <label>Наименование*</label>
+                        <input id="naimenovanieInput">
+                    </div>
+                    <div>
+                        <label>Мярка*</label>
+                        <input id="mqrkaInput">
+                    </div>
+                    <div>
+                        <label>Доставна цена*</label>
+                        <input id="dostCenaInput">
+                    </div>
+                    <div>
+                        <label>Продажна цена*</label>
+                        <input id="prodCenaInput">
+                    </div>
+                </div>
+                <div class="dataGridProductsInDB">
+                    <div class="productsGrid">
+                        <table class="productsInDB">
+                            <tr>
+                                <th>Код</th>
+                                <th>Продукт</th>
+                                <th>Мярка</th>
+                                <th>Количество</th>
+                                <th>Ед. Цена</th>
+                            </tr>
+                            <tr>
+                                <td>hi</td>
+                                <td>hi</td>
+                                <td>hi</td>
+                                <td>hi</td>
+                                <td>hi</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="productsButtons">
+                    <div class="firstRowButtons">
+                        <button>|&#60</button>
+                        <button>&#60</button>
+                        <button>&#62</button>
+                        <button>&#62|</button>
+                    </div>
+                    <div class="secondRowButtons">
+                        <input type="text">
+                        <button>S</button>
+                    </div>
+                    <div><button>Insert</button></div>
+                    <div><button>Edit</button></div>
+                    <div><button>Cancel</button></div>
+                    <div><button>Save</button></div>
+                    <div><button>Delete</button></div>
+                    <div class="btnProductsExit"><button>Exit</button></div>
+                </div>
+            </div>
+        </div>
+        <div class="tabControl">
+            <div class="tab customers" id="customers">
+                <div class="customersInputFields">
+                    <div>
+                        <label>Клиент</label>
+                        <input id="clientInput">
+                    </div>
+                    <div>
+                        <label>ЕИК</label>
+                        <input id="eikInput">
+                    </div>
+                    <div>
+                        <label>ИН по ЗДДС</label>
+                        <input id="zddsInput">
+                    </div>
+                    <div>
+                        <label>Адрес</label>
+                        <input id="adresInput">
+                    </div>
+                    <div>
+                        <label>МОЛ</label>
+                        <input id="molInput">
+                    </div>
+                </div>
+                <div class="dataGridCustomersInDB">
+                    <div class="customersGrid">
+                        <table class="customersInDB">
+                            <tr>
+                                <th>Код</th>
+                                <th>Продукт</th>
+                                <th>Мярка</th>
+                                <th>Количество</th>
+                                <th>Ед. Цена</th>
+                            </tr>
+                            <tr>
+                                <td>hi</td>
+                                <td>hi</td>
+                                <td>hi</td>
+                                <td>hi</td>
+                                <td>hi</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="customersButtons">
+                    <div class="customersFirstRowButtons">
+                        <button>|&#60</button>
+                        <button>&#60</button>
+                        <button>&#62</button>
+                        <button>&#62|</button>
+                    </div>
+                    <div class="customersSecondRowButtons">
+                        <input type="text">
+                        <button>S</button>
+                    </div>
+                    <div><button>Insert</button></div>
+                    <div><button>Edit</button></div>
+                    <div><button>Cancel</button></div>
+                    <div><button>Save</button></div>
+                    <div><button>Delete</button></div>
+                    <div class="btnCustomersExit"><button>Exit</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
