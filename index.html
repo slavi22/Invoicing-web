@@ -17,11 +17,10 @@
             <button class="tabControlButton" id="tabNewInvoice" onclick="tabControl(event, 'newInvoice')">New Invoice</button>
             <button class="tabControlButton" id="tabInvoices" onclick="tabControl(event, 'invoices')">Invoices</button>
             <button class="tabControlButton" id="tabProducts" onclick="tabControl(event, 'products')">Products</button>
-            <button class="tabControlButton" id="tabCustomers"
-                onclick="tabControl(event, 'customers')">Customers</button>
+            <button class="tabControlButton" id="tabCustomers" onclick="tabControl(event, 'customers')">Customers</button>
             <hr class="line">
             <div class="tab newInvoice" id="newInvoice">
-                <div class="invoiceGroupBox">
+                <div class="groupBox invoiceGroupBox">
                     <fieldset>
                         <legend>Invoice</legend>
                         <div class="control">
@@ -34,7 +33,7 @@
                         </div>
                     </fieldset>
                 </div>
-                <div class="totalGroupBox">
+                <div class="groupBox totalGroupBox">
                     <fieldset>
                         <legend>Total</legend>
                         <div class="control">
@@ -57,26 +56,26 @@
                     <label style="font-size: 40px; margin-left: 1em;">ДДС</label>
                     <div><label id="labelDDS">labelDDS</label></div>
                 </div>
-                <div class="clientsGroupBox">
+                <div class="groupBox clientsGroupBox">
                     <fieldset>
                         <legend>Clients</legend>
                         <select name="clientsComboBox" id="clientsComboBox"></select>
                     </fieldset>
                 </div>
-                <div class="paymentMethodGroupBox">
+                <div class="groupBox paymentMethodGroupBox">
                     <fieldset>
                         <legend>Начин на плащане</legend>
                         <select name="paymentMethodComboBox" id="paymentMethodComboBox"></select>
                     </fieldset>
                 </div>
-                <div class="poluchatelGroupBox">
+                <div class="groupBox poluchatelGroupBox">
                     <fieldset>
                         <legend>Получател</legend>
                         <input type="radio">МОЛ <br>
                         <input type="radio">...
                     </fieldset>
                 </div>
-                <div class="productsGroupBox">
+                <div class="groupBox productsGroupBox">
                     <fieldset>
                         <legend>Products</legend>
                         <select name="productsComboBox" id="productsComboBox"></select>
@@ -103,28 +102,28 @@
                 </div>
                 <div class="buttonsRow">
                     <div class="firstRowButtons">
-                        <button>|&#60</button>
-                        <button>&#60</button>
-                        <button>&#62</button>
-                        <button>&#62|</button>
+                        <button id="btnFirstRow">|&#60</button>
+                        <button id="btnPreviousRow">&#60</button>
+                        <button id="btnNextRow">&#62</button>
+                        <button id="btnLastRow">&#62|</button>
                     </div>
                     <div class="secondRowButtons">
-                        <input type="text">
-                        <button>S</button>
+                        <input type="text" id="inputSearch">
+                        <button id="btnSearch">S</button>
                     </div>
-                    <div><button>New Invoice</button></div>
-                    <div><button>Refresh</button></div>
-                    <div><button>Delete Row</button></div>
-                    <div><button>Save</button></div>
-                    <div><button>Edit Invoice</button></div>
-                    <div><button>Del Invoice</button></div>
-                    <div class="chkBoxOriginal"><input type="checkbox">Оригинал</div>
-                    <div><button>Print Preview</button></div>
-                    <div><button>Print</button></div>
-                    <div><button>Print Dialog</button></div>
-                    <div><button>Save PDF</button></div>
+                    <div><button id="btnNewInvoice">New Invoice</button></div>
+                    <div><button id="btnRefresh">Refresh</button></div>
+                    <div><button id="btnDelRow">Delete Row</button></div>
+                    <div><button id="btnSave">Save</button></div>
+                    <div><button id="btnEditInvoice">Edit Invoice</button></div>
+                    <div><button id="btnDelInvoice">Del Invoice</button></div>
+                    <div class="chkBoxOriginal"><input type="checkbox" id="chkBox">Оригинал</div>
+                    <div><button id="btnPrintPreview">Print Preview</button></div>
+                    <div><button id="btnPrint">Print</button></div>
+                    <div><button id="btnDialog">Print Dialog</button></div>
+                    <div><button id="btnSavePDF">Save PDF</button></div>
                     <div><button id="btnCancel">Cancel</button></div>
-                    <div><button>Exit</button></div>
+                    <div><button id="btnExit">Exit</button></div>
                 </div>
             </div>
         </div>
