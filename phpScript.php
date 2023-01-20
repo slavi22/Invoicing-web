@@ -1,4 +1,5 @@
 <?php
+
     $connConfig = parse_ini_file('./connection.ini');
     $conn = new mysqli($connConfig['DB_ADDRESS'], $connConfig['DB_USER'], $connConfig['DB_PASS'], $connConfig['DB_NAME'], $connConfig['DB_PORT']);
 
@@ -38,6 +39,14 @@
             ";
         }
     }
+    function NextInvoiceNumber(){
+        $query = "SELECT INVOICENUMBER FROM mydb.invoices order by INVOICENUMBER desc limit 1;";
+        $result = $GLOBALS['conn'] -> query($query);
+        while($row = $result -> fetch_assoc()){
+            echo
+            "".$row['INVOICENUMBER']."";
+        }
+    }
 
 
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
@@ -47,6 +56,9 @@
         }
         elseif($_GET['function'] == 'InvoicesDBOnLoad'){
             InvoicesDBOnLoad();
+        }
+        elseif($_GET['function'] == 'NextInvoiceNumber'){
+            NextInvoiceNumber();
         }
         
     }

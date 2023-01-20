@@ -1,4 +1,5 @@
 /*https://www.w3schools.com/howto/howto_js_tabs.asp*/
+/*TAB CONTROL AND AUTOHEIGHT*/
 function tabControl(evt, loadTab) {
     let i, tabControlButton, tab;
 
@@ -28,7 +29,10 @@ function setAutoHeight(childToBeAdjusted) {
 
 }
 
+/*END TAB CONTROL AND AUTOHEIGHT*/
+/*START OF INVOICES TAB*/
 
+//EVENTS
 //disable double clicking
 document.addEventListener("mousedown", function (e) {
     if (e.detail > 1) {
@@ -46,7 +50,13 @@ $(document).ready(function () {
     });
 });
 
+document.addEventListener("DOMContentLoaded", function (e) {
+    e.target.addEventListener("click", colorCells)
+    e.target.addEventListener("click", InvoicesGridAddSelectedClass)
+    e.target.addEventListener("click", colorRow)
+})
 
+//FUNCTIONS
 function colorCells() {
     let table = document.querySelector(".addedProducts")
     let td = table.getElementsByTagName("td");
@@ -65,9 +75,6 @@ function colorCells() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function (e) {
-    e.target.addEventListener("click", colorCells)
-})
 
 function InvoicesGridAddSelectedClass() {
     $('.invoicesInDB tr').click(function () {
@@ -77,10 +84,6 @@ function InvoicesGridAddSelectedClass() {
         $(this).addClass('selectedRow');
     });
 }
-
-document.addEventListener("DOMContentLoaded", function (e) {
-    e.target.addEventListener("click", InvoicesGridAddSelectedClass)
-})
 
 function colorRow() {
     let table = document.querySelector(".invoicesInDB");
@@ -97,10 +100,6 @@ function colorRow() {
     }
 
 }
-
-document.addEventListener("DOMContentLoaded", function (e) {
-    e.target.addEventListener("click", colorRow)
-})
 
 function loadInvoicesFromDB() {
     $.ajax({
@@ -121,15 +120,13 @@ function tdClick() {
         data: { id: id },
         success: function (res) {
             //alert(res)
-            $(".selectedCellInfo tr:eq(1)").remove();
+            $(".selectedCellInfo>tr").remove();
             $(".selectedCellInfo").append(res);
             $(".selectedCellInfo td:eq(1)").width("25%")
 
         }
     })
 }
-
-
 
 function clickedRowNumber() {
     let table = document.querySelector(".invoicesDataGridShowInvoices")
@@ -141,14 +138,86 @@ function clickedRowNumber() {
     }
 }
 
+/*END OF INVOICES TAB*/
+
+/*START OF NEW INVOICE TAB*/
+
+//FUNCTIONS
+function NewInvoicesTabOnLoad(isDisabled){
+   let groupBoxes = document.querySelectorAll(".groupBox fieldset");
+   for(let items of groupBoxes){
+        items.disabled = isDisabled; 
+   }
+    let buttons = document.querySelectorAll(".newInvoice button, input[type=checkbox]");
+    for(let items of buttons){
+        items.disabled = isDisabled;
+    }
+    document.querySelector("#btnNewInvoice").disabled = false;
+    document.querySelector("#btnEditInvoice").disabled = false;
+    document.querySelector("#btnDelInvoice").disabled = false;
+    document.querySelector("#btnPrintPreview").disabled = false;
+    document.querySelector("#btnPrint").disabled = false;
+    document.querySelector("#btnDialog").disabled = false;
+    document.querySelector("#btnSavePDF").disabled = false;
+    document.querySelector("#btnExit").disabled = false;
+    document.querySelector("#invNumber").disabled=true;
+    let firstRowButtons = document.querySelectorAll(".firstRowButtons button");
+    for(let items of firstRowButtons){
+        items.disabled = false;
+    }
+    let secondRowButtons = document.querySelectorAll(".secondRowButtons button, input[type=text]");
+    for(let items of secondRowButtons){
+        items.disabled = false;
+    }
+    document.querySelector("#invNumber").disabled=true;
+}
+
+function NewInvoiceButtonOnClick(){
+    count++;
+    if(count==1){
+        //unlock controls
+        NewInvoicesTabOnLoad(false);
+    }
+    else if(count==2){
+        //add new invoice to db
+    }
+    else if(count>2){
+        count=2;
+    }
+}
+
+function CancelButtonOnClick(){
+    count=0;
+    NewInvoicesTabOnLoad(true)
+}
+
+function NextInvoiceNumber(){
+    $.ajax({
+        url: 'phpScript.php',
+        type: "GET",
+        data: { function: 'NextInvoiceNumber' },
+        success: function (result) {
+            result = Number(result)+1;
+            //alert(result);
+            $("#invNumber").val(result);
+        }
+    });
+}
 
 
 
 
 
 
-
-
-
-
-
+//EVENTS
+let count = 0;
+document.addEventListener("DOMContentLoaded", function(){
+    NewInvoicesTabOnLoad(true);
+    NextInvoiceNumber();
+    document.getElementById("btnNewInvoice").addEventListener("click", function(){
+        NewInvoiceButtonOnClick();
+    })
+    document.getElementById("btnCancel").addEventListener("click", function(){
+        CancelButtonOnClick();
+    })
+})
