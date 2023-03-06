@@ -198,6 +198,7 @@ tr{
 
 .dataGridAddedProducts{
     display: grid;
+    overflow-y: scroll;
     grid-area: dataGrid;
     padding-bottom: 15em;
     border: 1px solid black;
@@ -209,7 +210,6 @@ tr{
     border-collapse: collapse;
     border: 1px solid black;
     border-right: 1px solid black;
-
 }
 
 .addedProducts th,td{
@@ -317,7 +317,7 @@ tr{
 #kodNaProduktInput, #naimenovanieInput, #mqrkaInput, #dostCenaInput, #prodCenaInput{
     width: 15em;
     margin-left: auto;
-    margin-right: 25em;
+    margin-right: 30em;
 }
 
 .dataGridProductsInDB{
@@ -384,9 +384,9 @@ tr{
 }
 
 .customersInputFields input{
-    width: 20em;
+    width: 15em;
     margin-left: auto;
-    margin-right: 22em;
+    margin-right: 30em;
 }
 
 .dataGridCustomersInDB{
@@ -394,7 +394,7 @@ tr{
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
     margin-top: 1em;
-    width: 50em;
+    width: 52em;
 }
 
 .customersInDB{
@@ -443,3 +443,60 @@ tr{
 }
 
 /*---------------------------END OF CUSTOMERS CONTAIENR---------------------------*/
+
+
+/*---------------------------THINGS FOR THE POPUPS-START---------------------------*/
+.popups{
+    display: flex;
+    justify-content: center;
+    margin-top: -25em;
+}
+
+.popups > *{
+    filter: blur(0px);
+}
+
+#newInvoicePopup{
+    display: grid;
+    grid-template-columns: 1fr 0fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: 
+    ". . xButton "
+    "message message message"
+    "button1 . button2 ";
+    justify-items: center;
+    text-align: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 10em;
+}
+
+#xButton{
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+#closeButton{
+    grid-area: xButton;
+    margin-left: auto;
+    margin-top: -1px; 
+}
+
+#warningMessage{
+    grid-area: message;
+}
+
+#newInvoicePopup button:not(#xButton){
+    width: 8em;
+}
+
+#newInvoicePopUpSave{
+    grid-area: button1;
+}
+
+#newInvoicePopUpCancel{
+    grid-area: button2;
+}

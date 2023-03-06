@@ -8,16 +8,18 @@
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="script.js"></script>
+    <script src="./script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/printThis/1.15.0/printThis.min.js"></script>   
 </head>
 
-<body onload="tabControl(event, 'newInvoice'); setAutoHeight('invoices'); setAutoHeight('products'); setAutoHeight('customers'); loadInvoicesFromDB();">
+<body>
     <div class="form">
         <div class="tabControl">
-            <button class="tabControlButton" id="tabNewInvoice" onclick="tabControl(event, 'newInvoice')">New Invoice</button>
-            <button class="tabControlButton" id="tabInvoices" onclick="tabControl(event, 'invoices')">Invoices</button>
-            <button class="tabControlButton" id="tabProducts" onclick="tabControl(event, 'products')">Products</button>
-            <button class="tabControlButton" id="tabCustomers" onclick="tabControl(event, 'customers')">Customers</button>
+            <button class="tabControlButton" id="tabNewInvoice">New Invoice</button>
+            <button class="tabControlButton" id="tabInvoices">Invoices</button>
+            <button class="tabControlButton" id="tabProducts">Products</button>
+            <button class="tabControlButton" id="tabCustomers">Customers</button>
             <hr class="line">
             <div class="tab newInvoice" id="newInvoice">
                 <div class="groupBox invoiceGroupBox">
@@ -42,8 +44,8 @@
                         </div>
                         <div class="control">
                             <label>ДДС</label>
-                            <input type="radio" name="DDS20" id="DDS20">20%
-                            <input type="radio" name="DDS9" id="DDS9">9%
+                            <input type="radio" name="DDS" id="DDS20" value="20%" checked>20%
+                            <input type="radio" name="DDS" id="DDS9" value="9%">9%
                             <input type="text" name="txtBoxDDS" id="txtBoxDDS">
                         </div>
                         <div class="control">
@@ -53,7 +55,7 @@
                     </fieldset>
                 </div>
                 <div class="ddsShowDDSPercent">
-                    <label style="font-size: 40px; margin-left: 1em;">ДДС</label>
+                    <label style="font-size: 40px; margin-left: 0.5em;">ДДС</label>
                     <div><label id="labelDDS">labelDDS</label></div>
                 </div>
                 <div class="groupBox clientsGroupBox">
@@ -65,16 +67,20 @@
                 <div class="groupBox paymentMethodGroupBox">
                     <fieldset>
                         <legend>Начин на плащане</legend>
-                        <select name="paymentMethodComboBox" id="paymentMethodComboBox"></select>
+                        <select name="paymentMethodComboBox" id="paymentMethodComboBox">
+                            <option value="1">Наложен платеж</option>
+                            <option value="2">С карта</option>
+                            <option value="3">Банков превод</option>
+                        </select>
                     </fieldset>
                 </div>
                 <div class="groupBox poluchatelGroupBox">
                     <fieldset>
                         <legend>Получател</legend>
-                        <input type="radio">МОЛ <br>
-                        <input type="radio">...
+                        <input type="radio" name="poluchatel">МОЛ <br>
+                        <input type="radio" name="poluchatel">...
                     </fieldset>
-                </div>
+                </div> 
                 <div class="groupBox productsGroupBox">
                     <fieldset>
                         <legend>Products</legend>
@@ -90,13 +96,6 @@
                             <th>Мярка</th>
                             <th>Количество</th>
                             <th>Ед. Цена</th>
-                        </tr>
-                        <tr>
-                            <td>hi</td>
-                            <td>hi</td>
-                            <td>hi</td>
-                            <td>hi</td>
-                            <td>hi</td>
                         </tr>
                     </table>
                 </div>
@@ -130,7 +129,7 @@
         <div class="tabControl">
             <div class="tab invoices" id="invoices">
                 <div class="invoicesDataGridShowInvoices">
-                    <table class="invoicesInDB" onclick="clickedRowNumber(); tdClick()">
+                    <table class="invoicesInDB">
                         <tr>
                             <th>Фактура</th>
                             <th>Фирма</th>
@@ -282,6 +281,14 @@
                     <div class="btnCustomersExit"><button>Exit</button></div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="popups">
+        <div id="newInvoicePopup" style="display: none;">
+            <div id="closeButton"><button id="xButton">X</button></div>
+            <div id="warningMessage"></div>
+            <div id="newInvoicePopUpSave"><button id="btnSaveNewInvoicePopup">Save</button></div>
+            <div id="newInvoicePopUpCancel"><button id="btnCancelNewInvoicePopup">Cancel</button></div>
         </div>
     </div>
 </body>

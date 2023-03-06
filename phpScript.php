@@ -23,6 +23,10 @@
         ";
         }
     }
+    function hi(){
+        echo "hi";
+    }
+
     function InvoicesViewInvoiceProuducts($id){
         $query = "select p.PRODUCTCODE as \"Код\", p.productname as \"Наименование на продукт\", p.PRODUCTMEASURE as \"Мярка\", ip.INVOICEQUANTITY as \"Количество\", p.PRODUCT_PROD_CENA as \"Сума\" from invoice_product ip join products p on(ip.PRODUCTID = p.PRODUCTID) join invoices i on(ip.INVOICEID = i.INVOICEID) where i.INVOICENUMBER = {$id}";
         $result = $GLOBALS['conn'] -> query($query);
@@ -47,8 +51,43 @@
             "".$row['INVOICENUMBER']."";
         }
     }
+    function ClientsComboBoxOnLoad(){
+        $query = "SELECT CustomersID, CustomerName FROM customers";
+        $result = $GLOBALS['conn'] -> query($query);
+        while($row=$result -> fetch_assoc()){
+            echo
+            "<option value='".$row["CustomersID"]."'>".$row["CustomerName"]."</option>";
+        }
+    }
+
+    function ProductsComboBoxOnLoad(){
+        $query = "SELECT PRODUCTCODE, PRODUCTNAME FROM products";
+        $result = $GLOBALS['conn'] -> query($query);
+        while($row=$result -> fetch_assoc()){
+            echo
+            "<option value='".$row["PRODUCTCODE"]."'>".$row["PRODUCTNAME"]."</option>";
+        }
+    }
+
+    function AddSelectedProductToGrid($selectedIndex){
+        $query = "SELECT p.PRODUCTCODE, p.PRODUCTNAME, p.PRODUCTMEASURE, p.QUANTITY, p.PRODUCT_DOST_CENA FROM products p WHERE PRODUCTCODE={$selectedIndex}+1";
+        $result = $GLOBALS['conn'] -> query($query);
+        while ($row = $result -> fetch_assoc()) {
+            echo
+            "
+                <tr>
+                <td>".$row["PRODUCTCODE"]."</td>
+                <td>".$row["PRODUCTNAME"]."</td>
+                <td>".$row["PRODUCTMEASURE"]."</td>
+                <td>".$row["QUANTITY"]."</td>
+                <td>".$row["PRODUCT_DOST_CENA"]."</td>
+                </tr>
+            ";
+        }
+    }
 
 
+    //CALLS
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
     if(isset($_GET['function'])){
         if($_GET['function'] == 'hi'){
@@ -60,7 +99,12 @@
         elseif($_GET['function'] == 'NextInvoiceNumber'){
             NextInvoiceNumber();
         }
-        
+        elseif($_GET['function'] == 'ClientsComboBoxOnLoad'){
+            ClientsComboBoxOnLoad();
+        }
+        elseif($_GET['function'] == 'ProductsComboBoxOnLoad'){
+            ProductsComboBoxOnLoad();
+        }
     }
 
     if(isset($_POST['id'])){
@@ -68,13 +112,14 @@
         InvoicesViewInvoiceProuducts($id);
     }
 
+    if(isset($_POST['selectedIndex'])){
+        $selectedIndex = $_POST['selectedIndex'];
+        AddSelectedProductToGrid($selectedIndex);
+    }
+
     // if( $_SERVER['REQUEST_METHOD']=='POST'){
     //      $id = $_POST['id'];
     //      InvoicesViewInvoiceProuducts($id);
     // }
-
-    function hi(){
-        echo "hi";
-    }
 
 ?>
