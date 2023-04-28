@@ -359,149 +359,87 @@ function addNewInvoiceToDB() {
 
 
 function buttonNextRow(tableClass) {
-    //if table has class-lastrowindex? execute this, else color last cell and add class lastrowindex? until there is a selected class
-    if ($(`.${tableClass} tr`).hasClass("selectedFirst")) {
-        $(`.${tableClass} tr`).removeClass("selectedFirst").css("background-color", "")
-        $(`.${tableClass} tr`).closest("table").children("tr").eq(0).addClass("selected");
-    }
     let table = document.querySelector(`.${tableClass}`);
-    if (!$(`.${tableClass} tr`).hasClass("selectedLast")) {
-        if ($(`.${tableClass}`).find('.selected').length == 0) {
-            $(`.${tableClass} tr`).closest("table").children("tr:first").addClass("selected");
-            $(".selected").css("background-color", "red")
+    let cell = table.getElementsByTagName("td");
+    if ($(`.${tableClass}`).find('.selected').length == 0) {
+        $(`.${tableClass} tr`).closest("table").children("tr:first").addClass("selected");
+        $(".selected").css("background-color", "red")
+    }
+    else {
+        if ($(`.${tableClass} td`).hasClass("selected")) {
+            $(".selected").css({
+                "background-color": "",
+                "color": ""
+            });
+            $(".selected").removeClass("selected").closest('tr').next("tr").addClass("selected");
         }
         else {
-            if ($(`.${tableClass} td`).hasClass("selected")) {
-                $(".selected").css({
-                    "background-color": "",
-                    "color": ""
-                });
-                $(".selected").removeClass("selected").closest("tr").next().addClass("selected");
-                $(".selected").css("background-color", "red")
+            $(".selected").removeClass("selected").css("background-color", "").next("tr").addClass("selected");
+            for (let i = 0; i < cell.length; i++) {
+                cell[i].style.backgroundColor = "";
+                cell[i].style.color = "black";
             }
-            else {
-                let cell = table.getElementsByTagName("td");
-                $(".selected").css("background-color", "");
-                $(".selected").removeClass("selected").closest("tr").next("tr").addClass("selected");
-                for (let i = 0; i < cell.length; i++) {
-                    if ($(`.${tableClass} tr`).hasClass("selected")) {
-                        cell[i].style.backgroundColor = "";
-                        cell[i].style.color = "black";
-                    }
-                    $(".selected").css("background-color", "red")
-                }
-            }
-
         }
     }
     let selectedIndex = $(".selected").index();
     if (selectedIndex == -1) {
-        $(`.${tableClass} tr:last`).addClass("selectedLast");
-        $(".selectedLast").css("background-color", "red");
+        $(`.${tableClass} tr:last`).addClass("selected");
     }
-
-
+    $(".selected").css("background-color", "red")
 }
 
 function buttonPreviousRow(tableClass) {
-    if ($(`.${tableClass} tr`).hasClass("selectedLast")) {
-        $(`.${tableClass} tr`).removeClass("selectedLast").css("background-color", "")
-        $(`.${tableClass} tr`).closest("table").children("tr:last").addClass("selected");
+    let selectedIndex = $(".selected").index();
+    let table = document.querySelector(`.${tableClass}`);
+    let cell = table.getElementsByTagName("td");
+    if ($(`.${tableClass}`).find('.selected').length == 0) {
+        $(`.${tableClass} tr`).eq(1).addClass("selected");
+        $(".selected").css("background-color", "red")
     }
-    if (!$(`.${tableClass} tr`).hasClass("selectedFirst")) {
-        let table = document.querySelector(`.${tableClass}`);
-        if ($(`.${tableClass}`).find('.selected').length == 0) {
-            $(`.${tableClass} tr`).closest("table").children("tr:first").addClass("selected");
-            $(".selected").css("background-color", "red")
+    else {
+        if ($(`.${tableClass} td`).hasClass("selected")) {
+            $(".selected").css({
+                "background-color": "",
+                "color": ""
+            });
+            $(".selected").removeClass("selected").closest('tr').prev("tr").addClass("selected");
         }
         else {
-            if ($(`.${tableClass} td`).hasClass("selected")) {
-                $(".selected").css({
-                    "background-color": "",
-                    "color": ""
-                });
-                $(".selected").removeClass("selected").closest("tr").prev().addClass("selected");
-                $(".selected").css("background-color", "red")
+            if (selectedIndex == 1 || selectedIndex == 0) {
+                $(`.${tableClass} tr`).eq(1).addClass("selected")
             }
             else {
-                let cell = table.getElementsByTagName("td");
-                $(".selected").css("background-color", "");
-                $(".selected").removeClass("selected").closest("tr").prev("tr").addClass("selected");
+                $(".selected").removeClass("selected").css("background-color", "").prev("tr").addClass("selected");
                 for (let i = 0; i < cell.length; i++) {
-                    if ($(`.${tableClass} tr`).hasClass("selected")) {
-                        cell[i].style.backgroundColor = "";
-                        cell[i].style.color = "black";
-                    }
+                    cell[i].style.backgroundColor = "";
+                    cell[i].style.color = "black";
                 }
-                $(".selected").css("background-color", "red")
             }
         }
+        $(".selected").css("background-color", "red")
     }
-    let selectedIndex = $(".selected").index();
-    if (selectedIndex == 1) {
-        $(`.${tableClass} tr`).eq(1).addClass("selectedFirst");
-        $(".selectedFirst").css("background-color", "red");
-        $(`.${tableClass} tr`).removeClass("selected");
-    }
-
 }
 
 function buttonFirstRow(tableClass) {
-    let table = document.querySelector(`.${tableClass}`);
-    let cell = table.getElementsByTagName("td");
-    if (!$(`.${tableClass} tr`).hasClass("selectedLast")) {
-        $(".selected").css("background-color", "");
-        $(`.${tableClass} tr`).removeClass("selected").closest("table").children("tr:first").addClass("selected");
-        if ($(`.${tableClass} td`).hasClass("selected")) {
-            $(".selected").removeClass("selected").css({
-                "background-color": "",
-                "color": ""
-            })
-            $(`.${tableClass} tr`).eq(1).addClass("selected");
-            $(".selected").css("background-color", "red");
-        }
-        for (let i = 0; i < cell.length; i++) {
-            if ($(`.${tableClass} tr`).hasClass("selected")) {
-                cell[i].style.backgroundColor = "";
-                cell[i].style.color = "black";
-            }
-        }
-        $(".selected").css("background-color", "red")
-    }
-    else {
-        $(`.${tableClass} tr`).removeClass("selectedLast").css("background-color", "");
+    if ($(`.${tableClass}`).find('.selected').length == 0) {
         $(`.${tableClass} tr`).eq(1).addClass("selected");
-        $(".selected").css("background-color", "red");
     }
+    else{
+        $(`.${tableClass}`).find('.selected').removeClass("selected").css({"background-color": "","color": ""});
+        $(`.${tableClass} tr`).eq(1).addClass("selected");
+    }
+    $(".selected").css("background-color", "red");
 }
 
 function buttonLastRow(tableClass) {
-    let table = document.querySelector(`.${tableClass}`);
-    let cell = table.getElementsByTagName("td");
-    if (!$(`.${tableClass} tr`).hasClass("selectedFirst")) {
-        $(".selected").css("background-color", "");
-        $(`.${tableClass} tr`).removeClass("selected").closest("table").children("tr:last").addClass("selected");
-        if ($(`.${tableClass} td`).hasClass("selected")) {
-            $(".selected").removeClass("selected").css({
-                "background-color": "",
-                "color": ""
-            })
-            $(`.${tableClass} tr`).closest("table").children("tr:last").addClass("selected");
-            $(".selected").css("background-color", "red");
-        }
-        for (let i = 0; i < cell.length; i++) {
-            if ($(`.${tableClass} tr`).hasClass("selected")) {
-                cell[i].style.backgroundColor = "";
-                cell[i].style.color = "black";
-            }
-        }
-        $(".selected").css("background-color", "red")
+    if ($(`.${tableClass}`).find('.selected').length == 0) {
+        $(`.${tableClass} tr:last`).addClass("selected");
     }
-    else {
-        $(`.${tableClass} tr`).removeClass("selectedFirst").css("background-color", "");;
-        $(`.${tableClass} tr`).closest("table").children("tr:last").addClass("selected");
-        $(".selected").css("background-color", "red");
+    else{
+        $(`.${tableClass}`).find('.selected').removeClass("selected").css({"background-color": "","color": ""});
+        $(`.${tableClass} tr:last`).addClass("selected");
     }
+    $(".selected").css("background-color", "red");
 }
 
 function closePopupWindow(popupWindowID) {
