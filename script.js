@@ -203,6 +203,8 @@ function newInvoicesTabOnLoad(isDisabled) {
     document.querySelector("#txtBoxDanOsnova").disabled = true;
     document.querySelector("#txtBoxDDS").disabled = true;
     document.querySelector("#txtBoxSum").disabled = true;
+    document.querySelector("#inputSearch").disabled = false;
+    document.querySelector("#btnSearch").disabled = false;
 }
 
 let count = 0;
@@ -361,6 +363,9 @@ function addNewInvoiceToDB() {
 function buttonNextRow(tableClass) {
     let table = document.querySelector(`.${tableClass}`);
     let cell = table.getElementsByTagName("td");
+    if ($(`.${tableClass}`).find(".foundText").length != 0) {
+        $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
+    }
     if ($(`.${tableClass}`).find('.selected').length == 0) {
         $(`.${tableClass} tr`).closest("table").children("tr:first").addClass("selected");
         $(".selected").css("background-color", "red")
@@ -392,6 +397,9 @@ function buttonPreviousRow(tableClass) {
     let selectedIndex = $(".selected").index();
     let table = document.querySelector(`.${tableClass}`);
     let cell = table.getElementsByTagName("td");
+    if ($(`.${tableClass}`).find(".foundText").length != 0) {
+        $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
+    }
     if ($(`.${tableClass}`).find('.selected').length == 0) {
         $(`.${tableClass} tr`).eq(1).addClass("selected");
         $(".selected").css("background-color", "red")
@@ -421,22 +429,28 @@ function buttonPreviousRow(tableClass) {
 }
 
 function buttonFirstRow(tableClass) {
+    if ($(`.${tableClass}`).find(".foundText").length != 0) {
+        $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
+    }
     if ($(`.${tableClass}`).find('.selected').length == 0) {
         $(`.${tableClass} tr`).eq(1).addClass("selected");
     }
-    else{
-        $(`.${tableClass}`).find('.selected').removeClass("selected").css({"background-color": "","color": ""});
+    else {
+        $(`.${tableClass}`).find('.selected').removeClass("selected").css({ "background-color": "", "color": "" });
         $(`.${tableClass} tr`).eq(1).addClass("selected");
     }
     $(".selected").css("background-color", "red");
 }
 
 function buttonLastRow(tableClass) {
+    if ($(`.${tableClass}`).find(".foundText").length != 0) {
+        $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
+    }
     if ($(`.${tableClass}`).find('.selected').length == 0) {
         $(`.${tableClass} tr:last`).addClass("selected");
     }
-    else{
-        $(`.${tableClass}`).find('.selected').removeClass("selected").css({"background-color": "","color": ""});
+    else {
+        $(`.${tableClass}`).find('.selected').removeClass("selected").css({ "background-color": "", "color": "" });
         $(`.${tableClass} tr:last`).addClass("selected");
     }
     $(".selected").css("background-color", "red");
@@ -453,13 +467,25 @@ function searchBoxSearch(tableClass) {
     let table = document.querySelector(`.${tableClass}`)
     $(`.${table.className}`).find("tr").each(function () {
         $(this).find("td").eq(1).each(function () {
-            //console.log(this.innerText)
             if (this.innerText == valueOfSearchBox) {
-                this.style.backgroundColor = "green";
+                $(".selected").css("background-color", "").removeClass("selected");
+                $(this).addClass("foundText").css({ "background-color": "green", "color": "" });
             }
-        }) //this works make it maybe add a class to the found text?, but it does work as inteded
+        })
     })
-    //finish this
+}
+
+//create a function that validates whether all group boxes have a selected value and if not maybe give them a pop-up to tell them they need to fill in the said combobox
+function validateGroupBoxes(groupBoxClass) {
+    if (groupBoxClass == "productsGroupBox") {
+        $(`.${groupBoxClass} fieldset`).css({ "display": "flex", "align-items": "flex-start", "flex-wrap":"wrap" });
+        $(`.${groupBoxClass} fieldset select`).css({ "width":"94.54%" });
+        $('<i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i>').insertBefore($(`.${groupBoxClass} button`)).css({ "display": "flex", "margin-left": "1em" });
+    }
+    else {
+        $(`.${groupBoxClass} fieldset`).css({ "display": "flex" });
+        $('<i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i>').appendTo($(`.${groupBoxClass} fieldset`)).css({ "display": "flex", "margin-left": "1em" });
+    }
 }
 
 let txtBoxesSum = 0;
@@ -479,7 +505,7 @@ function totalTextBoxes() {
             txtBoxDDS.value = (txtBoxDanOsnova.value * 0.09).toFixed(2);
             txtBoxSum.value = (parseFloat(txtBoxDanOsnova.value) + parseFloat(txtBoxDDS.value)).toFixed(2);
         }
-    }) //this works on the second click, so it adds hi when i press the button a second time
+    })
 }
 
 //EVENTS
@@ -492,6 +518,9 @@ document.addEventListener("DOMContentLoaded", function () {
     paymentMethodComboBoxOnLoad();
     disabledButtonsCursor();
     productsComboBoxOnLoad();
+    validateGroupBoxes("clientsGroupBox");
+    validateGroupBoxes("paymentMethodGroupBox");
+    validateGroupBoxes("productsGroupBox");
     document.getElementById("btnNewInvoice").addEventListener("click", function () {
         newInvoiceButtonOnClick();
     })
