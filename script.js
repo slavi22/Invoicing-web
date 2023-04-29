@@ -477,49 +477,44 @@ function searchBoxSearch(tableClass) {
 
 //create a function that validates whether all group boxes have a selected value and if not maybe give them a pop-up to tell them they need to fill in the said combobox
 function validateGroupBoxes(groupBoxClass) {
-    if (groupBoxClass == "productsGroupBox") {
-        $(`.${groupBoxClass} fieldset`).css({ "display": "flex", "align-items": "flex-start", "flex-wrap":"wrap" });
-        $(`.${groupBoxClass} fieldset select`).css({ "width":"94.54%" });
-        $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText" id="popupErrorTextId">Моля изберете стойност</span></i>').insertBefore($(`.${groupBoxClass} button`)).css({ "display": "flex", "margin-left": "1em" });
+    let groupBoxSelectedIndex = $(`.${groupBoxClass} fieldset select`).prop("selectedIndex");
+    if (groupBoxSelectedIndex == -1) {
+        if (groupBoxClass == "productsGroupBox") {
+            $(`.${groupBoxClass} fieldset`).css({ "display": "flex", "align-items": "flex-start", "flex-wrap": "wrap" });
+            $(`.${groupBoxClass} fieldset select`).css({ "width": "94.54%" });
+            $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля изберете стойност</span></i>').insertBefore($(`.${groupBoxClass} button`)).css({ "display": "flex", "margin-left": "1em" });
+        }
+        else {
+            $(`.${groupBoxClass} fieldset`).css({ "display": "flex" });
+            $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля изберете стойност</span></i>').appendTo($(`.${groupBoxClass} fieldset`)).css({ "display": "flex", "margin-left": "1em" });
+        }
     }
     else {
-        $(`.${groupBoxClass} fieldset`).css({ "display": "flex" });
-        // $('<i class="fa-solid fa-circle-exclamation" style="color: #ff0000;"></i><div class="popupError">Click me<span class="popupErrorText" id="popupErrorTextId">Hi</span></div>').appendTo($(`.${groupBoxClass} fieldset`)).css({ "display": "flex", "margin-left": "1em" });
-        $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText" id="popupErrorTextId">Моля изберете стойност</span></i>').appendTo($(`.${groupBoxClass} fieldset`)).css({ "display": "flex", "margin-left": "1em" });
+        if (groupBoxClass == "productsGroupBox") {
+            $(`.${groupBoxClass} fieldset`).find(".popupError").fadeOut(150, function () {
+                $(this).remove();
+                $(`.${groupBoxClass} fieldset select`).css({ "width": "100%" });
+            });
+        }
+        else {
+            $(`.${groupBoxClass} fieldset`).find(".popupError").fadeOut(150, function () {
+                $(this).remove();
+            });
+        }
     }
-    // $(".fa-solid").hover(function(){
-    //     $(this).css("color","green");
-    // })
-    
 }
 
-function toggleErrorPopup(){ //fix this as it doesnt wanna trigger on the icon hover
+function toggleErrorPopup() { //fix this as it doesnt wanna trigger on the icon hover
     let popupError = document.querySelectorAll(".popupError");
-    // $(popupError).each(function(){
-    //     $(this).toggleClass("show");
-    // })
     popupError.forEach(item => {
-        let idk = document.querySelectorAll(".popupErrorText");
-        //console.log(idk)
-        idk.forEach(item2 => {
-            item2.addEventListener("mouseover", function(){
-                console.log(this);  
-                this.classList.toggle("show");
-            })
+        let popupErrorText = item.querySelectorAll(".popupErrorText");
+        item.addEventListener("mouseover", function () {
+            popupErrorText[0].classList.toggle("show");
+        })
+        item.addEventListener("mouseout", function () {
+            popupErrorText[0].classList.toggle("show");
         })
     })
-    // popupError.forEach(item => {
-    //     item.addEventListener("mouseover", function(){
-    //         this.classList.toggle("show");
-    //     })
-        // let test = item.querySelectorAll(".popupErrorText");
-        // test.forEach(item2 => {
-        //     item2.addEventListener("mouseover", function(){
-        //         this.classList.toggle("show");
-        //     })
-        // })
-    //})
-    //popupError.classList.toggle("show");
 }
 
 let txtBoxesSum = 0;
@@ -556,6 +551,15 @@ document.addEventListener("DOMContentLoaded", function () {
     validateGroupBoxes("paymentMethodGroupBox");
     validateGroupBoxes("productsGroupBox");
     toggleErrorPopup();
+    document.getElementById("clientsComboBox").addEventListener("change", function () {
+        validateGroupBoxes("clientsGroupBox");
+    })
+    document.getElementById("paymentMethodComboBox").addEventListener("change", function () {
+        validateGroupBoxes("paymentMethodGroupBox");
+    })
+    document.getElementById("productsComboBox").addEventListener("change", function () {
+        validateGroupBoxes("productsGroupBox");
+    })
     document.getElementById("btnNewInvoice").addEventListener("click", function () {
         newInvoiceButtonOnClick();
     })
