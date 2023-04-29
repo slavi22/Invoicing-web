@@ -1,202 +1,219 @@
-html{
+html {
     height: 100%;
 }
-body{
-    background-image: linear-gradient(320deg, #eb92be, #ffef78 , #63c9b4);
+
+body {
+    background-image: linear-gradient(320deg, #eb92be, #ffef78, #63c9b4);
 }
 
-button:not(.tabControlButton){
+button:not(.tabControlButton) {
     background-color: rgb(225, 225, 225);
     border: 1px solid #333;
 }
 
-button{
+button {
     cursor: pointer;
 }
 
 
 /*---------------------------START OF NEW INVOICE CONTAINER---------------------------*/
 
-.form{
-    margin:auto;
+.form {
+    margin: auto;
     width: 65em;
     margin-top: 5vh;
     background-color: rgba(240, 240, 240, 1);
     border: 1px solid black;
 }
-.form > *{
+
+.form>* {
     margin-top: 1%;
     margin-left: 1%;
 }
 
-.tabControl > fieldset{
+.tabControl>fieldset {
     margin-left: 2%;
     width: 10%;
 }
 
-tr{
+tr {
     border-bottom: 1px solid black;
 }
 
-.line{
+.line {
     margin-top: -1em;
     margin-left: 1%;
     width: 95%;
 }
-#tabNewInvoice, #tabInvoices, #tabProducts, #tabCustomers{
+
+#tabNewInvoice,
+#tabInvoices,
+#tabProducts,
+#tabCustomers {
     margin-left: 1em;
     font-size: 20px;
     margin-bottom: 1em;
     border: none;
 }
 
-.newInvoice{
+.newInvoice {
     display: grid;
     margin-left: 0.5em;
-    grid-template-columns: auto; /*use this to adjust the width of the fieldsets*/
+    grid-template-columns: auto;
+    /*use this to adjust the width of the fieldsets*/
     /*tova dolu go izpolzvah za da resize-na tupite rowove*/
-    grid-template-rows: 7em; /*https://stackoverflow.com/questions/41916722/how-do-i-specify-row-heights-in-css-grid-layout*/
-    grid-template-areas: 
-    "invoice total dds"
-    "clients paymentMethod poluchatel"
-    "products products ."
-    "dataGrid dataGrid dataGrid";
+    grid-template-rows: 7em;
+    /*https://stackoverflow.com/questions/41916722/how-do-i-specify-row-heights-in-css-grid-layout*/
+    grid-template-areas:
+        "invoice total dds"
+        "clients paymentMethod poluchatel"
+        "products products ."
+        "dataGrid dataGrid dataGrid";
     gap: 0em 0.75em;
 }
 
-.invoiceGroupBox, .control{
+.invoiceGroupBox,
+.control {
     display: flex;
 }
-.invoiceGroupBox fieldset{
+
+.invoiceGroupBox fieldset {
     width: 100%;
 }
-.invoiceGroupBox > .control{
+
+.invoiceGroupBox>.control {
     gap: 1em;
 }
-#invNumber, #invDate{
+
+#invNumber,
+#invDate {
     margin-left: auto;
     margin-right: 3em;
 }
 
-#invNumber{
+#invNumber {
     margin-right: 6.15em;
     margin-bottom: 5px;
     width: 5em;
 }
 
-.totalGroupBox{
+.totalGroupBox {
     display: flex;
 
 }
 
-.totalGroupBox fieldset{
+.totalGroupBox fieldset {
     width: 100%;
 }
 
-.totalGroupBox input[type="text"]{
+.totalGroupBox input[type="text"] {
     width: 7em;
     margin-left: auto;
     margin-bottom: 5px;
 }
 
-.totalGroupBox #DDS9, #DDS20{
+.totalGroupBox #DDS9,
+#DDS20 {
     margin-bottom: auto;
     margin-left: 1.2em;
     gap: 5em;
 }
 
-#labelDDS{
+#labelDDS {
     font-size: 40px;
     margin: auto;
 }
 
 
-.buttonsRow{
+.buttonsRow {
     grid-column: 4;
     margin-bottom: 1em;
     margin-left: 2em;
     margin-top: 1em;
 }
 
-.buttonsRow > div{
+.buttonsRow>div {
     margin-bottom: 0.5em;
 }
 
-.buttonsRow button:not(.firstRowButtons button):not(.secondRowButtons button){
+.buttonsRow button:not(.firstRowButtons button):not(.secondRowButtons button) {
     width: 10.3em;
 }
 
-.firstRowButtons button{
+.firstRowButtons button {
     width: 2.1em;
     margin-right: 0.3em;
 }
 
-.secondRowButtons input{
+.secondRowButtons input {
     width: 7em;
 }
-.secondRowButtons button{
+
+.secondRowButtons button {
     width: 2.1em;
     margin-left: 0.3em;
 }
 
-.chkBoxOriginal{
+.chkBoxOriginal {
     margin-top: 2.2em;
     margin-left: -2em;
 }
 
-#btnCancel{
+#btnCancel {
     margin-bottom: 4em;
 }
 
-.clientsGroupBox{
+.clientsGroupBox {
     grid-area: clients;
 }
 
-#clientsComboBox{
+#clientsComboBox {
     width: 100%;
 }
 
-.paymentMethodGroupBox{
+.paymentMethodGroupBox {
     grid-area: paymentMethod;
 }
 
-.poluchatelGroupBox{
+.poluchatelGroupBox {
     margin-top: -2em;
     font-size: 18px;
 }
 
-.poluchatelGroupBox fieldset input{
+.poluchatelGroupBox fieldset input {
     margin-bottom: 1em;
 }
 
-#paymentMethodComboBox{
+#paymentMethodComboBox {
     width: 100%;
 }
 
-.poluchatelGroupBox{
+.poluchatelGroupBox {
     grid-area: 3;
 }
 
-.productsGroupBox{
+.productsGroupBox {
     display: flex;
     grid-area: products;
     margin-bottom: 2em;
 
 }
-.productsGroupBox fieldset{
+
+.productsGroupBox fieldset {
     width: 100%;
 }
-#productsComboBox{
+
+#productsComboBox {
     width: 100%;
     margin-bottom: 5px;
 }
 
-#btnAddProduct{
+#btnAddProduct {
     display: flex;
     margin-left: auto;
 }
 
-.dataGridAddedProducts{
+.dataGridAddedProducts {
     display: grid;
     overflow-y: scroll;
     grid-area: dataGrid;
@@ -205,18 +222,20 @@ tr{
     background-color: rgb(160, 160, 160);
 }
 
-.addedProducts{
+.addedProducts {
     background-color: white;
     border-collapse: collapse;
     border: 1px solid black;
     border-right: 1px solid black;
 }
 
-.addedProducts th,td{
+.addedProducts th,
+td {
     border-right: 1px solid black;
     text-align: center;
 }
-.addedProducts th{
+
+.addedProducts th {
     border-bottom: 1px solid black;
 }
 
@@ -224,27 +243,27 @@ tr{
 
 /*---------------------------START OF INVOICES CONTAINER---------------------------*/
 
-.invoices{
+.invoices {
     display: grid;
     margin-left: 0.5em;
     grid-template-columns: auto;
     grid-template-rows: 5fr 3fr;
-    grid-template-areas: 
-    "invoicesInDB"
-    "selectedCellInvoiceInfo";
+    grid-template-areas:
+        "invoicesInDB"
+        "selectedCellInvoiceInfo";
     gap: 0.75em 0em;
     margin-bottom: auto;
 }
 
 
-.invoicesDataGridShowInvoices{
+.invoicesDataGridShowInvoices {
     grid-area: invoicesInDB;
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
     width: 96%;
 }
 
-.invoicesInDB{
+.invoicesInDB {
     background-color: white;
     border-collapse: collapse;
     border: 1px solid black;
@@ -253,22 +272,23 @@ tr{
 
 }
 
-.invoicesInDB th,td{
+.invoicesInDB th,
+td {
     border-right: 1px solid black;
     text-align: center;
 }
 
-.invoicesInDB th{
+.invoicesInDB th {
     border-bottom: 1px solid black;
 }
 
-.datagridSelectedCellInvoiceInfo{
+.datagridSelectedCellInvoiceInfo {
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
     width: 96%;
 }
 
-.selectedCellInfo{
+.selectedCellInfo {
     background-color: white;
     border-collapse: collapse;
     border: 1px solid black;
@@ -276,12 +296,13 @@ tr{
     width: 100%;
 }
 
-.selectedCellInfo th,td{
+.selectedCellInfo th,
+td {
     border-right: 1px solid black;
     text-align: center;
 }
 
-.selectedCellInfo th{
+.selectedCellInfo th {
     border-bottom: 1px solid black;
 }
 
@@ -290,20 +311,20 @@ tr{
 
 /*---------------------------START OF PRODUCTS CONTAINER---------------------------*/
 
-.products{
+.products {
     display: grid;
     margin-left: 0.5em;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1.5fr;
-    grid-template-areas: 
-    "inputFields productsButtons"
-    "inputGrid productsButtons";
+    grid-template-areas:
+        "inputFields productsButtons"
+        "inputGrid productsButtons";
     gap: 0.75em 0em;
     margin-bottom: 1em;
 
 }
 
-.productsInputFields div:not(.dataGridProductsInDB){
+.productsInputFields div:not(.dataGridProductsInDB) {
     display: flex;
     font-size: 18px;
     margin-left: 4em;
@@ -314,13 +335,17 @@ tr{
 
 
 
-#kodNaProduktInput, #naimenovanieInput, #mqrkaInput, #dostCenaInput, #prodCenaInput{
+#kodNaProduktInput,
+#naimenovanieInput,
+#mqrkaInput,
+#dostCenaInput,
+#prodCenaInput {
     width: 15em;
     margin-left: auto;
     margin-right: 30em;
 }
 
-.dataGridProductsInDB{
+.dataGridProductsInDB {
     grid-area: inputGrid;
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
@@ -328,7 +353,7 @@ tr{
     width: 52em;
 }
 
-.productsInDB{
+.productsInDB {
     background-color: white;
     border-collapse: collapse;
     border: 1px solid black;
@@ -336,27 +361,30 @@ tr{
     width: 100%;
 }
 
-.productsInDB th,td{
+.productsInDB th,
+td {
     border-right: 1px solid black;
     text-align: center;
 }
-.productsInDB th{
+
+.productsInDB th {
     border-bottom: 1px solid black;
 }
 
-.productsButtons{
+.productsButtons {
     grid-area: productsButtons;
     margin: auto;
 }
 
-.productsButtons div{
+.productsButtons div {
     margin-bottom: 1em;
 }
-.productsButtons button:not(.firstRowButtons button):not(.secondRowButtons button){
+
+.productsButtons button:not(.firstRowButtons button):not(.secondRowButtons button) {
     width: 10.3em;
 }
 
-.btnProductsExit{
+.btnProductsExit {
     margin-top: 16em;
 }
 
@@ -364,18 +392,19 @@ tr{
 
 /*---------------------------START OF CUSTOMERS CONTAIENR---------------------------*/
 
-.customers{
+.customers {
     display: grid;
     margin-left: 0.5em;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1.5fr;
-    grid-template-areas: 
-    "inputFields customersButtons"
-    "inputGrid customersButtons";
+    grid-template-areas:
+        "inputFields customersButtons"
+        "inputGrid customersButtons";
     gap: 0.75em 0em;
     margin-bottom: 1em;
 }
-.customersInputFields div:not(.dataGridCustomersInDB){
+
+.customersInputFields div:not(.dataGridCustomersInDB) {
     display: flex;
     font-size: 18px;
     margin-left: 4em;
@@ -383,13 +412,13 @@ tr{
     margin-right: auto;
 }
 
-.customersInputFields input{
+.customersInputFields input {
     width: 15em;
     margin-left: auto;
     margin-right: 30em;
 }
 
-.dataGridCustomersInDB{
+.dataGridCustomersInDB {
     grid-area: inputGrid;
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
@@ -397,7 +426,7 @@ tr{
     width: 52em;
 }
 
-.customersInDB{
+.customersInDB {
     background-color: white;
     border-collapse: collapse;
     border: 1px solid black;
@@ -405,40 +434,44 @@ tr{
     width: 100%;
 }
 
-.customersInDB th,td{
+.customersInDB th,
+td {
     border-right: 1px solid black;
     text-align: center;
 }
-.customersInDB th{
+
+.customersInDB th {
     border-bottom: 1px solid black;
 }
 
-.customersButtons{
+.customersButtons {
     grid-area: customersButtons;
-    margin:auto;
+    margin: auto;
 }
 
-.customersButtons div{
+.customersButtons div {
     margin-bottom: 1em;
 }
-.customersButtons button:not(.customersFirstRowButtons button):not(.customersSecondRowButtons button){
+
+.customersButtons button:not(.customersFirstRowButtons button):not(.customersSecondRowButtons button) {
     width: 10.3em;
 }
 
-.customersFirstRowButtons button{
+.customersFirstRowButtons button {
     width: 2.1em;
     margin-right: 0.3em;
 }
 
-.customersSecondRowButtons input{
+.customersSecondRowButtons input {
     width: 7em;
 }
-.customersSecondRowButtons button{
+
+.customersSecondRowButtons button {
     width: 2.1em;
     margin-left: 0.3em;
 }
 
-.btnCustomersExit{
+.btnCustomersExit {
     margin-top: 16em;
 }
 
@@ -446,24 +479,24 @@ tr{
 
 
 /*---------------------------THINGS FOR THE POPUPS-START---------------------------*/
-.popups{
+.popups {
     display: flex;
     justify-content: center;
     margin-top: -25em;
 }
 
-.popups > *{
+.popups>* {
     filter: blur(0px);
 }
 
-#newInvoicePopup{
+#newInvoicePopup {
     display: grid;
     grid-template-columns: 1fr 0fr 1fr;
     grid-template-rows: auto;
-    grid-template-areas: 
-    ". . xButton "
-    "message message message"
-    "button1 . button2 ";
+    grid-template-areas:
+        ". . xButton "
+        "message message message"
+        "button1 . button2 ";
     justify-items: center;
     text-align: center;
     background-color: white;
@@ -472,31 +505,94 @@ tr{
     height: 10em;
 }
 
-#xButton{
+#xButton {
     background-color: red;
     color: white;
     border-right: none;
     border-top: none;
 }
 
-#closeButton{
+#closeButton {
     grid-area: xButton;
     margin-left: auto;
-    margin-top: -1px; 
+    margin-top: -1px;
 }
 
-#warningMessage{
+#warningMessage {
     grid-area: message;
 }
 
-#newInvoicePopup button:not(#xButton){
+#newInvoicePopup button:not(#xButton) {
     width: 8em;
 }
 
-#newInvoicePopUpSave{
+#newInvoicePopUpSave {
     grid-area: button1;
 }
 
-#newInvoicePopUpCancel{
+#newInvoicePopUpCancel {
     grid-area: button2;
+}
+
+.popupError {
+    color: red;
+    position: relative;
+    display: inline-block;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.popupError .popupErrorText {
+    visibility: hidden;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+}
+
+.popupError .popupErrorText::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.popupError .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+}
+
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
