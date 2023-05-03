@@ -86,6 +86,11 @@
         }
     }
 
+    function AddNewInvoiceToDb($invoiceNumber, $invoiceDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId, $myFirmId){
+        $query = "INSERT INTO `invoices` (`INVOICEID`, `INVOICENUMBER`, `INVOICEVATDATE`, `INVOICEDEALDATE`, `INVOICESUM`, `INVOICEVAT`, `INVOICETOTAL`, `INVOICEVATPERCENT`, `CUSTOMERID`, `MYFIRMID`) VALUES ('$invoiceNumber', '$invoiceNumber', '$invoiceDate', '$invoiceDate', '$invoiceSum', '$invoiceVat', '$invoiceTotal', '$invoiceVatPercent', '$customerId', '$myFirmId')";
+        $GLOBALS['conn'] -> query($query);
+    }
+
 
     //CALLS
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
@@ -104,7 +109,7 @@
         }
         elseif($_GET['function'] == 'ProductsComboBoxOnLoad'){
             ProductsComboBoxOnLoad();
-        }
+        }      
     }
 
     if(isset($_POST['id'])){
@@ -115,6 +120,20 @@
     if(isset($_POST['selectedIndex'])){
         $selectedIndex = $_POST['selectedIndex'];
         AddSelectedProductToGrid($selectedIndex);
+    }
+
+    if(isset($_POST['function'])){
+        if($_POST['function'] == 'AddNewInvoiceToDb'){
+            $invoiceNumber = $_POST['invoiceNumber'];
+            $invoiceDate = $_POST['invoiceDate'];
+            $invoiceSum = $_POST['invoiceSum'];
+            $invoiceVat = $_POST['invoiceVat'];
+            $invoiceTotal = $_POST['invoiceTotal'];
+            $invoiceVatPercent = $_POST['invoiceVatPercent'];
+            $customerId = $_POST['customerId'];
+            $myFirmId = $_POST['myFirmId'];
+            AddNewInvoiceToDb($invoiceNumber, $invoiceDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId+1, $myFirmId+1);
+        }
     }
 
     // if( $_SERVER['REQUEST_METHOD']=='POST'){

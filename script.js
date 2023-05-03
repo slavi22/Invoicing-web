@@ -243,6 +243,7 @@ function nextInvoiceNumber() {
 function dateFormat() {
     let today = moment().format("DD.MM.YYYY"); //make this a global variable when passing a new invoice date to the db
     document.getElementById("invDate").valueAsDate = new Date();
+    return today;
 }
 
 function ddsClickChangeValue() {
@@ -321,7 +322,7 @@ function addSelectedProductToGrid() {
         type: "POST",
         data: { selectedIndex: selectedIndex },
         success: function (result) {
-            $(".addedProducts").append(result);
+            $(".addedProducts tbody").append(result);
             $(".addedProducts td:eq(1)").width("25%")
             totalTextBoxes();
         }
@@ -330,7 +331,11 @@ function addSelectedProductToGrid() {
 
 
 function addNewInvoiceToDB() {
-    if (count == 2) {
+    if (count == 2 && $(".addedProducts tr").length == 1) {
+        alert("Please add products to the table!");
+        return;
+    }
+    if (count == 2 && (validatedGroupBox("clientsGroupBox") && validatedGroupBox("paymentMethodGroupBox") && validatedGroupBox("productsGroupBox"))) { //fix this if statement
         $("#newInvoicePopup p").remove();
         document.getElementById("newInvoicePopup").style.display = "grid";
         let form = document.querySelector(".form");
@@ -344,9 +349,39 @@ function addNewInvoiceToDB() {
         let buttonCancel = document.getElementById("btnCancelNewInvoicePopup");
         buttonSave.addEventListener("click", function (e) {
             e.stopImmediatePropagation(); //https://stackoverflow.com/questions/7822407/why-is-my-alert-showing-more-than-once
-            alert("Saved to db!") //here should be the function that adds the stuff from all the comboboxes to the db
-            form.style.filter = "blur(0px)";
-            closePopupWindow("newInvoicePopup");
+            $.ajax({
+                url: 'phpScript.php',
+                type: "POST",
+                data: {
+                    function: 'AddNewInvoiceToDb',
+                    invoiceNumber: $("#invNumber").val(),
+                    invoiceDate: dateFormat(),
+                    invoiceSum: $("#txtBoxDanOsnova").val(),
+                    invoiceVat: $("#txtBoxDDS").val(),
+                    invoiceTotal: $("#txtBoxSum").val(),
+                    invoiceVatPercent: $("#labelDDS").text(),
+                    customerId: $("#clientsComboBox").prop("selectedIndex"),
+                    myFirmId: $("#clientsComboBox").prop("selectedIndex")
+                },
+                success: function () {
+                    form.style.filter = "blur(0px)";
+                    closePopupWindow("newInvoicePopup");
+                    alert(`Invoice number ${$("#invNumber").val()} has been successfully added to the db!`);
+                    $("#invNumber").val((parseInt($("#invNumber").val())) + 1);
+                    $("#clientsComboBox").prop("selectedIndex", -1);
+                    $("#paymentMethodComboBox").prop("selectedIndex", -1);
+                    $("#productsComboBox").prop("selectedIndex", -1);
+                    $(".addedProducts tbody").empty();
+                    $("#txtBoxDanOsnova").val("");
+                    $("#txtBoxDDS").val("");
+                    $("#txtBoxSum").val("");
+                    validatedGroupBox("clientsGroupBox");
+                    validatedGroupBox("paymentMethodGroupBox");
+                    validatedGroupBox("productsGroupBox");
+                    toggleErrorPopup();
+                }
+            });
+            //alert("Saved to db!") //here should be the function that adds the stuff from all the comboboxes to the db
         });
         buttonCancel.addEventListener("click", function () {
             form.style.filter = "blur(0px)";
@@ -476,7 +511,7 @@ function searchBoxSearch(tableClass) {
 }
 
 //create a function that validates whether all group boxes have a selected value and if not maybe give them a pop-up to tell them they need to fill in the said combobox
-function validateGroupBoxes(groupBoxClass) {
+function validatedGroupBox(groupBoxClass) {
     let groupBoxSelectedIndex = $(`.${groupBoxClass} fieldset select`).prop("selectedIndex");
     if (groupBoxSelectedIndex == -1) {
         if (groupBoxClass == "productsGroupBox") {
@@ -488,6 +523,7 @@ function validateGroupBoxes(groupBoxClass) {
             $(`.${groupBoxClass} fieldset`).css({ "display": "flex" });
             $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля изберете стойност</span></i>').appendTo($(`.${groupBoxClass} fieldset`)).css({ "display": "flex", "margin-left": "1em" });
         }
+        return false;
     }
     else {
         if (groupBoxClass == "productsGroupBox") {
@@ -501,6 +537,7 @@ function validateGroupBoxes(groupBoxClass) {
                 $(this).remove();
             });
         }
+        return true;
     }
 }
 
@@ -547,18 +584,18 @@ document.addEventListener("DOMContentLoaded", function () {
     paymentMethodComboBoxOnLoad();
     disabledButtonsCursor();
     productsComboBoxOnLoad();
-    validateGroupBoxes("clientsGroupBox");
-    validateGroupBoxes("paymentMethodGroupBox");
-    validateGroupBoxes("productsGroupBox");
+    validatedGroupBox("clientsGroupBox");
+    validatedGroupBox("paymentMethodGroupBox");
+    validatedGroupBox("productsGroupBox");
     toggleErrorPopup();
     document.getElementById("clientsComboBox").addEventListener("change", function () {
-        validateGroupBoxes("clientsGroupBox");
+        validatedGroupBox("clientsGroupBox");
     })
     document.getElementById("paymentMethodComboBox").addEventListener("change", function () {
-        validateGroupBoxes("paymentMethodGroupBox");
+        validatedGroupBox("paymentMethodGroupBox");
     })
     document.getElementById("productsComboBox").addEventListener("change", function () {
-        validateGroupBoxes("productsGroupBox");
+        validatedGroupBox("productsGroupBox");
     })
     document.getElementById("btnNewInvoice").addEventListener("click", function () {
         newInvoiceButtonOnClick();

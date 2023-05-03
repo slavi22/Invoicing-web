@@ -10,8 +10,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="./script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/printThis/1.15.0/printThis.min.js"></script>   
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/printThis/1.15.0/printThis.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
 <body>
@@ -78,10 +78,10 @@
                 <div class="groupBox poluchatelGroupBox">
                     <fieldset>
                         <legend>Получател</legend>
-                        <input type="radio" name="poluchatel">МОЛ <br>
+                        <input type="radio" name="poluchatel" checked>МОЛ <br>
                         <input type="radio" name="poluchatel">...
                     </fieldset>
-                </div> 
+                </div>
                 <div class="groupBox productsGroupBox">
                     <fieldset>
                         <legend>Products</legend>
@@ -91,13 +91,16 @@
                 </div>
                 <div class="dataGridAddedProducts">
                     <table class="addedProducts">
-                        <tr>
-                            <th>Код</th>
-                            <th>Продукт</th>
-                            <th>Мярка</th>
-                            <th>Количество</th>
-                            <th>Ед. Цена</th>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>Код</th>
+                                <th>Продукт</th>
+                                <th>Мярка</th>
+                                <th>Количество</th>
+                                <th>Ед. Цена</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
                     </table>
                 </div>
                 <div class="buttonsRow">
