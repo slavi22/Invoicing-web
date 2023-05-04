@@ -214,9 +214,6 @@ function newInvoiceButtonOnClick() {
         //unlock controls
         newInvoicesTabOnLoad(false);
     }
-    else if (count == 2) {
-        //add new invoice to db
-    }
     else if (count > 2) {
         count = 2;
     }
@@ -240,10 +237,15 @@ function nextInvoiceNumber() {
     });
 }
 
+
+let formattedDate = undefined;
 function dateFormat() {
-    let today = moment().format("DD.MM.YYYY"); //make this a global variable when passing a new invoice date to the db
-    document.getElementById("invDate").valueAsDate = new Date();
-    return today;
+    let date = document.getElementById("invDate").valueAsDate = new Date(); 
+    document.getElementById("invDate").addEventListener("change", function(){
+        date = this.value;
+        formattedDate = moment(date).format("DD.MM.YYYY");
+    });
+    formattedDate = moment(date).format("DD.MM.YYYY");
 }
 
 function ddsClickChangeValue() {
@@ -335,7 +337,7 @@ function addNewInvoiceToDB() {
         alert("Please add products to the table!");
         return;
     }
-    if (count == 2 && (validatedGroupBox("clientsGroupBox") && validatedGroupBox("paymentMethodGroupBox") && validatedGroupBox("productsGroupBox"))) { //fix this if statement
+    if (count == 2 && newInvoiceGroupBoxesValidated()) {
         $("#newInvoicePopup p").remove();
         document.getElementById("newInvoicePopup").style.display = "grid";
         let form = document.querySelector(".form");
@@ -355,7 +357,7 @@ function addNewInvoiceToDB() {
                 data: {
                     function: 'AddNewInvoiceToDb',
                     invoiceNumber: $("#invNumber").val(),
-                    invoiceDate: dateFormat(),
+                    invoiceDate: formattedDate,
                     invoiceSum: $("#txtBoxDanOsnova").val(),
                     invoiceVat: $("#txtBoxDDS").val(),
                     invoiceTotal: $("#txtBoxSum").val(),
@@ -375,9 +377,10 @@ function addNewInvoiceToDB() {
                     $("#txtBoxDanOsnova").val("");
                     $("#txtBoxDDS").val("");
                     $("#txtBoxSum").val("");
-                    validatedGroupBox("clientsGroupBox");
-                    validatedGroupBox("paymentMethodGroupBox");
-                    validatedGroupBox("productsGroupBox");
+                    document.getElementById("invDate").valueAsDate = new Date();
+                    emptyComboBoxAddPopup("clientsGroupBox");
+                    emptyComboBoxAddPopup("paymentMethodGroupBox");
+                    emptyComboBoxAddPopup("productsGroupBox");
                     toggleErrorPopup();
                 }
             });
@@ -511,7 +514,7 @@ function searchBoxSearch(tableClass) {
 }
 
 //create a function that validates whether all group boxes have a selected value and if not maybe give them a pop-up to tell them they need to fill in the said combobox
-function validatedGroupBox(groupBoxClass) {
+function emptyComboBoxAddPopup(groupBoxClass) {
     let groupBoxSelectedIndex = $(`.${groupBoxClass} fieldset select`).prop("selectedIndex");
     if (groupBoxSelectedIndex == -1) {
         if (groupBoxClass == "productsGroupBox") {
@@ -523,7 +526,6 @@ function validatedGroupBox(groupBoxClass) {
             $(`.${groupBoxClass} fieldset`).css({ "display": "flex" });
             $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля изберете стойност</span></i>').appendTo($(`.${groupBoxClass} fieldset`)).css({ "display": "flex", "margin-left": "1em" });
         }
-        return false;
     }
     else {
         if (groupBoxClass == "productsGroupBox") {
@@ -537,6 +539,15 @@ function validatedGroupBox(groupBoxClass) {
                 $(this).remove();
             });
         }
+    }
+}
+
+function newInvoiceGroupBoxesValidated() {
+    if ($(".newInvoice fieldset select").prop("selectedIndex") == -1) {
+        alert("Please make sure you select an option on each combo box!");
+        return false;
+    }
+    else {
         return true;
     }
 }
@@ -584,18 +595,18 @@ document.addEventListener("DOMContentLoaded", function () {
     paymentMethodComboBoxOnLoad();
     disabledButtonsCursor();
     productsComboBoxOnLoad();
-    validatedGroupBox("clientsGroupBox");
-    validatedGroupBox("paymentMethodGroupBox");
-    validatedGroupBox("productsGroupBox");
+    emptyComboBoxAddPopup("clientsGroupBox");
+    emptyComboBoxAddPopup("paymentMethodGroupBox");
+    emptyComboBoxAddPopup("productsGroupBox");
     toggleErrorPopup();
     document.getElementById("clientsComboBox").addEventListener("change", function () {
-        validatedGroupBox("clientsGroupBox");
+        emptyComboBoxAddPopup("clientsGroupBox");
     })
     document.getElementById("paymentMethodComboBox").addEventListener("change", function () {
-        validatedGroupBox("paymentMethodGroupBox");
+        emptyComboBoxAddPopup("paymentMethodGroupBox");
     })
     document.getElementById("productsComboBox").addEventListener("change", function () {
-        validatedGroupBox("productsGroupBox");
+        emptyComboBoxAddPopup("productsGroupBox");
     })
     document.getElementById("btnNewInvoice").addEventListener("click", function () {
         newInvoiceButtonOnClick();
@@ -616,7 +627,7 @@ document.addEventListener("DOMContentLoaded", function () {
         disabledButtonsCursor();
     })
     document.getElementById("btnNewInvoice").addEventListener("click", function () {
-        addNewInvoiceToDB();
+        addNewInvoiceToDB(); //bind this button to the save button on the form
     })
     document.getElementById("btnNextRow").addEventListener("click", function () {
         buttonNextRow("addedProducts");
