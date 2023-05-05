@@ -23,9 +23,6 @@
         ";
         }
     }
-    function hi(){
-        echo "hi";
-    }
 
     function InvoicesViewInvoiceProuducts($id){
         $query = "select p.PRODUCTCODE as \"Код\", p.productname as \"Наименование на продукт\", p.PRODUCTMEASURE as \"Мярка\", ip.INVOICEQUANTITY as \"Количество\", p.PRODUCT_PROD_CENA as \"Сума\" from invoice_product ip join products p on(ip.PRODUCTID = p.PRODUCTID) join invoices i on(ip.INVOICEID = i.INVOICEID) where i.INVOICENUMBER = {$id}";
@@ -91,14 +88,28 @@
         $GLOBALS['conn'] -> query($query);
     }
 
+    function GetPrintPreviewInfo($customerId){
+        $query = "SELECT CustomerECODE, CustomerVATCODE, CustomerAddress, CustomerMOL FROM `customers` WHERE CustomersID = $customerId+1";
+        $result = $GLOBALS['conn'] -> query($query);
+        $array = array();
+        while($row = $result -> fetch_assoc()){
+            //array_push($array, $row["CustomerECODE"], $row["CustomerVATCODE"], $row["CustomerAddress"], $row["CustomerMOL"]);
+            $array[] = $row;
+            // echo "
+            // ".$row["CustomerECODE"]."
+            // ".$row["CustomerVATCODE"]."
+            // ".$row["CustomerAddress"]."
+            // ".$row["CustomerMOL"]."
+            // ";
+        }
+        echo json_encode($array, JSON_UNESCAPED_UNICODE);
+    }
+
 
     //CALLS
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
     if(isset($_GET['function'])){
-        if($_GET['function'] == 'hi'){
-            hi();
-        }
-        elseif($_GET['function'] == 'InvoicesDBOnLoad'){
+        if($_GET['function'] == 'InvoicesDBOnLoad'){
             InvoicesDBOnLoad();
         }
         elseif($_GET['function'] == 'NextInvoiceNumber'){
@@ -109,7 +120,7 @@
         }
         elseif($_GET['function'] == 'ProductsComboBoxOnLoad'){
             ProductsComboBoxOnLoad();
-        }      
+        }     
     }
 
     if(isset($_POST['id'])){
@@ -133,6 +144,9 @@
             $customerId = $_POST['customerId'];
             $myFirmId = $_POST['myFirmId'];
             AddNewInvoiceToDb($invoiceNumber, $invoiceDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId+1, $myFirmId+1);
+        }
+        elseif($_POST['function'] == "GetPrintPreviewInfo"){
+            GetPrintPreviewInfo($_POST['customerId']);
         }
     }
 

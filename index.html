@@ -115,10 +115,8 @@
                         <button id="btnSearch">S</button>
                     </div>
                     <div><button id="btnNewInvoice">New Invoice</button></div>
-                    <div><button id="btnRefresh">Refresh</button></div>
                     <div><button id="btnDelRow">Delete Row</button></div>
                     <div><button id="btnSave">Save</button></div>
-                    <div><button id="btnEditInvoice">Edit Invoice</button></div>
                     <div><button id="btnDelInvoice">Del Invoice</button></div>
                     <div class="chkBoxOriginal"><input type="checkbox" id="chkBox">Оригинал</div>
                     <div><button id="btnPrintPreview">Print Preview</button></div>
@@ -126,7 +124,6 @@
                     <div><button id="btnDialog">Print Dialog</button></div>
                     <div><button id="btnSavePDF">Save PDF</button></div>
                     <div><button id="btnCancel">Cancel</button></div>
-                    <div><button id="btnExit">Exit</button></div>
                 </div>
             </div>
         </div>
@@ -288,11 +285,43 @@
         </div>
     </div>
     <div class="popups">
-        <div id="newInvoicePopup" style="display: none;">
+        <div id="newInvoicePopup">
             <div id="closeButton"><button id="xButton">X</button></div>
             <div id="warningMessage"></div>
             <div id="newInvoicePopUpSave"><button id="btnSaveNewInvoicePopup">Save</button></div>
             <div id="newInvoicePopUpCancel"><button id="btnCancelNewInvoicePopup">Cancel</button></div>
+        </div>
+        <div id="printPreviewPopup">
+            <div id="closePrintPreview">
+                <button>X</button>
+            </div>
+            <div id="groupRecipient">
+                <div id="groupRecipientFirstRow">
+                    <div>
+                        <p>Получател</p>
+                    </div>
+                </div>
+                <div id="groupRecipientSecondRow">
+                    <div></div>
+                    <div>
+                        <p>ЕИК:</p>
+                    </div>
+                    <div>
+                        <p>ИН по ЗДДС:</p>
+                    </div>
+                    <div>
+                        <p>Адрес:</p>
+                    </div>
+                    <div>
+                        <p>МОЛ:</p>
+                    </div>
+                </div>
+            </div>
+            <div id="groupProvider">
+                <div>
+
+                </div>
+            </div>
         </div>
     </div>
 </body>

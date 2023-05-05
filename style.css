@@ -136,6 +136,13 @@ tr {
     margin-bottom: 0.5em;
 }
 
+#btnNewInvoice,
+#btnDelRow,
+#btnSave,
+#btnDelInvoice {
+    margin-bottom: 0.3em;
+}
+
 .buttonsRow button:not(.firstRowButtons button):not(.secondRowButtons button) {
     width: 10.3em;
 }
@@ -155,12 +162,22 @@ tr {
 }
 
 .chkBoxOriginal {
-    margin-top: 2.2em;
+    margin-top: 5.3em;
     margin-left: -2em;
 }
 
+#btnPrintPreview {
+    margin-top: 0.75em;
+}
+
 #btnCancel {
-    margin-bottom: 4em;
+    margin-top: 2em;
+}
+
+#btnPrintPreview,
+#btnPrint,
+#btnDialog {
+    margin-bottom: 0.3em;
 }
 
 .clientsGroupBox {
@@ -485,6 +502,10 @@ td {
     margin-top: -25em;
 }
 
+.popups #printPreviewPopup{
+    margin-top: -14em;
+}
+
 .popups>* {
     filter: blur(0px);
 }
@@ -494,7 +515,7 @@ td {
     grid-template-columns: 1fr 0fr 1fr;
     grid-template-rows: auto;
     grid-template-areas:
-        ". . xButton "
+        ". . xButton"
         "message message message"
         "button1 . button2 ";
     justify-items: center;
@@ -584,4 +605,83 @@ td {
     to {
         opacity: 1;
     }
+}
+
+#printPreviewPopup{
+    display: grid;
+    grid-template-areas: 
+        ". . xButton"
+        "recipient provider ."
+        "textInvNo . ."
+        "invData . ."
+        "dataTable . ."
+        "bankAndSum . ."
+        "paymentMethodAndVerbally . ."
+        "protocolData . ."
+        "bottomMessage . ."
+        ". . .";
+    justify-content: center;
+    grid-template-columns: 1fr 1fr 0fr;
+    width: 40em;
+    height: 55em;
+    background-color: white;
+    border: 1px solid black;
+}
+
+#groupRecipient{
+    width: 15em;
+    height: 10em;
+    justify-self: flex-end;
+    grid-area: recipient;
+    border: 1px solid black;
+    
+}
+
+#groupRecipientFirstRow > *{
+    margin-left: 0.75em;
+}
+
+#groupRecipientFirstRow{
+    width: 100%;
+    justify-self: center;
+    margin-top: -0.5em;
+}
+#groupRecipientFirstRow::after{
+    content: "";
+    display: block;
+    margin-top: -0.8em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupRecipientSecondRow > *{
+    margin-left: 0.75em;
+    margin-top: -0.6em;
+}
+
+#groupRecipientSecondRow p {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+#closePrintPreview{
+    margin-top: -1px;
+    margin-left: auto;
+    grid-area: xButton;
+}
+
+#closePrintPreview button{
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+
+#groupProvider{
+    width: 15em;
+    height: 10em;
+    margin-left: 1em;
+    grid-area: provider;
+    border: 1px solid black;
 }

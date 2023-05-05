@@ -183,13 +183,11 @@ function newInvoicesTabOnLoad(isDisabled) {
         items.disabled = isDisabled;
     }
     document.querySelector("#btnNewInvoice").disabled = false;
-    document.querySelector("#btnEditInvoice").disabled = false;
     document.querySelector("#btnDelInvoice").disabled = false;
     document.querySelector("#btnPrintPreview").disabled = false;
     document.querySelector("#btnPrint").disabled = false;
     document.querySelector("#btnDialog").disabled = false;
     document.querySelector("#btnSavePDF").disabled = false;
-    document.querySelector("#btnExit").disabled = false;
     document.querySelector("#invNumber").disabled = true;
     let firstRowButtons = document.querySelectorAll(".firstRowButtons button");
     for (let items of firstRowButtons) {
@@ -214,7 +212,11 @@ function newInvoiceButtonOnClick() {
         //unlock controls
         newInvoicesTabOnLoad(false);
     }
-    else if (count > 2) {
+}
+
+function invoiceTabSaveButtonOnClick() {
+    count++;
+    if (count > 2) {
         count = 2;
     }
 }
@@ -240,8 +242,8 @@ function nextInvoiceNumber() {
 
 let formattedDate = undefined;
 function dateFormat() {
-    let date = document.getElementById("invDate").valueAsDate = new Date(); 
-    document.getElementById("invDate").addEventListener("change", function(){
+    let date = document.getElementById("invDate").valueAsDate = new Date();
+    document.getElementById("invDate").addEventListener("change", function () {
         date = this.value;
         formattedDate = moment(date).format("DD.MM.YYYY");
     });
@@ -342,6 +344,7 @@ function addNewInvoiceToDB() {
         document.getElementById("newInvoicePopup").style.display = "grid";
         let form = document.querySelector(".form");
         form.style.filter = "blur(10px)";
+        form.style.pointerEvents = "none";
         let fakNo = document.getElementById("invNumber");
         let message = document.createElement("p");
         message.setAttribute("id", "msg")
@@ -388,10 +391,12 @@ function addNewInvoiceToDB() {
         });
         buttonCancel.addEventListener("click", function () {
             form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
             closePopupWindow("newInvoicePopup")
         }, { once: true });
         document.getElementById("xButton").addEventListener("click", function () {
             form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
             closePopupWindow("newInvoicePopup");
         }, { once: true });
     }
@@ -585,6 +590,37 @@ function totalTextBoxes() {
     })
 }
 
+function fillPrintPreviewInfo() {
+    if (newInvoiceGroupBoxesValidated()) {
+        $("#printPreviewPopup").find(".appended").remove();
+        let form = document.querySelector(".form");
+        form.style.filter = "blur(10px)";
+        form.style.pointerEvents = "none";
+        $("#printPreviewPopup").css("display", "grid");
+        document.querySelector("#closePrintPreview button").addEventListener("click", function(){
+            form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
+            closePopupWindow("printPreviewPopup");
+        })
+        $("#groupRecipientSecondRow div:eq(0)").append(`<p class="appended" style="font-weight:bold;">${$("#clientsComboBox option:selected").text()}</p>`);
+        $.ajax({
+            url: "phpScript.php",
+            type: "POST",
+            data:{
+                function: "GetPrintPreviewInfo",
+                customerId: $("#clientsComboBox").prop("selectedIndex")
+            },
+            success: function(result){
+                let parsedJson = JSON.parse(result);
+                $("#groupRecipientSecondRow div:eq(1)").append(`<p class="appended">${parsedJson[0].CustomerECODE}</p>`);
+                $("#groupRecipientSecondRow div:eq(2)").append(`<p class="appended">${parsedJson[0].CustomerVATCODE}</p>`);
+                $("#groupRecipientSecondRow div:eq(3)").append(`<p class="appended">${parsedJson[0].CustomerAddress}</p>`);
+                $("#groupRecipientSecondRow div:eq(4)").append(`<p class="appended">${parsedJson[0].CustomerMOL}</p>`);
+            }
+        });
+    }
+}
+
 //EVENTS
 document.addEventListener("DOMContentLoaded", function () {
     newInvoicesTabOnLoad(true);
@@ -626,8 +662,11 @@ document.addEventListener("DOMContentLoaded", function () {
     $("button").on("click", function () {
         disabledButtonsCursor();
     })
-    document.getElementById("btnNewInvoice").addEventListener("click", function () {
-        addNewInvoiceToDB(); //bind this button to the save button on the form
+    document.getElementById("btnSave").addEventListener("click", function () {
+        invoiceTabSaveButtonOnClick();
+    })
+    document.getElementById("btnSave").addEventListener("click", function () {
+        addNewInvoiceToDB();
     })
     document.getElementById("btnNextRow").addEventListener("click", function () {
         buttonNextRow("addedProducts");
@@ -643,5 +682,10 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     document.getElementById("btnSearch").addEventListener("click", function () {
         searchBoxSearch("addedProducts");
+    })
+    document.getElementById("newInvoicePopup").style.display = "none";
+    document.getElementById("printPreviewPopup").style.display = "none";
+    document.getElementById("btnPrintPreview").addEventListener("click", function () {
+        fillPrintPreviewInfo();
     })
 })
