@@ -108,6 +108,16 @@
         echo json_encode($array, JSON_UNESCAPED_UNICODE);
     }
 
+    function GetPrintPreviewDatesInfo($customerId){
+        $query = "SELECT InvoiceDealDate, InvoiceVATDate, customers.CustomerAddress FROM `invoices` JOIN `customers` on (invoices.CUSTOMERID = customers.CustomersID) WHERE customers.CustomersID = $customerId+1;";
+        $result = $GLOBALS['conn'] -> query($query);
+        $array = array();
+        while($row = $result -> fetch_assoc()){
+            $array[] = $row;
+        }
+        echo json_encode($array, JSON_UNESCAPED_UNICODE);
+    }
+
 
     //CALLS
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
@@ -155,11 +165,8 @@
         elseif($_POST['function'] == "GetPrintPreviewSellerInfo"){
             GetPrintPreviewSellerInfo($_POST['myFirmId']);
         }   
+        elseif($_POST['function'] == "GetPrintPreviewDatesInfo"){
+            GetPrintPreviewDatesInfo($_POST['customerId']);
+        }
     }
-
-    // if( $_SERVER['REQUEST_METHOD']=='POST'){
-    //      $id = $_POST['id'];
-    //      InvoicesViewInvoiceProuducts($id);
-    // }
-
 ?>

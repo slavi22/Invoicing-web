@@ -660,6 +660,20 @@ function fillPrintPreviewInfo() {
         if ($("#chkBox").is(":checked")) {
             $("#groupTextInvNo div").append(`<p class="appended" style="position:absolute; margin-left:3em; margin-top:1.5em;font-weight:100; font-size:20px">${$("#chkBox").val()}</p>`);
         }
+        $.ajax({
+            url: "phpScript.php",
+            type: "POST",
+            data: {
+                function: "GetPrintPreviewDatesInfo",
+                customerId: $("#clientsComboBox").prop("selectedIndex")
+            },
+            success: function(result){
+                let parsedJson = JSON.parse(result);
+                $("#groupInvDataDates div:eq(0)").append(`<p class="appended">${parsedJson[0].InvoiceDealDate}</p>`);
+                $("#groupInvDataDates div:eq(1)").append(`<p class="appended">${parsedJson[0].InvoiceVATDate}</p>`);
+                $("#groupInvDataDates div:eq(2)").append(`<p class="appended">${parsedJson[0].CustomerAddress}</p>`);
+            }
+        });
     }
 }
 

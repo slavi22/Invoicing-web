@@ -613,7 +613,7 @@ td {
         ". . xButton"
         "recipient seller ."
         "textInvNo textInvNo textInvNo"
-        "invData . ."
+        "invDataDates invDataDates invDataDates"
         "dataTable . ."
         "bankAndSum . ."
         "paymentMethodAndVerbally . ."
@@ -734,6 +734,28 @@ td {
     display: block;
     margin-left: auto;
     margin-right: auto;
+    border-bottom: 1px solid black;
+    width: 79%;
+}
+
+#groupInvDataDates{
+    grid-area: invDataDates;
+    text-align: center;
+    margin-top: 1em;
+}
+
+#groupInvDataDates p{
+    display: inline-block;
+    margin: 0;
+    margin-bottom: 0.4em;
+}
+
+#groupInvDataDates::after{
+    content: "";
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0.5em;
     border-bottom: 1px solid black;
     width: 79%;
 }
