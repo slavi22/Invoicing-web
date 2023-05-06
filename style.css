@@ -502,7 +502,7 @@ td {
     margin-top: -25em;
 }
 
-.popups #printPreviewPopup{
+.popups #printPreviewPopup {
     margin-top: -14em;
 }
 
@@ -607,12 +607,12 @@ td {
     }
 }
 
-#printPreviewPopup{
+#printPreviewPopup {
     display: grid;
-    grid-template-areas: 
+    grid-template-areas:
         ". . xButton"
-        "recipient provider ."
-        "textInvNo . ."
+        "recipient seller ."
+        "textInvNo textInvNo textInvNo"
         "invData . ."
         "dataTable . ."
         "bankAndSum . ."
@@ -622,31 +622,33 @@ td {
         ". . .";
     justify-content: center;
     grid-template-columns: 1fr 1fr 0fr;
+    grid-template-rows: auto 0fr 0fr;
     width: 40em;
     height: 55em;
     background-color: white;
     border: 1px solid black;
 }
 
-#groupRecipient{
+#groupRecipient {
     width: 15em;
     height: 10em;
     justify-self: flex-end;
     grid-area: recipient;
     border: 1px solid black;
-    
+
 }
 
-#groupRecipientFirstRow > *{
+#groupRecipientFirstRow>* {
     margin-left: 0.75em;
 }
 
-#groupRecipientFirstRow{
+#groupRecipientFirstRow {
     width: 100%;
     justify-self: center;
     margin-top: -0.5em;
 }
-#groupRecipientFirstRow::after{
+
+#groupRecipientFirstRow::after {
     content: "";
     display: block;
     margin-top: -0.8em;
@@ -654,7 +656,7 @@ td {
     width: 100%;
 }
 
-#groupRecipientSecondRow > *{
+#groupRecipientSecondRow>* {
     margin-left: 0.75em;
     margin-top: -0.6em;
 }
@@ -664,13 +666,13 @@ td {
     margin-bottom: 0;
 }
 
-#closePrintPreview{
+#closePrintPreview {
     margin-top: -1px;
     margin-left: auto;
     grid-area: xButton;
 }
 
-#closePrintPreview button{
+#closePrintPreview button {
     background-color: red;
     color: white;
     border-right: none;
@@ -678,10 +680,60 @@ td {
 }
 
 
-#groupProvider{
+#groupSeller {
     width: 15em;
     height: 10em;
     margin-left: 1em;
-    grid-area: provider;
+    grid-area: seller;
     border: 1px solid black;
+}
+
+#groupSellerFirstRow>* {
+    margin-left: 0.75em;
+}
+
+#groupSellerFirstRow {
+    width: 100%;
+    justify-self: center;
+    margin-top: -0.5em;
+}
+
+#groupSellerFirstRow::after {
+    content: "";
+    display: block;
+    margin-top: -0.8em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupSellerSecondRow>* {
+    margin-left: 0.75em;
+    margin-top: -0.6em;
+}
+
+#groupSellerSecondRow p {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+#groupTextInvNo {
+    grid-area: textInvNo;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#groupTextInvNo div>p {
+    display: inline-block;
+}
+
+#groupTextInvNo::after{
+    content: "";
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-bottom: 1px solid black;
+    width: 79%;
 }

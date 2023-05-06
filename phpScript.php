@@ -83,24 +83,27 @@
         }
     }
 
-    function AddNewInvoiceToDb($invoiceNumber, $invoiceDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId, $myFirmId){
-        $query = "INSERT INTO `invoices` (`INVOICEID`, `INVOICENUMBER`, `INVOICEVATDATE`, `INVOICEDEALDATE`, `INVOICESUM`, `INVOICEVAT`, `INVOICETOTAL`, `INVOICEVATPERCENT`, `CUSTOMERID`, `MYFIRMID`) VALUES ('$invoiceNumber', '$invoiceNumber', '$invoiceDate', '$invoiceDate', '$invoiceSum', '$invoiceVat', '$invoiceTotal', '$invoiceVatPercent', '$customerId', '$myFirmId')";
+    function AddNewInvoiceToDb($invoiceNumber, $invoiceVATDate, $invoiceDealDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId, $myFirmId){
+        $query = "INSERT INTO `invoices` (`INVOICEID`, `INVOICENUMBER`, `INVOICEVATDATE`, `INVOICEDEALDATE`, `INVOICESUM`, `INVOICEVAT`, `INVOICETOTAL`, `INVOICEVATPERCENT`, `CUSTOMERID`, `MYFIRMID`) VALUES ('$invoiceNumber', '$invoiceNumber', '$invoiceVATDate', '$invoiceDealDate', '$invoiceSum', '$invoiceVat', '$invoiceTotal', '$invoiceVatPercent', '$customerId', '$myFirmId')";
         $GLOBALS['conn'] -> query($query);
     }
 
-    function GetPrintPreviewInfo($customerId){
+    function GetPrintPreviewRecipientInfo($customerId){
         $query = "SELECT CustomerECODE, CustomerVATCODE, CustomerAddress, CustomerMOL FROM `customers` WHERE CustomersID = $customerId+1";
         $result = $GLOBALS['conn'] -> query($query);
         $array = array();
         while($row = $result -> fetch_assoc()){
-            //array_push($array, $row["CustomerECODE"], $row["CustomerVATCODE"], $row["CustomerAddress"], $row["CustomerMOL"]);
             $array[] = $row;
-            // echo "
-            // ".$row["CustomerECODE"]."
-            // ".$row["CustomerVATCODE"]."
-            // ".$row["CustomerAddress"]."
-            // ".$row["CustomerMOL"]."
-            // ";
+        }
+        echo json_encode($array, JSON_UNESCAPED_UNICODE);
+    }
+
+    function GetPrintPreviewSellerInfo($myFirmId){
+        $query = "SELECT MyFirmName, MyFirmECODE, MyFirmVATECODE, MyFirmAddress, MyFirmMOL FROM `myfirms` WHERE MyFirmId = $myFirmId+1";
+        $result = $GLOBALS['conn'] -> query($query);
+        $array = array();
+        while($row = $result -> fetch_assoc()){
+            $array[] = $row;
         }
         echo json_encode($array, JSON_UNESCAPED_UNICODE);
     }
@@ -136,18 +139,22 @@
     if(isset($_POST['function'])){
         if($_POST['function'] == 'AddNewInvoiceToDb'){
             $invoiceNumber = $_POST['invoiceNumber'];
-            $invoiceDate = $_POST['invoiceDate'];
+            $invoiceVATDate = $_POST['invoiceVATDate'];
+            $invoiceDealDate = $_POST['invoiceDealDate'];
             $invoiceSum = $_POST['invoiceSum'];
             $invoiceVat = $_POST['invoiceVat'];
             $invoiceTotal = $_POST['invoiceTotal'];
             $invoiceVatPercent = $_POST['invoiceVatPercent'];
             $customerId = $_POST['customerId'];
             $myFirmId = $_POST['myFirmId'];
-            AddNewInvoiceToDb($invoiceNumber, $invoiceDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId+1, $myFirmId+1);
+            AddNewInvoiceToDb($invoiceNumber, $invoiceVATDate, $invoiceDealDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId+1, $myFirmId+1);
         }
-        elseif($_POST['function'] == "GetPrintPreviewInfo"){
-            GetPrintPreviewInfo($_POST['customerId']);
+        elseif($_POST['function'] == "GetPrintPreviewRecipientInfo"){
+            GetPrintPreviewRecipientInfo($_POST['customerId']);
         }
+        elseif($_POST['function'] == "GetPrintPreviewSellerInfo"){
+            GetPrintPreviewSellerInfo($_POST['myFirmId']);
+        }   
     }
 
     // if( $_SERVER['REQUEST_METHOD']=='POST'){

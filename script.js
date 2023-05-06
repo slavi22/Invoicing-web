@@ -241,13 +241,22 @@ function nextInvoiceNumber() {
 
 
 let formattedDate = undefined;
+let dealDate = undefined;
 function dateFormat() {
     let date = document.getElementById("invDate").valueAsDate = new Date();
+    let temp = new Date(date);
+    temp.setDate(temp.getDate() - 2);
     document.getElementById("invDate").addEventListener("change", function () {
         date = this.value;
+        temp = new Date(date);
+        temp.setDate(temp.getDate() - 2);
         formattedDate = moment(date).format("DD.MM.YYYY");
+        dealDate = temp;
+        dealDate = moment(dealDate).format("DD.MM.YYYY");
     });
     formattedDate = moment(date).format("DD.MM.YYYY");
+    dealDate = temp;
+    dealDate = moment(dealDate).format("DD.MM.YYYY");
 }
 
 function ddsClickChangeValue() {
@@ -360,7 +369,8 @@ function addNewInvoiceToDB() {
                 data: {
                     function: 'AddNewInvoiceToDb',
                     invoiceNumber: $("#invNumber").val(),
-                    invoiceDate: formattedDate,
+                    invoiceVATDate: formattedDate,
+                    invoiceDealDate: dealDate,
                     invoiceSum: $("#txtBoxDanOsnova").val(),
                     invoiceVat: $("#txtBoxDDS").val(),
                     invoiceTotal: $("#txtBoxSum").val(),
@@ -387,7 +397,7 @@ function addNewInvoiceToDB() {
                     toggleErrorPopup();
                 }
             });
-            //alert("Saved to db!") //here should be the function that adds the stuff from all the comboboxes to the db
+            form.style.pointerEvents = "auto";
         });
         buttonCancel.addEventListener("click", function () {
             form.style.filter = "blur(0px)";
@@ -406,97 +416,109 @@ function addNewInvoiceToDB() {
 function buttonNextRow(tableClass) {
     let table = document.querySelector(`.${tableClass}`);
     let cell = table.getElementsByTagName("td");
-    if ($(`.${tableClass}`).find(".foundText").length != 0) {
-        $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
-    }
-    if ($(`.${tableClass}`).find('.selected').length == 0) {
-        $(`.${tableClass} tr`).closest("table").children("tr:first").addClass("selected");
-        $(".selected").css("background-color", "red")
-    }
-    else {
-        if ($(`.${tableClass} td`).hasClass("selected")) {
-            $(".selected").css({
-                "background-color": "",
-                "color": ""
-            });
-            $(".selected").removeClass("selected").closest('tr').next("tr").addClass("selected");
+    if ($(`.${tableClass} tr`).length != 1) {
+        if ($(`.${tableClass}`).find(".foundText").length != 0) {
+            $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
+        }
+        if ($(`.${tableClass}`).find('.selected').length == 0) {
+            $(`.${tableClass} tr`).closest("tbody").children("tr:first").addClass("selected");
+            $(".selected").css("background-color", "red")
         }
         else {
-            $(".selected").removeClass("selected").css("background-color", "").next("tr").addClass("selected");
-            for (let i = 0; i < cell.length; i++) {
-                cell[i].style.backgroundColor = "";
-                cell[i].style.color = "black";
-            }
-        }
-    }
-    let selectedIndex = $(".selected").index();
-    if (selectedIndex == -1) {
-        $(`.${tableClass} tr:last`).addClass("selected");
-    }
-    $(".selected").css("background-color", "red")
-}
-
-function buttonPreviousRow(tableClass) {
-    let selectedIndex = $(".selected").index();
-    let table = document.querySelector(`.${tableClass}`);
-    let cell = table.getElementsByTagName("td");
-    if ($(`.${tableClass}`).find(".foundText").length != 0) {
-        $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
-    }
-    if ($(`.${tableClass}`).find('.selected').length == 0) {
-        $(`.${tableClass} tr`).eq(1).addClass("selected");
-        $(".selected").css("background-color", "red")
-    }
-    else {
-        if ($(`.${tableClass} td`).hasClass("selected")) {
-            $(".selected").css({
-                "background-color": "",
-                "color": ""
-            });
-            $(".selected").removeClass("selected").closest('tr').prev("tr").addClass("selected");
-        }
-        else {
-            if (selectedIndex == 1 || selectedIndex == 0) {
-                $(`.${tableClass} tr`).eq(1).addClass("selected")
+            if ($(`.${tableClass} td`).hasClass("selected")) {
+                $(".selected").css({
+                    "background-color": "",
+                    "color": ""
+                });
+                $(".selected").removeClass("selected").closest('tbody').next("tr").addClass("selected");
             }
             else {
-                $(".selected").removeClass("selected").css("background-color", "").prev("tr").addClass("selected");
+                $(".selected").removeClass("selected").css("background-color", "").next("tr").addClass("selected");
                 for (let i = 0; i < cell.length; i++) {
                     cell[i].style.backgroundColor = "";
                     cell[i].style.color = "black";
                 }
             }
         }
+        let selectedIndex = $(".selected").index();
+        if (selectedIndex == -1) {
+            $(`.${tableClass} tr:last`).addClass("selected");
+        }
         $(".selected").css("background-color", "red")
     }
 }
 
+function buttonPreviousRow(tableClass) {
+    let selectedIndex = $(".selected").index();
+    let table = document.querySelector(`.${tableClass}`);
+    let cell = table.getElementsByTagName("td");
+    if ($(`.${tableClass} tr`).length != 1) {
+        if ($(`.${tableClass}`).find(".foundText").length != 0) {
+            $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
+        }
+        if ($(`.${tableClass}`).find('.selected').length == 0) {
+            $(`.${tableClass} tr`).closest("tbody").children("tr:first").addClass("selected");
+            $(".selected").css("background-color", "red")
+        }
+        else {
+            if ($(`.${tableClass} td`).hasClass("selected")) {
+                $(".selected").css({
+                    "background-color": "",
+                    "color": ""
+                });
+                $(".selected").removeClass("selected").closest('tr').prev("tr").addClass("selected");
+            }
+            else {
+                if (selectedIndex == 1 || selectedIndex == 0) {
+                    $(".selected").css({
+                        "background-color": "",
+                        "color": ""
+                    });
+                    $(".selected").removeClass("selected").closest('tbody').children("tr:first").addClass("selected");
+                }
+                else {
+                    $(".selected").removeClass("selected").css("background-color", "").prev("tr").addClass("selected");
+                    for (let i = 0; i < cell.length; i++) {
+                        cell[i].style.backgroundColor = "";
+                        cell[i].style.color = "black";
+                    }
+                }
+            }
+            $(".selected").css("background-color", "red")
+        }
+    }
+}
+
 function buttonFirstRow(tableClass) {
-    if ($(`.${tableClass}`).find(".foundText").length != 0) {
-        $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
+    if ($(`.${tableClass} tr`).length != 1) {
+        if ($(`.${tableClass}`).find(".foundText").length != 0) {
+            $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
+        }
+        if ($(`.${tableClass}`).find('.selected').length == 0) {
+            $(`.${tableClass} tr`).eq(1).addClass("selected");
+        }
+        else {
+            $(`.${tableClass}`).find('.selected').removeClass("selected").css({ "background-color": "", "color": "" });
+            $(`.${tableClass} tr`).eq(1).addClass("selected");
+        }
+        $(".selected").css("background-color", "red");
     }
-    if ($(`.${tableClass}`).find('.selected').length == 0) {
-        $(`.${tableClass} tr`).eq(1).addClass("selected");
-    }
-    else {
-        $(`.${tableClass}`).find('.selected').removeClass("selected").css({ "background-color": "", "color": "" });
-        $(`.${tableClass} tr`).eq(1).addClass("selected");
-    }
-    $(".selected").css("background-color", "red");
 }
 
 function buttonLastRow(tableClass) {
-    if ($(`.${tableClass}`).find(".foundText").length != 0) {
-        $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
+    if ($(`.${tableClass} tr`).length != 1) {
+        if ($(`.${tableClass}`).find(".foundText").length != 0) {
+            $(`.${tableClass}`).find(".foundText").removeClass("foundText").css("background-color", "");
+        }
+        if ($(`.${tableClass}`).find('.selected').length == 0) {
+            $(`.${tableClass} tr:last`).addClass("selected");
+        }
+        else {
+            $(`.${tableClass}`).find('.selected').removeClass("selected").css({ "background-color": "", "color": "" });
+            $(`.${tableClass} tr:last`).addClass("selected");
+        }
+        $(".selected").css("background-color", "red");
     }
-    if ($(`.${tableClass}`).find('.selected').length == 0) {
-        $(`.${tableClass} tr:last`).addClass("selected");
-    }
-    else {
-        $(`.${tableClass}`).find('.selected').removeClass("selected").css({ "background-color": "", "color": "" });
-        $(`.${tableClass} tr:last`).addClass("selected");
-    }
-    $(".selected").css("background-color", "red");
 }
 
 function closePopupWindow(popupWindowID) {
@@ -597,20 +619,20 @@ function fillPrintPreviewInfo() {
         form.style.filter = "blur(10px)";
         form.style.pointerEvents = "none";
         $("#printPreviewPopup").css("display", "grid");
-        document.querySelector("#closePrintPreview button").addEventListener("click", function(){
+        document.querySelector("#closePrintPreview button").addEventListener("click", function () {
             form.style.filter = "blur(0px)";
             form.style.pointerEvents = "auto";
             closePopupWindow("printPreviewPopup");
         })
-        $("#groupRecipientSecondRow div:eq(0)").append(`<p class="appended" style="font-weight:bold;">${$("#clientsComboBox option:selected").text()}</p>`);
+        $("#groupRecipientSecondRow div:eq(0)").append(`<p class="appended" style="font-weight:bold">${$("#clientsComboBox option:selected").text()}</p>`);
         $.ajax({
             url: "phpScript.php",
             type: "POST",
-            data:{
-                function: "GetPrintPreviewInfo",
+            data: {
+                function: "GetPrintPreviewRecipientInfo",
                 customerId: $("#clientsComboBox").prop("selectedIndex")
             },
-            success: function(result){
+            success: function (result) {
                 let parsedJson = JSON.parse(result);
                 $("#groupRecipientSecondRow div:eq(1)").append(`<p class="appended">${parsedJson[0].CustomerECODE}</p>`);
                 $("#groupRecipientSecondRow div:eq(2)").append(`<p class="appended">${parsedJson[0].CustomerVATCODE}</p>`);
@@ -618,6 +640,26 @@ function fillPrintPreviewInfo() {
                 $("#groupRecipientSecondRow div:eq(4)").append(`<p class="appended">${parsedJson[0].CustomerMOL}</p>`);
             }
         });
+        $.ajax({
+            url: "phpScript.php",
+            type: "POST",
+            data: {
+                function: "GetPrintPreviewSellerInfo",
+                myFirmId: $("#clientsComboBox").prop("selectedIndex")
+            },
+            success: function (result) {
+                let parsedJson = JSON.parse(result);
+                $("#groupSellerSecondRow div:eq(0)").append(`<p class="appended" style="font-weight:bold">${parsedJson[0].MyFirmName}</p>`);
+                $("#groupSellerSecondRow div:eq(1)").append(`<p class="appended">${parsedJson[0].MyFirmECODE}</p>`);
+                $("#groupSellerSecondRow div:eq(2)").append(`<p class="appended">${parsedJson[0].MyFirmVATECODE}</p>`);
+                $("#groupSellerSecondRow div:eq(3)").append(`<p class="appended">${parsedJson[0].MyFirmAddress}</p>`);
+                $("#groupSellerSecondRow div:eq(4)").append(`<p class="appended">${parsedJson[0].MyFirmMOL}</p>`);
+            }
+        });
+        $("#groupTextInvNo div").append(`<p class="appended">${$("#invNumber").val()}</p>`);
+        if ($("#chkBox").is(":checked")) {
+            $("#groupTextInvNo div").append(`<p class="appended" style="position:absolute; margin-left:3em; margin-top:1.5em;font-weight:100; font-size:20px">${$("#chkBox").val()}</p>`);
+        }
     }
 }
 
