@@ -109,7 +109,27 @@
     }
 
     function GetPrintPreviewDatesInfo($customerId){
-        $query = "SELECT InvoiceDealDate, InvoiceVATDate, customers.CustomerAddress FROM `invoices` JOIN `customers` on (invoices.CUSTOMERID = customers.CustomersID) WHERE customers.CustomersID = $customerId+1;";
+        $query = "SELECT customers.CustomerAddress FROM `customers` WHERE customers.CustomersID = $customerId+1;";
+        $result = $GLOBALS['conn'] -> query($query);
+        $array = array();
+        while($row = $result -> fetch_assoc()){
+            $array[] = $row;
+        }
+        echo json_encode($array, JSON_UNESCAPED_UNICODE);
+    }
+
+    function SellerBankInfo($sellerId){
+        $query = "SELECT MyFirmID, MyFirmBANKNAME, MyFirmIBAN, MyFirmBANKCODE FROM `myfirms` WHERE MyFirmID = $sellerId+1";
+        $result = $GLOBALS['conn'] -> query($query);
+        $array = array();
+        while($row = $result -> fetch_assoc()){
+            $array[] = $row;
+        }
+        echo json_encode($array, JSON_UNESCAPED_UNICODE);
+    }
+
+    function ProtocolDataInfo($id){
+        $query = "SELECT customers.CustomersID, customers.CustomerName, myfirms.MyFirmMOL, myfirms.MyFirmECODE FROM customers join myfirms on (myfirms.MyFirmID = customers.CustomersID) WHERE customers.CustomersID = $id+1";
         $result = $GLOBALS['conn'] -> query($query);
         $array = array();
         while($row = $result -> fetch_assoc()){
@@ -167,6 +187,12 @@
         }   
         elseif($_POST['function'] == "GetPrintPreviewDatesInfo"){
             GetPrintPreviewDatesInfo($_POST['customerId']);
+        }
+        elseif($_POST['function'] == "SellerBankInfo"){
+            SellerBankInfo($_POST['sellerId']);
+        }
+        elseif($_POST['function'] == "ProtocolDataInfo"){
+            ProtocolDataInfo($_POST['id']);
         }
     }
 ?>

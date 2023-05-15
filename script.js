@@ -141,6 +141,7 @@ function loadInvoicesFromDB() {
         }
     });
 }
+
 let number = 0;
 function cellClickNumberInvoices() {
     let id = number;
@@ -430,7 +431,7 @@ function buttonNextRow(tableClass) {
                     "background-color": "",
                     "color": ""
                 });
-                $(".selected").removeClass("selected").closest('tbody').next("tr").addClass("selected");
+                $(".selected").removeClass("selected").closest('tr').next("tr").addClass("selected");
             }
             else {
                 $(".selected").removeClass("selected").css("background-color", "").next("tr").addClass("selected");
@@ -574,6 +575,10 @@ function newInvoiceGroupBoxesValidated() {
         alert("Please make sure you select an option on each combo box!");
         return false;
     }
+    else if($(".addedProducts tr").length == 1){
+        alert("Please add products to the table!");
+        return false;
+    }
     else {
         return true;
     }
@@ -669,15 +674,52 @@ function fillPrintPreviewInfo() {
             },
             success: function(result){
                 let parsedJson = JSON.parse(result);
-                $("#groupInvDataDates div:eq(0)").append(`<p class="appended">${parsedJson[0].InvoiceDealDate}</p>`);
-                $("#groupInvDataDates div:eq(1)").append(`<p class="appended">${parsedJson[0].InvoiceVATDate}</p>`);
+                $("#groupInvDataDates div:eq(0)").append(`<p class="appended">${formattedDate}</p>`);
+                $("#groupInvDataDates div:eq(1)").append(`<p class="appended">${dealDate}</p>`);
                 $("#groupInvDataDates div:eq(2)").append(`<p class="appended">${parsedJson[0].CustomerAddress}</p>`);
             }
         });
+        $(".addedProducts tbody tr").clone().appendTo("#groupDataTable table>tbody").css("border", "none").addClass("appended").find("td").removeAttr("style");
+        for(let i=0; i<$("#groupDataTable table tr").length; i++){
+            $("#groupDataTable table>tbody tr").eq(i).prepend(`<td>${i+1}</td>`);
+            $("#groupDataTable table>tbody tr").eq(i).append($(`#groupDataTable table>tbody tr:eq(${i}) td`).eq(5).clone());
+        }
+        $.ajax({
+            url: "phpScript.php",
+            type: "POST",
+            data:{
+                function: "SellerBankInfo",
+                sellerId: $("#clientsComboBox").prop("selectedIndex")
+            },
+            success: function(result){
+                let parsedJson = JSON.parse(result);
+                $("#groupBankAndSum div:eq(0)>div:eq(0)").append(`<p class="appended">${parsedJson[0].MyFirmBANKNAME}</p>`);
+                $("#groupBankAndSum div:eq(0)>div:eq(1)").append(`<p class="appended">${parsedJson[0].MyFirmIBAN}</p>`);
+                $("#groupBankAndSum div:eq(0)>div:eq(2)").append(`<p class="appended">${parsedJson[0].MyFirmBANKCODE}</p>`);
+                $("#groupBankAndSum div:nth-child(3)>div:eq(0)").append(`<p class="appended">${$("#txtBoxDanOsnova").val()}</p>`);
+                $("#groupBankAndSum div:nth-child(3)>div:eq(1)").append(`<p class="appended">${$("#txtBoxDDS").val()}</p>`);
+                $("#groupBankAndSum div:nth-child(3)>div:eq(2)").append(`<p class="appended">${$("#txtBoxSum").val()}</p>`);
+            }
+        })
+        $("#groupPaymentMethodAndVerbally div:eq(0) div").append(`<p class="appended">${$("#paymentMethodComboBox option:selected").text()}</p>`);
+        $.ajax({
+            url: "phpScript.php",
+            type: "POST",
+            data:{
+                function: "ProtocolDataInfo",
+                id: $("#clientsComboBox").prop("selectedIndex")
+            },
+            success: function(result){
+                let parsedJson = JSON.parse(result);
+                $("#groupProtocolData div:eq(0)>div:eq(0)").append(`<p class="appended">${parsedJson[0].CustomerName}</p>`);
+                $("#groupProtocolData div:nth-child(2)>div:eq(0)").append(`<p class="appended">${parsedJson[0].MyFirmMOL}</p>`);
+                $("#groupProtocolData div:nth-child(2)>div:eq(1)").append(`<p class="appended">${parsedJson[0].MyFirmECODE}</p>`);
+            }
+        })
     }
 }
 
-//EVENTS
+//EVENTS    
 document.addEventListener("DOMContentLoaded", function () {
     newInvoicesTabOnLoad(true);
     nextInvoiceNumber();

@@ -46,10 +46,7 @@ tr {
     width: 95%;
 }
 
-#tabNewInvoice,
-#tabInvoices,
-#tabProducts,
-#tabCustomers {
+#tabNewInvoice, #tabInvoices, #tabProducts, #tabCustomers {
     margin-left: 1em;
     font-size: 20px;
     margin-bottom: 1em;
@@ -72,8 +69,7 @@ tr {
     gap: 0em 0.75em;
 }
 
-.invoiceGroupBox,
-.control {
+.invoiceGroupBox, .control {
     display: flex;
 }
 
@@ -85,8 +81,7 @@ tr {
     gap: 1em;
 }
 
-#invNumber,
-#invDate {
+#invNumber, #invDate {
     margin-left: auto;
     margin-right: 3em;
 }
@@ -112,8 +107,7 @@ tr {
     margin-bottom: 5px;
 }
 
-.totalGroupBox #DDS9,
-#DDS20 {
+.totalGroupBox #DDS9, #DDS20 {
     margin-bottom: auto;
     margin-left: 1.2em;
     gap: 5em;
@@ -136,10 +130,7 @@ tr {
     margin-bottom: 0.5em;
 }
 
-#btnNewInvoice,
-#btnDelRow,
-#btnSave,
-#btnDelInvoice {
+#btnNewInvoice, #btnDelRow, #btnSave, #btnDelInvoice {
     margin-bottom: 0.3em;
 }
 
@@ -174,9 +165,7 @@ tr {
     margin-top: 2em;
 }
 
-#btnPrintPreview,
-#btnPrint,
-#btnDialog {
+#btnPrintPreview, #btnPrint, #btnDialog {
     margin-bottom: 0.3em;
 }
 
@@ -246,8 +235,7 @@ tr {
     border-right: 1px solid black;
 }
 
-.addedProducts th,
-td {
+.addedProducts th, td {
     border-right: 1px solid black;
     text-align: center;
 }
@@ -614,15 +602,17 @@ td {
         "recipient seller ."
         "textInvNo textInvNo textInvNo"
         "invDataDates invDataDates invDataDates"
-        "dataTable . ."
-        "bankAndSum . ."
-        "paymentMethodAndVerbally . ."
-        "protocolData . ."
-        "bottomMessage . ."
+        "dataTable dataTable dataTable"
+        "bankAndSum bankAndSum bankAndSum"
+        "paymentMethodAndVerbally paymentMethodAndVerbally paymentMethodAndVerbally"
+        "protocolData protocolData protocolData"
+        "bottomMessage bottomMessage bottomMessage"
         ". . .";
     justify-content: center;
     grid-template-columns: 1fr 1fr 0fr;
-    grid-template-rows: auto 0fr 0fr;
+    grid-template-rows: auto 0fr 0fr 0fr 0fr 0fr 0fr 0fr; /*make sure when u add the new rows to adjust this*/
+    overflow-y: auto;
+    padding-bottom: 1em;
     width: 40em;
     height: 55em;
     background-color: white;
@@ -740,6 +730,7 @@ td {
 
 #groupInvDataDates{
     grid-area: invDataDates;
+    margin-bottom: 0;
     text-align: center;
     margin-top: 1em;
 }
@@ -758,4 +749,165 @@ td {
     margin-top: 0.5em;
     border-bottom: 1px solid black;
     width: 79%;
+}
+
+#groupDataTable{
+    grid-area: dataTable;
+    justify-self: center;
+    width: 79%;
+}
+
+#groupDataTable div{
+    display: flex;
+}
+
+#groupDataTable table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#groupDataTable table th::after{
+    content: "";
+    display: block;
+    margin-top: 0.25em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+#groupDataTable table tr td{
+    border: none;
+}
+
+#groupDataTable::after{
+    content: "";
+    display: block;
+    margin-top: 0.25em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupBankAndSum{
+    grid-area: bankAndSum;
+    display: flex;
+    flex-wrap: wrap; /*https://stackoverflow.com/questions/51939332/pseudo-elements-and-flexboxes-in-css*/ /*this fixed the ::after line looking messed up*/
+    height: fit-content;
+    width: 79%;
+    justify-self: center;
+    margin-top: 0.5em;
+}
+
+#groupBankAndSum div>div>p{
+    display: inline-block;
+    margin: 0;
+}
+
+
+#groupBankAndSum>div:nth-child(2){
+    font-weight: bold;
+    margin-left: auto;
+}
+
+#groupBankAndSum>div:nth-child(3){
+    font-weight: bold;
+    margin-left: auto;
+    margin-right: 0.3em;
+}
+
+#groupBankAndSum::after{
+    content: "";
+    display: block;
+    margin-top: 0.5em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupPaymentMethodAndVerbally{
+    grid-area: paymentMethodAndVerbally;
+    display: flex;
+    flex-wrap: wrap;
+    height: fit-content;
+    width: 79%;
+    justify-self: center;
+    margin-top: 0.5em;
+}
+
+#groupPaymentMethodAndVerbally div>div>p{
+    display: inline-block;
+    margin: 0;
+}
+
+#groupPaymentMethodAndVerbally>div:nth-child(2){
+    font-weight: bold;
+    margin-left: auto;
+    margin-right: 0.2em;
+}
+
+#groupPaymentMethodAndVerbally>div:nth-child(1){
+    margin-left: 0.2em;
+}
+
+#groupPaymentMethodAndVerbally::after{
+    content: "";
+    display: block;
+    margin-top: 0.5em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupProtocolData{
+    grid-area: protocolData;
+    display: flex;
+    flex-wrap: wrap;
+    height: fit-content;
+    width: 79%;
+    justify-self: center;
+    margin-top: 2em;
+}
+
+#groupProtocolData div>div>p{
+    display: inline-block;
+    margin: 0;
+}
+
+#groupProtocolData>div:nth-child(1){
+    margin-left: 0.3em;
+}
+
+#groupProtocolData>div:nth-child(2){
+    justify-self: center;
+    margin-left: auto;
+    margin-right: 3em;
+}
+
+#groupProtocolData::after{
+    content: "";
+    display: block;
+    margin-top: 2em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupBottomMessage{
+    grid-area: bottomMessage;
+    display: flex;
+    flex-wrap: wrap;
+    width: 79%;
+    height: fit-content;
+    justify-self: center;
+    font-style: italic;
+    font-size: 15px;
+    text-align: justify;
+}
+
+#groupBottomMessage p {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+#groupBottomMessage::after{
+    content: "";
+    display: block;
+    border-bottom: 1px solid black;
+    width: 100%;
 }
