@@ -148,13 +148,14 @@ function cellClickNumberInvoices() {
     $.ajax({
         url: 'phpScript.php',
         type: "POST",
-        data: { id: id },
+        data: {
+            function: "InvoicesViewInvoiceProuducts",
+            invoiceNumber: id
+        },
         success: function (res) {
             //alert(res)
             $(".selectedCellInfo>tr").remove();
             $(".selectedCellInfo").append(res);
-            $(".selectedCellInfo td:eq(1)").width("25%")
-
         }
     })
 }
@@ -286,6 +287,19 @@ function ddsClickChangeValue() {
     }
 }
 
+function firmsComboBoxOnLoad() {
+    $("#firmsComboBox").empty();
+    $.ajax({
+        url: 'phpScript.php',
+        type: "GET",
+        data: { function: 'FirmsComboBoxOnLoad' },
+        success: function (result) {
+            $("#firmsComboBox").append(result);
+            $("#firmsComboBox").prop('selectedIndex', -1);
+        }
+    })
+}
+
 function clientsComboBoxOnLoad() {
     $("#clientsComboBox").empty();
     $.ajax({
@@ -334,7 +348,10 @@ function addSelectedProductToGrid() {
     $.ajax({
         url: 'phpScript.php',
         type: "POST",
-        data: { selectedIndex: selectedIndex },
+        data: {
+            function: "AddSelectedProductToGrid",
+            selectedIndex: selectedIndex
+        },
         success: function (result) {
             $(".addedProducts tbody").append(result);
             $(".addedProducts td:eq(1)").width("25%")
@@ -376,8 +393,8 @@ function addNewInvoiceToDB() {
                     invoiceVat: $("#txtBoxDDS").val(),
                     invoiceTotal: $("#txtBoxSum").val(),
                     invoiceVatPercent: $("#labelDDS").text(),
-                    customerId: $("#clientsComboBox").prop("selectedIndex"),
-                    myFirmId: $("#clientsComboBox").prop("selectedIndex")
+                    customerId: $("#customersComboBox").prop("selectedIndex"),
+                    myFirmId: $("#firmsComboBox").prop("selectedIndex")
                 },
                 success: function () {
                     form.style.filter = "blur(0px)";
@@ -385,6 +402,7 @@ function addNewInvoiceToDB() {
                     alert(`Invoice number ${$("#invNumber").val()} has been successfully added to the db!`);
                     $("#invNumber").val((parseInt($("#invNumber").val())) + 1);
                     $("#clientsComboBox").prop("selectedIndex", -1);
+                    $("#firmsComboBox").prop("selectedIndex", -1);
                     $("#paymentMethodComboBox").prop("selectedIndex", -1);
                     $("#productsComboBox").prop("selectedIndex", -1);
                     $(".addedProducts tbody").empty();
@@ -393,6 +411,7 @@ function addNewInvoiceToDB() {
                     $("#txtBoxSum").val("");
                     document.getElementById("invDate").valueAsDate = new Date();
                     emptyComboBoxAddPopup("clientsGroupBox");
+                    emptyComboBoxAddPopup("firmsGroupBox");
                     emptyComboBoxAddPopup("paymentMethodGroupBox");
                     emptyComboBoxAddPopup("productsGroupBox");
                     toggleErrorPopup();
@@ -547,7 +566,7 @@ function emptyComboBoxAddPopup(groupBoxClass) {
     if (groupBoxSelectedIndex == -1) {
         if (groupBoxClass == "productsGroupBox") {
             $(`.${groupBoxClass} fieldset`).css({ "display": "flex", "align-items": "flex-start", "flex-wrap": "wrap" });
-            $(`.${groupBoxClass} fieldset select`).css({ "width": "94.54%" });
+            $(`.${groupBoxClass} fieldset select`).css({ "width": "94.14%" });
             $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля изберете стойност</span></i>').insertBefore($(`.${groupBoxClass} button`)).css({ "display": "flex", "margin-left": "1em" });
         }
         else {
@@ -571,20 +590,21 @@ function emptyComboBoxAddPopup(groupBoxClass) {
 }
 
 function newInvoiceGroupBoxesValidated() {
-    if ($(".newInvoice fieldset select").prop("selectedIndex") == -1) {
+    if (($("#clientsComboBox").prop("selectedIndex") || $("paymentMethodComboBox").prop("selectedIndex") || $("#firmsComboBox").prop("selectedIndex") || $("#productsComboBoxComboBox").prop("selectedIndex")) == -1){
         alert("Please make sure you select an option on each combo box!");
         return false;
     }
-    else if($(".addedProducts tr").length == 1){
+    else if(($("#clientsComboBox").prop("selectedIndex") && $("paymentMethodComboBox").prop("selectedIndex") && $("#firmsComboBox").prop("selectedIndex") && $("#productsComboBoxComboBox").prop("selectedIndex")) != -1 && $(".addedProducts tr").length == 1){
         alert("Please add products to the table!");
         return false;
     }
-    else {
+    else{
         return true;
     }
 }
 
-function toggleErrorPopup() { //fix this as it doesnt wanna trigger on the icon hover
+
+function toggleErrorPopup() {
     let popupError = document.querySelectorAll(".popupError");
     popupError.forEach(item => {
         let popupErrorText = item.querySelectorAll(".popupErrorText");
@@ -650,7 +670,7 @@ function fillPrintPreviewInfo() {
             type: "POST",
             data: {
                 function: "GetPrintPreviewSellerInfo",
-                myFirmId: $("#clientsComboBox").prop("selectedIndex")
+                myFirmId: $("#firmsComboBox").prop("selectedIndex")
             },
             success: function (result) {
                 let parsedJson = JSON.parse(result);
@@ -672,7 +692,7 @@ function fillPrintPreviewInfo() {
                 function: "GetPrintPreviewDatesInfo",
                 customerId: $("#clientsComboBox").prop("selectedIndex")
             },
-            success: function(result){
+            success: function (result) {
                 let parsedJson = JSON.parse(result);
                 $("#groupInvDataDates div:eq(0)").append(`<p class="appended">${formattedDate}</p>`);
                 $("#groupInvDataDates div:eq(1)").append(`<p class="appended">${dealDate}</p>`);
@@ -680,18 +700,18 @@ function fillPrintPreviewInfo() {
             }
         });
         $(".addedProducts tbody tr").clone().appendTo("#groupDataTable table>tbody").css("border", "none").addClass("appended").find("td").removeAttr("style");
-        for(let i=0; i<$("#groupDataTable table tr").length; i++){
-            $("#groupDataTable table>tbody tr").eq(i).prepend(`<td>${i+1}</td>`);
+        for (let i = 0; i < $("#groupDataTable table tr").length; i++) {
+            $("#groupDataTable table>tbody tr").eq(i).prepend(`<td>${i + 1}</td>`);
             $("#groupDataTable table>tbody tr").eq(i).append($(`#groupDataTable table>tbody tr:eq(${i}) td`).eq(5).clone());
         }
         $.ajax({
             url: "phpScript.php",
             type: "POST",
-            data:{
+            data: {
                 function: "SellerBankInfo",
-                sellerId: $("#clientsComboBox").prop("selectedIndex")
+                sellerId: $("#firmsComboBox").prop("selectedIndex")
             },
-            success: function(result){
+            success: function (result) {
                 let parsedJson = JSON.parse(result);
                 $("#groupBankAndSum div:eq(0)>div:eq(0)").append(`<p class="appended">${parsedJson[0].MyFirmBANKNAME}</p>`);
                 $("#groupBankAndSum div:eq(0)>div:eq(1)").append(`<p class="appended">${parsedJson[0].MyFirmIBAN}</p>`);
@@ -705,13 +725,13 @@ function fillPrintPreviewInfo() {
         $.ajax({
             url: "phpScript.php",
             type: "POST",
-            data:{
+            data: {
                 function: "ProtocolDataInfo",
-                id: $("#clientsComboBox").prop("selectedIndex")
+                id: $("#firmsComboBox").prop("selectedIndex")
             },
-            success: function(result){
+            success: function (result) {
                 let parsedJson = JSON.parse(result);
-                $("#groupProtocolData div:eq(0)>div:eq(0)").append(`<p class="appended">${parsedJson[0].CustomerName}</p>`);
+                $("#groupProtocolData div:eq(0)>div:eq(0)").append(`<p class="appended">${$("#clientsComboBox option:selected").text()}</p>`);
                 $("#groupProtocolData div:nth-child(2)>div:eq(0)").append(`<p class="appended">${parsedJson[0].MyFirmMOL}</p>`);
                 $("#groupProtocolData div:nth-child(2)>div:eq(1)").append(`<p class="appended">${parsedJson[0].MyFirmECODE}</p>`);
             }
@@ -725,22 +745,27 @@ document.addEventListener("DOMContentLoaded", function () {
     nextInvoiceNumber();
     dateFormat();
     ddsClickChangeValue();
+    firmsComboBoxOnLoad();
     clientsComboBoxOnLoad();
     paymentMethodComboBoxOnLoad();
     disabledButtonsCursor();
     productsComboBoxOnLoad();
     emptyComboBoxAddPopup("clientsGroupBox");
+    emptyComboBoxAddPopup("firmsGroupBox");
     emptyComboBoxAddPopup("paymentMethodGroupBox");
     emptyComboBoxAddPopup("productsGroupBox");
     toggleErrorPopup();
-    document.getElementById("clientsComboBox").addEventListener("change", function () {
-        emptyComboBoxAddPopup("clientsGroupBox");
-    })
     document.getElementById("paymentMethodComboBox").addEventListener("change", function () {
         emptyComboBoxAddPopup("paymentMethodGroupBox");
     })
     document.getElementById("productsComboBox").addEventListener("change", function () {
         emptyComboBoxAddPopup("productsGroupBox");
+    })
+    document.getElementById("clientsComboBox").addEventListener("change", function () {
+        emptyComboBoxAddPopup("clientsGroupBox");
+    })
+    document.getElementById("firmsComboBox").addEventListener("change", function () {
+        emptyComboBoxAddPopup("firmsGroupBox");
     })
     document.getElementById("btnNewInvoice").addEventListener("click", function () {
         newInvoiceButtonOnClick();

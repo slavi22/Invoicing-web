@@ -24,8 +24,8 @@
         }
     }
 
-    function InvoicesViewInvoiceProuducts($id){
-        $query = "select p.PRODUCTCODE as \"Код\", p.productname as \"Наименование на продукт\", p.PRODUCTMEASURE as \"Мярка\", ip.INVOICEQUANTITY as \"Количество\", p.PRODUCT_PROD_CENA as \"Сума\" from invoice_product ip join products p on(ip.PRODUCTID = p.PRODUCTID) join invoices i on(ip.INVOICEID = i.INVOICEID) where i.INVOICENUMBER = {$id}";
+    function InvoicesViewInvoiceProuducts($invoiceNumber){
+        $query = "select p.PRODUCTCODE as \"Код\", p.productname as \"Наименование на продукт\", p.PRODUCTMEASURE as \"Мярка\", ip.INVOICEQUANTITY as \"Количество\", p.PRODUCT_PROD_CENA as \"Сума\" from invoice_product ip join products p on(ip.PRODUCTID = p.PRODUCTID) join invoices i on(ip.INVOICEID = i.INVOICEID) where i.INVOICENUMBER = $invoiceNumber";
         $result = $GLOBALS['conn'] -> query($query);
         while ($row = $result -> fetch_assoc()) {
             echo
@@ -48,6 +48,15 @@
             "".$row['INVOICENUMBER']."";
         }
     }
+    function FirmsComboBoxOnLoad(){
+        $query = "SELECT MyFirmID, MyFirmName FROM myfirms";
+        $result = $GLOBALS['conn'] -> query($query);
+        while($row=$result -> fetch_assoc()){
+            echo
+            "<option value='".$row["MyFirmID"]."'>".$row["MyFirmName"]."</option>";
+        }
+    }
+
     function ClientsComboBoxOnLoad(){
         $query = "SELECT CustomersID, CustomerName FROM customers";
         $result = $GLOBALS['conn'] -> query($query);
@@ -67,7 +76,7 @@
     }
 
     function AddSelectedProductToGrid($selectedIndex){
-        $query = "SELECT p.PRODUCTCODE, p.PRODUCTNAME, p.PRODUCTMEASURE, p.QUANTITY, p.PRODUCT_DOST_CENA FROM products p WHERE PRODUCTCODE={$selectedIndex}+1";
+        $query = "SELECT p.PRODUCTCODE, p.PRODUCTNAME, p.PRODUCTMEASURE, p.QUANTITY, p.PRODUCT_DOST_CENA FROM products p WHERE PRODUCTCODE = $selectedIndex+1";
         $result = $GLOBALS['conn'] -> query($query);
         while ($row = $result -> fetch_assoc()) {
             echo
@@ -109,7 +118,7 @@
     }
 
     function GetPrintPreviewDatesInfo($customerId){
-        $query = "SELECT customers.CustomerAddress FROM `customers` WHERE customers.CustomersID = $customerId+1;";
+        $query = "SELECT customers.CustomerAddress FROM `customers` WHERE customers.CustomersID = $customerId+1";
         $result = $GLOBALS['conn'] -> query($query);
         $array = array();
         while($row = $result -> fetch_assoc()){
@@ -129,7 +138,7 @@
     }
 
     function ProtocolDataInfo($id){
-        $query = "SELECT customers.CustomersID, customers.CustomerName, myfirms.MyFirmMOL, myfirms.MyFirmECODE FROM customers join myfirms on (myfirms.MyFirmID = customers.CustomersID) WHERE customers.CustomersID = $id+1";
+        $query = "SELECT MyFirmID, MyFirmMOL, MyFirmECODE FROM myfirms WHERE myfirms.MyFirmID = $id+1";
         $result = $GLOBALS['conn'] -> query($query);
         $array = array();
         while($row = $result -> fetch_assoc()){
@@ -148,7 +157,10 @@
         elseif($_GET['function'] == 'NextInvoiceNumber'){
             NextInvoiceNumber();
         }
-        elseif($_GET['function'] == 'ClientsComboBoxOnLoad'){
+        elseif($_GET['function'] == 'FirmsComboBoxOnLoad'){
+            FirmsComboBoxOnLoad();
+        }
+        elseif($_GET['function'] == "ClientsComboBoxOnLoad"){
             ClientsComboBoxOnLoad();
         }
         elseif($_GET['function'] == 'ProductsComboBoxOnLoad'){
@@ -156,18 +168,16 @@
         }     
     }
 
-    if(isset($_POST['id'])){
-        $id = $_POST['id'];
-        InvoicesViewInvoiceProuducts($id);
-    }
-
-    if(isset($_POST['selectedIndex'])){
-        $selectedIndex = $_POST['selectedIndex'];
-        AddSelectedProductToGrid($selectedIndex);
-    }
-
     if(isset($_POST['function'])){
-        if($_POST['function'] == 'AddNewInvoiceToDb'){
+        if($_POST['function'] == "InvoicesViewInvoiceProuducts"){
+            $invoiceNumber = $_POST['invoiceNumber'];
+            InvoicesViewInvoiceProuducts($invoiceNumber);
+        }
+        else if($_POST['function'] == "AddSelectedProductToGrid"){
+            $selectedIndex = $_POST['selectedIndex'];
+            AddSelectedProductToGrid($selectedIndex);
+        }
+        else if($_POST['function'] == 'AddNewInvoiceToDb'){
             $invoiceNumber = $_POST['invoiceNumber'];
             $invoiceVATDate = $_POST['invoiceVATDate'];
             $invoiceDealDate = $_POST['invoiceDealDate'];
