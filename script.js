@@ -23,7 +23,7 @@ function setAutoHeight(childToBeAdjusted) {
     let parentDivHeight = document.querySelector(".newInvoice").clientHeight;
     let adjust = document.querySelector(`.${childToBeAdjusted}`).clientHeight;
     if (adjust < parentDivHeight) {
-        document.querySelector(`.${childToBeAdjusted}`).style.height = `${parentDivHeight}px`;
+        document.querySelector(`.${childToBeAdjusted}`).style.height = `${parentDivHeight-3}px`; //-3 to stop the little pixel adjusting when coming from the new invoice tab
     }
     //set the height of new invoice tab
     if (childToBeAdjusted == "newInvoice") {
@@ -360,6 +360,35 @@ function addSelectedProductToGrid() {
     })
 }
 
+function addDataToInvoiceProduct() {
+    let lastInvProdID = 0;
+    $.ajax({
+        url: "phpScript.php",
+        type: "GET",
+        data: {
+            function: "GetLastInvoiceProductID"
+        },
+        success: function (result) {
+            let parsedJson = JSON.parse(result);
+            lastInvProdID = parsedJson[0].INVPRODID;
+            $(".addedProducts tbody tr").each(function () {
+                $.ajax({
+                    url: "phpScript.php",
+                    type: "POST",
+                    data:{
+                        function: "AddDataToInvoiceProduct",
+                        invProdID: lastInvProdID,
+                        productQuantity: $(this).children("td").eq(3).text(),
+                        invoiceID: $("#invNumber").val(),
+                        productID: $(this).children("td").eq(0).text()
+                    }
+                })
+                lastInvProdID++;
+            })
+        }
+    });
+}
+
 
 function addNewInvoiceToDB() {
     if (count == 2 && $(".addedProducts tr").length == 1) {
@@ -397,6 +426,7 @@ function addNewInvoiceToDB() {
                     myFirmId: $("#firmsComboBox").prop("selectedIndex")
                 },
                 success: function () {
+                    //addDataToInvoiceProduct();
                     form.style.filter = "blur(0px)";
                     closePopupWindow("newInvoicePopup");
                     alert(`Invoice number ${$("#invNumber").val()} has been successfully added to the db!`);
@@ -409,6 +439,7 @@ function addNewInvoiceToDB() {
                     $("#txtBoxDanOsnova").val("");
                     $("#txtBoxDDS").val("");
                     $("#txtBoxSum").val("");
+                    txtBoxesSum = 0;
                     document.getElementById("invDate").valueAsDate = new Date();
                     emptyComboBoxAddPopup("clientsGroupBox");
                     emptyComboBoxAddPopup("firmsGroupBox");
@@ -417,6 +448,7 @@ function addNewInvoiceToDB() {
                     toggleErrorPopup();
                 }
             });
+            addDataToInvoiceProduct();
             form.style.pointerEvents = "auto";
         });
         buttonCancel.addEventListener("click", function () {
@@ -590,15 +622,15 @@ function emptyComboBoxAddPopup(groupBoxClass) {
 }
 
 function newInvoiceGroupBoxesValidated() {
-    if (($("#clientsComboBox").prop("selectedIndex") || $("paymentMethodComboBox").prop("selectedIndex") || $("#firmsComboBox").prop("selectedIndex") || $("#productsComboBoxComboBox").prop("selectedIndex")) == -1){
+    if (($("#clientsComboBox").prop("selectedIndex") || $("paymentMethodComboBox").prop("selectedIndex") || $("#firmsComboBox").prop("selectedIndex") || $("#productsComboBoxComboBox").prop("selectedIndex")) == -1) {
         alert("Please make sure you select an option on each combo box!");
         return false;
     }
-    else if(($("#clientsComboBox").prop("selectedIndex") && $("paymentMethodComboBox").prop("selectedIndex") && $("#firmsComboBox").prop("selectedIndex") && $("#productsComboBoxComboBox").prop("selectedIndex")) != -1 && $(".addedProducts tr").length == 1){
+    else if (($("#clientsComboBox").prop("selectedIndex") && $("paymentMethodComboBox").prop("selectedIndex") && $("#firmsComboBox").prop("selectedIndex") && $("#productsComboBoxComboBox").prop("selectedIndex")) != -1 && $(".addedProducts tr").length == 1) {
         alert("Please add products to the table!");
         return false;
     }
-    else{
+    else {
         return true;
     }
 }

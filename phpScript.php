@@ -25,7 +25,7 @@
     }
 
     function InvoicesViewInvoiceProuducts($invoiceNumber){
-        $query = "select p.PRODUCTCODE as \"Код\", p.productname as \"Наименование на продукт\", p.PRODUCTMEASURE as \"Мярка\", ip.INVOICEQUANTITY as \"Количество\", p.PRODUCT_PROD_CENA as \"Сума\" from invoice_product ip join products p on(ip.PRODUCTID = p.PRODUCTID) join invoices i on(ip.INVOICEID = i.INVOICEID) where i.INVOICENUMBER = $invoiceNumber";
+        $query = "select p.PRODUCTCODE as \"Код\", p.productname as \"Наименование на продукт\", p.PRODUCTMEASURE as \"Мярка\", ip.PRODUCTQUANTITY as \"Количество\", p.PRODUCT_PROD_CENA as \"Сума\" from invoice_product ip join products p on(ip.PRODUCTID = p.PRODUCTID) join invoices i on(ip.INVOICEID = i.INVOICEID) where i.INVOICENUMBER = $invoiceNumber";
         $result = $GLOBALS['conn'] -> query($query);
         while ($row = $result -> fetch_assoc()) {
             echo
@@ -67,7 +67,7 @@
     }
 
     function ProductsComboBoxOnLoad(){
-        $query = "SELECT PRODUCTCODE, PRODUCTNAME FROM products";
+        $query = "SELECT PRODUCTCODE, PRODUCTNAME FROM products WHERE IsDeleted = 0";
         $result = $GLOBALS['conn'] -> query($query);
         while($row=$result -> fetch_assoc()){
             echo
@@ -147,6 +147,21 @@
         echo json_encode($array, JSON_UNESCAPED_UNICODE);
     }
 
+    function GetLastInvoiceProductID(){
+        $query = "SELECT INVPRODID FROM invoice_product order by INVPRODID desc limit 1";
+        $result = $GLOBALS['conn'] -> query($query);
+        $array = array();
+        while($row = $result -> fetch_assoc()){
+            $array[] = $row;
+        }
+        echo json_encode($array, JSON_UNESCAPED_UNICODE);
+    }
+
+    function AddDataToInvoiceProduct($invProdID, $productQuantity, $invoiceID, $productID){
+        $query = "INSERT INTO `invoice_product` (`INVPRODID`, `PRODUCTMEASURE`, `PRODUCTUNITPRICE`, `PRODUCTQUANTITY`, `INVOICEID`, `PRODUCTID`) SELECT $invProdID+1, products.PRODUCTMEASURE, products.PRODUCT_PROD_CENA, $productQuantity, $invoiceID, $productID FROM products WHERE products.PRODUCTID=$productID"; //invprodid - ot ajaxa, quantity ot kletkata v tablicata, invoice id ot ajax i productid ot kletkata v tablicata
+        $GLOBALS['conn'] -> query($query);
+    }
+
 
     //CALLS
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
@@ -165,7 +180,10 @@
         }
         elseif($_GET['function'] == 'ProductsComboBoxOnLoad'){
             ProductsComboBoxOnLoad();
-        }     
+        }  
+        elseif($_GET['function'] == 'GetLastInvoiceProductID'){
+            GetLastInvoiceProductID();
+        }   
     }
 
     if(isset($_POST['function'])){
@@ -203,6 +221,9 @@
         }
         elseif($_POST['function'] == "ProtocolDataInfo"){
             ProtocolDataInfo($_POST['id']);
+        }
+        elseif($_POST['function'] == "AddDataToInvoiceProduct"){
+            AddDataToInvoiceProduct($_POST['invProdID'], $_POST['productQuantity'], $_POST['invoiceID'], $_POST['productID']);
         }
     }
 ?>
