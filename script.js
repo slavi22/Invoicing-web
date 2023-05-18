@@ -23,7 +23,7 @@ function setAutoHeight(childToBeAdjusted) {
     let parentDivHeight = document.querySelector(".newInvoice").clientHeight;
     let adjust = document.querySelector(`.${childToBeAdjusted}`).clientHeight;
     if (adjust < parentDivHeight) {
-        document.querySelector(`.${childToBeAdjusted}`).style.height = `${parentDivHeight-3}px`; //-3 to stop the little pixel adjusting when coming from the new invoice tab
+        document.querySelector(`.${childToBeAdjusted}`).style.height = `${parentDivHeight}px`;
     }
     //set the height of new invoice tab
     if (childToBeAdjusted == "newInvoice") {
