@@ -163,10 +163,10 @@ tr {
 }
 
 #btnCancel {
-    margin-top: 2em;
+    margin-top: 8em;
 }
 
-#btnPrintPreview, #btnPrint, #btnDialog {
+#btnPrintPreview, #btnDialog {
     margin-bottom: 0.3em;
 }
 
@@ -803,6 +803,9 @@ td {
     margin: 0;
 }
 
+#groupBankAndSum>div:nth-child(1){
+    margin-left: 0.3em;
+}
 
 #groupBankAndSum>div:nth-child(2){
     font-weight: bold;
@@ -812,7 +815,7 @@ td {
 #groupBankAndSum>div:nth-child(3){
     font-weight: bold;
     margin-left: auto;
-    margin-right: 0.3em;
+    margin-right: 0.5em;
 }
 
 #groupBankAndSum::after{
@@ -911,4 +914,34 @@ td {
     display: block;
     border-bottom: 1px solid black;
     width: 100%;
+}
+
+
+@page { 
+    margin: 0; 
+}
+
+/*https://stackoverflow.com/questions/45642831/window-print-position-div-center-of-the-page*/
+@media print {
+    #printPreviewPopup{
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        height: 100%;
+        width: 100%;
+        overflow-y: hidden;
+        margin-top: 3em;   
+        border: none; 
+    }
+    /*https://stackoverflow.com/questions/8712677/how-to-apply-css-page-break-to-print-a-table-with-lots-of-rows*/
+    /*this below is if i ever want to figure out how to have more than 20 table rows and break the page after them*/  
+    #groupDataTable table { 
+        page-break-inside: auto; 
+        page-break-after: auto;
+    }
+
+    #groupDataTable tr { 
+        page-break-inside:avoid; 
+        page-break-after:auto 
+    }
 }

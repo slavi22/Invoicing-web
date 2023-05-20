@@ -25,7 +25,7 @@
     }
 
     function InvoicesViewInvoiceProuducts($invoiceNumber){
-        $query = "select p.PRODUCTCODE as \"Код\", p.productname as \"Наименование на продукт\", p.PRODUCTMEASURE as \"Мярка\", ip.PRODUCTQUANTITY as \"Количество\", p.PRODUCT_PROD_CENA as \"Сума\" from invoice_product ip join products p on(ip.PRODUCTID = p.PRODUCTID) join invoices i on(ip.INVOICEID = i.INVOICEID) where i.INVOICENUMBER = $invoiceNumber";
+        $query = "select p.PRODUCTCODE as \"Код\", p.productname as \"Наименование на продукт\", p.PRODUCTMEASURE as \"Мярка\", ip.PRODUCTQUANTITY as \"Количество\", p.PRODUCT_DOST_CENA as \"Сума\" from invoice_product ip join products p on(ip.PRODUCTID = p.PRODUCTID) join invoices i on(ip.INVOICEID = i.INVOICEID) where i.INVOICENUMBER = $invoiceNumber";
         $result = $GLOBALS['conn'] -> query($query);
         while ($row = $result -> fetch_assoc()) {
             echo
@@ -158,7 +158,7 @@
     }
 
     function AddDataToInvoiceProduct($invProdID, $productQuantity, $invoiceID, $productID){
-        $query = "INSERT INTO `invoice_product` (`INVPRODID`, `PRODUCTMEASURE`, `PRODUCTUNITPRICE`, `PRODUCTQUANTITY`, `INVOICEID`, `PRODUCTID`) SELECT $invProdID+1, products.PRODUCTMEASURE, products.PRODUCT_PROD_CENA, $productQuantity, $invoiceID, $productID FROM products WHERE products.PRODUCTID=$productID"; //invprodid - ot ajaxa, quantity ot kletkata v tablicata, invoice id ot ajax i productid ot kletkata v tablicata
+        $query = "INSERT INTO `invoice_product` (`INVPRODID`, `PRODUCTMEASURE`, `PRODUCTUNITPRICE`, `PRODUCTQUANTITY`, `INVOICEID`, `PRODUCTID`) SELECT $invProdID, products.PRODUCTMEASURE, products.PRODUCT_DOST_CENA, $productQuantity, $invoiceID, $productID FROM products WHERE products.PRODUCTID=$productID"; //invprodid - ot ajaxa, quantity ot kletkata v tablicata, invoice id ot ajax i productid ot kletkata v tablicata
         $GLOBALS['conn'] -> query($query);
     }
 

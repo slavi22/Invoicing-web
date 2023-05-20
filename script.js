@@ -187,9 +187,7 @@ function newInvoicesTabOnLoad(isDisabled) {
     document.querySelector("#btnNewInvoice").disabled = false;
     document.querySelector("#btnDelInvoice").disabled = false;
     document.querySelector("#btnPrintPreview").disabled = false;
-    document.querySelector("#btnPrint").disabled = false;
     document.querySelector("#btnDialog").disabled = false;
-    document.querySelector("#btnSavePDF").disabled = false;
     document.querySelector("#invNumber").disabled = true;
     let firstRowButtons = document.querySelectorAll(".firstRowButtons button");
     for (let items of firstRowButtons) {
@@ -268,17 +266,25 @@ function ddsClickChangeValue() {
     let txtBoxDanOsnova = document.getElementById("txtBoxDanOsnova");
     let txtBoxDDS = document.getElementById("txtBoxDDS");
     let txtBoxSum = document.getElementById("txtBoxSum");
-    if (DDS20.checked && txtBoxDanOsnova.value != "") {
+    if (DDS20.checked && txtBoxDanOsnova.value != "" && $(".addedProducts tr").length != 1) {
         labelDDS.innerText = DDS20.value;
         labelDDS.style.marginLeft = "0.6em";
         txtBoxDDS.value = (txtBoxDanOsnova.value * 0.2).toFixed(2)
         txtBoxSum.value = (parseFloat(txtBoxDanOsnova.value) + parseFloat(txtBoxDDS.value)).toFixed(2);
     }
-    else if (DDS9.checked && txtBoxDanOsnova != "") {
+    else if (DDS9.checked && txtBoxDanOsnova != "" && $(".addedProducts tr").length != 1) {
         labelDDS.innerText = DDS9.value;
         labelDDS.style.marginLeft = "0.6em";
         txtBoxDDS.value = (txtBoxDanOsnova.value * 0.09).toFixed(2)
         txtBoxSum.value = (parseFloat(txtBoxDanOsnova.value) + parseFloat(txtBoxDDS.value)).toFixed(2);
+    }
+    else if (DDS20.checked && txtBoxDanOsnova != "" && $(".addedProducts tr").length == 1) {
+        labelDDS.innerText = DDS20.value;
+        labelDDS.style.marginLeft = "0.6em";
+    }
+    else if (DDS9.checked && txtBoxDanOsnova != "" && $(".addedProducts tr").length == 1) {
+        labelDDS.innerText = DDS9.value;
+        labelDDS.style.marginLeft = "0.6em";
     }
     //on startup
     else if (DDS20.checked && txtBoxDanOsnova.value == "") {
@@ -371,11 +377,12 @@ function addDataToInvoiceProduct() {
         success: function (result) {
             let parsedJson = JSON.parse(result);
             lastInvProdID = parsedJson[0].INVPRODID;
+            lastInvProdID++;
             $(".addedProducts tbody tr").each(function () {
                 $.ajax({
                     url: "phpScript.php",
                     type: "POST",
-                    data:{
+                    data: {
                         function: "AddDataToInvoiceProduct",
                         invProdID: lastInvProdID,
                         productQuantity: $(this).children("td").eq(3).text(),
@@ -426,7 +433,6 @@ function addNewInvoiceToDB() {
                     myFirmId: $("#firmsComboBox").prop("selectedIndex")
                 },
                 success: function () {
-                    //addDataToInvoiceProduct();
                     form.style.filter = "blur(0px)";
                     closePopupWindow("newInvoicePopup");
                     alert(`Invoice number ${$("#invNumber").val()} has been successfully added to the db!`);
@@ -670,6 +676,10 @@ function totalTextBoxes() {
 }
 
 function fillPrintPreviewInfo() {
+    if($(".addedProducts tbody tr").length>20){
+        alert("You have reached the maximum allowed table rows!\nMaximum table rows are 20, please remove some rows if you wish to print this invoice.");
+        return;
+    }
     if (newInvoiceGroupBoxesValidated()) {
         $("#printPreviewPopup").find(".appended").remove();
         let form = document.querySelector(".form");
@@ -771,6 +781,77 @@ function fillPrintPreviewInfo() {
     }
 }
 
+function newInvoiceDeleteTableRow() {
+    if ($(".addedProducts").find(".selected").length == 0) {
+        alert("You have not selected a row to delete.\nPlease select the row you wish to delete!")
+    }
+    else {
+        txtBoxesSum -= $(".addedProducts").find(".selected").closest("tr").children("td").eq(4).text();
+        $(".addedProducts").find(".selected").closest("tr").remove();
+    }
+    let txtBoxDanOsnova = document.getElementById("txtBoxDanOsnova");
+    let txtBoxDDS = document.getElementById("txtBoxDDS");
+    let txtBoxSum = document.getElementById("txtBoxSum");
+    let DDS20 = document.getElementById("DDS20");
+    txtBoxDanOsnova.value = txtBoxesSum.toFixed(2);
+    if (DDS20.checked == true) {
+        txtBoxDDS.value = (txtBoxDanOsnova.value * 0.2).toFixed(2)
+        txtBoxSum.value = (parseFloat(txtBoxDanOsnova.value) + parseFloat(txtBoxDDS.value)).toFixed(2);
+    }
+    else {
+        txtBoxDDS.value = (txtBoxDanOsnova.value * 0.09).toFixed(2);
+        txtBoxSum.value = (parseFloat(txtBoxDanOsnova.value) + parseFloat(txtBoxDDS.value)).toFixed(2);
+    }
+}
+
+function newInvoiceDeleteInvoice() {
+    nextInvoiceNumber();
+    document.getElementById("invDate").valueAsDate = new Date();
+    txtBoxesSum = 0;
+    $("#txtBoxDanOsnova").val("");
+    $("#txtBoxDDS").val("");
+    $("#txtBoxSum").val("");
+    $("#DDS20").prop("checked", true);
+    $("#DDS9").prop("checked", false);
+    $("#clientsComboBox").prop("selectedIndex", -1);
+    $("#paymentMethodComboBox").prop("selectedIndex", -1);
+    $("#productsComboBox").prop("selectedIndex", -1);
+    $("#firmsComboBox").prop("selectedIndex", -1);
+    $("#inputSearch").val("");
+    $(".addedProducts tbody").empty();
+    $("#chkBox").prop("checked", false);
+    $(".form").find(".popupError").remove();
+    emptyComboBoxAddPopup("clientsGroupBox");
+    emptyComboBoxAddPopup("firmsGroupBox");
+    emptyComboBoxAddPopup("paymentMethodGroupBox");
+    emptyComboBoxAddPopup("productsGroupBox");
+    toggleErrorPopup();
+}
+
+function printDialog() {
+    if (newInvoiceGroupBoxesValidated()) {
+        if($(".addedProducts tbody tr").length>20){
+            alert("You have reached the maximum allowed table rows!\nMaximum table rows are 20, please remove some rows if you wish to print this invoice.");
+            return;
+        }
+        fillPrintPreviewInfo();
+        document.title = `Фактура номер ${$("#invNumber").val()}`;
+        $("#printPreviewPopup").css({"overflow-y": "hidden"});
+        $("#closePrintPreview").hide();
+        $("#printPreviewPopup").printThis({
+            afterPrint: setTimeout(function () {
+                let form = document.querySelector(".form");
+                form.style.filter = "blur(0px)";
+                form.style.pointerEvents = "auto";
+                closePopupWindow("printPreviewPopup");
+                $("#closePrintPreview").show();
+                document.title = "Document";
+                $("#printPreviewPopup").css({"overflow-y": "auto", "height":""});
+            }, 1000),
+        });
+    }
+}
+
 //EVENTS    
 document.addEventListener("DOMContentLoaded", function () {
     newInvoicesTabOnLoad(true);
@@ -842,5 +923,14 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("printPreviewPopup").style.display = "none";
     document.getElementById("btnPrintPreview").addEventListener("click", function () {
         fillPrintPreviewInfo();
+    })
+    document.getElementById("btnDelRow").addEventListener("click", function () {
+        newInvoiceDeleteTableRow();
+    })
+    document.getElementById("btnDelInvoice").addEventListener("click", function () {
+        newInvoiceDeleteInvoice();
+    })
+    document.getElementById("btnDialog").addEventListener("click", function () {
+        printDialog();
     })
 })
