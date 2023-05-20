@@ -1,213 +1,247 @@
-html{
+html {
     height: 100%;
 }
-body{
-    background-image: linear-gradient(320deg, #eb92be, #ffef78 , #63c9b4);
+
+body {
+    background-image: linear-gradient(320deg, #eb92be, #ffef78, #63c9b4);
+}
+
+button:not(.tabControlButton) {
+    background-color: rgb(225, 225, 225);
+    border: 1px solid #333;
+}
+
+button {
+    cursor: pointer;
 }
 
 
 /*---------------------------START OF NEW INVOICE CONTAINER---------------------------*/
 
-.form{
-    margin:auto;
+.form {
+    margin: auto;
     width: 65em;
     margin-top: 5vh;
     background-color: rgba(240, 240, 240, 1);
     border: 1px solid black;
 }
-.form > *{
+
+.form>* {
     margin-top: 1%;
     margin-left: 1%;
 }
 
-.tabControl > fieldset{
+.tabControl>fieldset {
     margin-left: 2%;
     width: 10%;
 }
 
-tr{
+tr {
     border-bottom: 1px solid black;
 }
 
-.line{
+.line {
     margin-top: -1em;
     margin-left: 1%;
     width: 95%;
 }
-#tabNewInvoice, #tabInvoices, #tabProducts, #tabCustomers{
+
+#tabNewInvoice, #tabInvoices, #tabProducts, #tabCustomers {
     margin-left: 1em;
     font-size: 20px;
     margin-bottom: 1em;
     border: none;
 }
 
-.newInvoice{
+.newInvoice {
     display: grid;
     margin-left: 0.5em;
-    grid-template-columns: auto; /*use this to adjust the width of the fieldsets*/
+    grid-template-columns: auto auto 0.6fr; /*https://stackoverflow.com/questions/49119968/prevent-grid-items-from-expanding-when-content-is-added*/
+    /*use this to adjust the width of the fieldsets*/
     /*tova dolu go izpolzvah za da resize-na tupite rowove*/
-    grid-template-rows: 7em; /*https://stackoverflow.com/questions/41916722/how-do-i-specify-row-heights-in-css-grid-layout*/
-    grid-template-areas: 
-    "invoice total dds"
-    "clients paymentMethod poluchatel"
-    "products products ."
-    "dataGrid dataGrid dataGrid";
+    grid-template-rows: 7em;
+    /*https://stackoverflow.com/questions/41916722/how-do-i-specify-row-heights-in-css-grid-layout*/
+    grid-template-areas:
+        "invoice total dds"
+        "clients paymentMethod firms"
+        "products products ."
+        "dataGrid dataGrid dataGrid";
     gap: 0em 0.75em;
+    margin-bottom: 1.15em; /*this fixed the resizing coming from the new invoice tab to others*/
 }
 
-.invoiceGroupBox, .control{
+.invoiceGroupBox, .control {
     display: flex;
 }
-.invoiceGroupBox fieldset{
+
+.invoiceGroupBox fieldset {
     width: 100%;
 }
-.invoiceGroupBox > .control{
+
+.invoiceGroupBox>.control {
     gap: 1em;
 }
-#invNumber, #invDate{
+
+#invNumber, #invDate {
     margin-left: auto;
     margin-right: 3em;
 }
 
-#invNumber{
+#invNumber {
     margin-right: 6.15em;
     margin-bottom: 5px;
     width: 5em;
 }
 
-.totalGroupBox{
+.totalGroupBox {
     display: flex;
 
 }
 
-.totalGroupBox fieldset{
+.totalGroupBox fieldset {
     width: 100%;
 }
 
-.totalGroupBox input[type="text"]{
+.totalGroupBox input[type="text"] {
     width: 7em;
     margin-left: auto;
     margin-bottom: 5px;
 }
 
-.totalGroupBox #DDS9, #DDS20{
+.totalGroupBox #DDS9, #DDS20 {
     margin-bottom: auto;
     margin-left: 1.2em;
     gap: 5em;
 }
 
-#labelDDS{
+#labelDDS {
     font-size: 40px;
     margin: auto;
 }
 
 
-.buttonsRow{
+.buttonsRow {
     grid-column: 4;
     margin-bottom: 1em;
     margin-left: 2em;
     margin-top: 1em;
 }
 
-.buttonsRow > div{
+.buttonsRow>div {
     margin-bottom: 0.5em;
 }
 
-.buttonsRow button:not(.firstRowButtons button):not(.secondRowButtons button){
+#btnNewInvoice, #btnDelRow, #btnSave, #btnDelInvoice {
+    margin-bottom: 0.3em;
+}
+
+.buttonsRow button:not(.firstRowButtons button):not(.secondRowButtons button) {
     width: 10.3em;
 }
 
-.firstRowButtons button{
+.firstRowButtons button {
     width: 2.1em;
     margin-right: 0.3em;
 }
 
-.secondRowButtons input{
+.secondRowButtons input {
     width: 7em;
 }
-.secondRowButtons button{
+
+.secondRowButtons button {
     width: 2.1em;
     margin-left: 0.3em;
 }
 
-.chkBoxOriginal{
-    margin-top: 2.2em;
+.chkBoxOriginal {
+    margin-top: 5.3em;
     margin-left: -2em;
 }
 
-#btnCancel{
-    margin-bottom: 4em;
+#btnPrintPreview {
+    margin-top: 0.75em;
 }
 
-.clientsGroupBox{
+#btnCancel {
+    margin-top: 8em;
+}
+
+#btnPrintPreview, #btnDialog {
+    margin-bottom: 0.3em;
+}
+
+.clientsGroupBox {
     grid-area: clients;
 }
 
-#clientsComboBox{
+#clientsComboBox {
     width: 100%;
 }
 
-.paymentMethodGroupBox{
+.paymentMethodGroupBox {
     grid-area: paymentMethod;
 }
 
-.poluchatelGroupBox{
+.firmsGroupBox {
+    grid-area: 3;
     margin-top: -2em;
-    font-size: 18px;
 }
 
-.poluchatelGroupBox fieldset input{
-    margin-bottom: 1em;
-}
-
-#paymentMethodComboBox{
+#firmsComboBox{
     width: 100%;
 }
 
-.poluchatelGroupBox{
-    grid-area: 3;
+#paymentMethodComboBox {
+    width: 100%;
 }
 
-.productsGroupBox{
+.productsGroupBox {
     display: flex;
     grid-area: products;
     margin-bottom: 2em;
 
 }
-.productsGroupBox fieldset{
+
+.productsGroupBox fieldset {
     width: 100%;
 }
-#productsComboBox{
+
+#productsComboBox {
     width: 100%;
     margin-bottom: 5px;
 }
 
-#btnAddProduct{
+#btnAddProduct {
     display: flex;
     margin-left: auto;
 }
 
-.dataGridAddedProducts{
+.dataGridAddedProducts {
     display: grid;
+    overflow-y: scroll;
     grid-area: dataGrid;
     padding-bottom: 15em;
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
 }
 
-.addedProducts{
+.addedProducts th:nth-child(2){
+    width: 30%;
+}
+
+.addedProducts {
     background-color: white;
     border-collapse: collapse;
     border: 1px solid black;
     border-right: 1px solid black;
-
 }
 
-.addedProducts th,td{
+.addedProducts th, td {
     border-right: 1px solid black;
     text-align: center;
 }
-.addedProducts th{
+
+.addedProducts th {
     border-bottom: 1px solid black;
 }
 
@@ -215,27 +249,27 @@ tr{
 
 /*---------------------------START OF INVOICES CONTAINER---------------------------*/
 
-.invoices{
+.invoices {
     display: grid;
     margin-left: 0.5em;
     grid-template-columns: auto;
     grid-template-rows: 5fr 3fr;
-    grid-template-areas: 
-    "invoicesInDB"
-    "selectedCellInvoiceInfo";
+    grid-template-areas:
+        "invoicesInDB"
+        "selectedCellInvoiceInfo";
     gap: 0.75em 0em;
-    margin-bottom: auto;
+    margin-bottom: 1em;
 }
 
 
-.invoicesDataGridShowInvoices{
+.invoicesDataGridShowInvoices {
     grid-area: invoicesInDB;
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
     width: 96%;
 }
 
-.invoicesInDB{
+.invoicesInDB {
     background-color: white;
     border-collapse: collapse;
     border: 1px solid black;
@@ -244,22 +278,23 @@ tr{
 
 }
 
-.invoicesInDB th,td{
+.invoicesInDB th,
+td {
     border-right: 1px solid black;
     text-align: center;
 }
 
-.invoicesInDB th{
+.invoicesInDB th {
     border-bottom: 1px solid black;
 }
 
-.datagridSelectedCellInvoiceInfo{
+.datagridSelectedCellInvoiceInfo {
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
     width: 96%;
 }
 
-.selectedCellInfo{
+.selectedCellInfo {
     background-color: white;
     border-collapse: collapse;
     border: 1px solid black;
@@ -267,13 +302,17 @@ tr{
     width: 100%;
 }
 
-.selectedCellInfo th,td{
+.selectedCellInfo th, td {
     border-right: 1px solid black;
     text-align: center;
 }
 
-.selectedCellInfo th{
+.selectedCellInfo th {
     border-bottom: 1px solid black;
+}
+
+.selectedCellInfo th:nth-child(2){
+    width: 30%;
 }
 
 
@@ -281,20 +320,20 @@ tr{
 
 /*---------------------------START OF PRODUCTS CONTAINER---------------------------*/
 
-.products{
+.products {
     display: grid;
     margin-left: 0.5em;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1.5fr;
-    grid-template-areas: 
-    "inputFields productsButtons"
-    "inputGrid productsButtons";
+    grid-template-areas:
+        "inputFields productsButtons"
+        "inputGrid productsButtons";
     gap: 0.75em 0em;
     margin-bottom: 1em;
-
+    height: 100%;
 }
 
-.productsInputFields div:not(.dataGridProductsInDB){
+.productsInputFields div:not(.dataGridProductsInDB) {
     display: flex;
     font-size: 18px;
     margin-left: 4em;
@@ -305,13 +344,17 @@ tr{
 
 
 
-#kodNaProduktInput, #naimenovanieInput, #mqrkaInput, #dostCenaInput, #prodCenaInput{
+#kodNaProduktInput,
+#naimenovanieInput,
+#mqrkaInput,
+#dostCenaInput,
+#prodCenaInput {
     width: 15em;
     margin-left: auto;
-    margin-right: 25em;
+    margin-right: 30em;
 }
 
-.dataGridProductsInDB{
+.dataGridProductsInDB {
     grid-area: inputGrid;
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
@@ -319,7 +362,7 @@ tr{
     width: 52em;
 }
 
-.productsInDB{
+.productsInDB {
     background-color: white;
     border-collapse: collapse;
     border: 1px solid black;
@@ -327,27 +370,30 @@ tr{
     width: 100%;
 }
 
-.productsInDB th,td{
+.productsInDB th,
+td {
     border-right: 1px solid black;
     text-align: center;
 }
-.productsInDB th{
+
+.productsInDB th {
     border-bottom: 1px solid black;
 }
 
-.productsButtons{
+.productsButtons {
     grid-area: productsButtons;
     margin: auto;
 }
 
-.productsButtons div{
+.productsButtons div {
     margin-bottom: 1em;
 }
-.productsButtons button:not(.firstRowButtons button):not(.secondRowButtons button){
+
+.productsButtons button:not(.firstRowButtons button):not(.secondRowButtons button) {
     width: 10.3em;
 }
 
-.btnProductsExit{
+.btnProductsExit {
     margin-top: 16em;
 }
 
@@ -355,18 +401,19 @@ tr{
 
 /*---------------------------START OF CUSTOMERS CONTAIENR---------------------------*/
 
-.customers{
+.customers {
     display: grid;
     margin-left: 0.5em;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1.5fr;
-    grid-template-areas: 
-    "inputFields customersButtons"
-    "inputGrid customersButtons";
+    grid-template-areas:
+        "inputFields customersButtons"
+        "inputGrid customersButtons";
     gap: 0.75em 0em;
     margin-bottom: 1em;
 }
-.customersInputFields div:not(.dataGridCustomersInDB){
+
+.customersInputFields div:not(.dataGridCustomersInDB) {
     display: flex;
     font-size: 18px;
     margin-left: 4em;
@@ -374,21 +421,21 @@ tr{
     margin-right: auto;
 }
 
-.customersInputFields input{
-    width: 20em;
+.customersInputFields input {
+    width: 15em;
     margin-left: auto;
-    margin-right: 22em;
+    margin-right: 30em;
 }
 
-.dataGridCustomersInDB{
+.dataGridCustomersInDB {
     grid-area: inputGrid;
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
     margin-top: 1em;
-    width: 50em;
+    width: 52em;
 }
 
-.customersInDB{
+.customersInDB {
     background-color: white;
     border-collapse: collapse;
     border: 1px solid black;
@@ -396,41 +443,505 @@ tr{
     width: 100%;
 }
 
-.customersInDB th,td{
+.customersInDB th,
+td {
     border-right: 1px solid black;
     text-align: center;
 }
-.customersInDB th{
+
+.customersInDB th {
     border-bottom: 1px solid black;
 }
 
-.customersButtons{
+.customersButtons {
     grid-area: customersButtons;
-    margin:auto;
+    margin: auto;
 }
 
-.customersButtons div{
+.customersButtons div {
     margin-bottom: 1em;
 }
-.customersButtons button:not(.customersFirstRowButtons button):not(.customersSecondRowButtons button){
+
+.customersButtons button:not(.customersFirstRowButtons button):not(.customersSecondRowButtons button) {
     width: 10.3em;
 }
 
-.customersFirstRowButtons button{
+.customersFirstRowButtons button {
     width: 2.1em;
     margin-right: 0.3em;
 }
 
-.customersSecondRowButtons input{
+.customersSecondRowButtons input {
     width: 7em;
 }
-.customersSecondRowButtons button{
+
+.customersSecondRowButtons button {
     width: 2.1em;
     margin-left: 0.3em;
 }
 
-.btnCustomersExit{
+.btnCustomersExit {
     margin-top: 16em;
 }
 
 /*---------------------------END OF CUSTOMERS CONTAIENR---------------------------*/
+
+
+/*---------------------------THINGS FOR THE POPUPS-START---------------------------*/
+.popups {
+    display: flex;
+    justify-content: center;
+    margin-top: -25em;
+}
+
+.popups #printPreviewPopup {
+    margin-top: -14em;
+}
+
+.popups>* {
+    filter: blur(0px);
+}
+
+#newInvoicePopup {
+    display: grid;
+    grid-template-columns: 1fr 0fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        ". . xButton"
+        "message message message"
+        "button1 . button2 ";
+    justify-items: center;
+    text-align: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 10em;
+}
+
+#xButton {
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+#closeButton {
+    grid-area: xButton;
+    margin-left: auto;
+    margin-top: -1px;
+}
+
+#warningMessage {
+    grid-area: message;
+}
+
+#newInvoicePopup button:not(#xButton) {
+    width: 8em;
+}
+
+#newInvoicePopUpSave {
+    grid-area: button1;
+}
+
+#newInvoicePopUpCancel {
+    grid-area: button2;
+}
+
+.popupError {
+    color: red;
+    position: relative;
+    display: inline-block;
+    user-select: none;
+}
+
+.popupError .popupErrorText {
+    visibility: hidden;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+}
+
+.popupError .popupErrorText::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.popupError .show {
+    visibility: visible;
+    animation: fadeIn 0.55s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+#printPreviewPopup {
+    display: grid;
+    grid-template-areas:
+        ". . xButton"
+        "recipient seller ."
+        "textInvNo textInvNo textInvNo"
+        "invDataDates invDataDates invDataDates"
+        "dataTable dataTable dataTable"
+        "bankAndSum bankAndSum bankAndSum"
+        "paymentMethodAndVerbally paymentMethodAndVerbally paymentMethodAndVerbally"
+        "protocolData protocolData protocolData"
+        "bottomMessage bottomMessage bottomMessage"
+        ". . .";
+    justify-content: center;
+    grid-template-columns: 1fr 1fr 0fr;
+    grid-template-rows: auto 0fr 0fr 0fr 0fr 0fr 0fr 0fr; /*make sure when u add the new rows to adjust this*/
+    overflow-y: auto;
+    padding-bottom: 1em;
+    width: 40em;
+    height: 55em;
+    background-color: white;
+    border: 1px solid black;
+}
+
+#groupRecipient {
+    width: 15em;
+    height: 10em;
+    justify-self: flex-end;
+    grid-area: recipient;
+    border: 1px solid black;
+
+}
+
+#groupRecipientFirstRow>* {
+    margin-left: 0.75em;
+}
+
+#groupRecipientFirstRow {
+    width: 100%;
+    justify-self: center;
+    margin-top: -0.5em;
+}
+
+#groupRecipientFirstRow::after {
+    content: "";
+    display: block;
+    margin-top: -0.8em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupRecipientSecondRow>* {
+    margin-left: 0.75em;
+    margin-top: -0.6em;
+}
+
+#groupRecipientSecondRow p {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+#closePrintPreview {
+    margin-top: -1px;
+    margin-left: auto;
+    grid-area: xButton;
+}
+
+#closePrintPreview button {
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+
+#groupSeller {
+    width: 15em;
+    height: 10em;
+    margin-left: 1em;
+    grid-area: seller;
+    border: 1px solid black;
+}
+
+#groupSellerFirstRow>* {
+    margin-left: 0.75em;
+}
+
+#groupSellerFirstRow {
+    width: 100%;
+    justify-self: center;
+    margin-top: -0.5em;
+}
+
+#groupSellerFirstRow::after {
+    content: "";
+    display: block;
+    margin-top: -0.8em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupSellerSecondRow>* {
+    margin-left: 0.75em;
+    margin-top: -0.6em;
+}
+
+#groupSellerSecondRow p {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+#groupTextInvNo {
+    grid-area: textInvNo;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#groupTextInvNo div>p {
+    display: inline-block;
+}
+
+#groupTextInvNo::after{
+    content: "";
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-bottom: 1px solid black;
+    width: 79%;
+}
+
+#groupInvDataDates{
+    grid-area: invDataDates;
+    margin-bottom: 0;
+    text-align: center;
+    margin-top: 1em;
+}
+
+#groupInvDataDates p{
+    display: inline-block;
+    margin: 0;
+    margin-bottom: 0.4em;
+}
+
+#groupInvDataDates::after{
+    content: "";
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0.5em;
+    border-bottom: 1px solid black;
+    width: 79%;
+}
+
+#groupDataTable{
+    grid-area: dataTable;
+    justify-self: center;
+    width: 79%;
+}
+
+#groupDataTable div{
+    display: flex;
+}
+
+#groupDataTable table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#groupDataTable table th::after{
+    content: "";
+    display: block;
+    margin-top: 0.25em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+#groupDataTable table tr td{
+    border: none;
+}
+
+#groupDataTable::after{
+    content: "";
+    display: block;
+    margin-top: 0.25em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupBankAndSum{
+    grid-area: bankAndSum;
+    display: flex;
+    flex-wrap: wrap; /*https://stackoverflow.com/questions/51939332/pseudo-elements-and-flexboxes-in-css*/ /*this fixed the ::after line looking messed up*/
+    height: fit-content;
+    width: 79%;
+    justify-self: center;
+    margin-top: 0.5em;
+}
+
+#groupBankAndSum div>div>p{
+    display: inline-block;
+    margin: 0;
+}
+
+#groupBankAndSum>div:nth-child(1){
+    margin-left: 0.3em;
+}
+
+#groupBankAndSum>div:nth-child(2){
+    font-weight: bold;
+    margin-left: auto;
+}
+
+#groupBankAndSum>div:nth-child(3){
+    font-weight: bold;
+    margin-left: auto;
+    margin-right: 0.5em;
+}
+
+#groupBankAndSum::after{
+    content: "";
+    display: block;
+    margin-top: 0.5em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupPaymentMethodAndVerbally{
+    grid-area: paymentMethodAndVerbally;
+    display: flex;
+    flex-wrap: wrap;
+    height: fit-content;
+    width: 79%;
+    justify-self: center;
+    margin-top: 0.5em;
+}
+
+#groupPaymentMethodAndVerbally div>div>p{
+    display: inline-block;
+    margin: 0;
+}
+
+#groupPaymentMethodAndVerbally>div:nth-child(2){
+    font-weight: bold;
+    margin-left: auto;
+    margin-right: 0.2em;
+}
+
+#groupPaymentMethodAndVerbally>div:nth-child(1){
+    margin-left: 0.2em;
+}
+
+#groupPaymentMethodAndVerbally::after{
+    content: "";
+    display: block;
+    margin-top: 0.5em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupProtocolData{
+    grid-area: protocolData;
+    display: flex;
+    flex-wrap: wrap;
+    height: fit-content;
+    width: 79%;
+    justify-self: center;
+    margin-top: 2em;
+}
+
+#groupProtocolData div>div>p{
+    display: inline-block;
+    margin: 0;
+}
+
+#groupProtocolData>div:nth-child(1){
+    margin-left: 0.3em;
+}
+
+#groupProtocolData>div:nth-child(2){
+    justify-self: center;
+    margin-left: auto;
+    margin-right: 3em;
+}
+
+#groupProtocolData::after{
+    content: "";
+    display: block;
+    margin-top: 2em;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+#groupBottomMessage{
+    grid-area: bottomMessage;
+    display: flex;
+    flex-wrap: wrap;
+    width: 79%;
+    height: fit-content;
+    justify-self: center;
+    font-style: italic;
+    font-size: 15px;
+    text-align: justify;
+}
+
+#groupBottomMessage p {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+#groupBottomMessage::after{
+    content: "";
+    display: block;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+
+@page { 
+    margin: 0; 
+}
+
+/*https://stackoverflow.com/questions/45642831/window-print-position-div-center-of-the-page*/
+@media print {
+    #printPreviewPopup{
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        height: 100%;
+        width: 100%;
+        overflow-y: hidden;
+        margin-top: 3em;   
+        border: none; 
+    }
+    /*https://stackoverflow.com/questions/8712677/how-to-apply-css-page-break-to-print-a-table-with-lots-of-rows*/
+    /*this below is if i ever want to figure out how to have more than 20 table rows and break the page after them*/  
+    #groupDataTable table { 
+        page-break-inside: auto; 
+        page-break-after: auto;
+    }
+
+    #groupDataTable tr { 
+        page-break-inside:avoid; 
+        page-break-after:auto 
+    }
+}

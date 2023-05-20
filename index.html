@@ -6,22 +6,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="/Invoicing-web/style.css"> <!-- make sure to change this subfolder if you are gonna deploy, because if i didnt do this xampp wouldnt find the css for the printThis function --> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="./script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/printThis/1.15.0/printThis.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
-<body onload="tabControl(event, 'newInvoice'); setAutoHeight('invoices'); setAutoHeight('products'); setAutoHeight('customers'); loadInvoicesFromDB();">
+<body>
     <div class="form">
         <div class="tabControl">
-            <button class="tabControlButton" id="tabNewInvoice" onclick="tabControl(event, 'newInvoice')">New Invoice</button>
-            <button class="tabControlButton" id="tabInvoices" onclick="tabControl(event, 'invoices')">Invoices</button>
-            <button class="tabControlButton" id="tabProducts" onclick="tabControl(event, 'products')">Products</button>
-            <button class="tabControlButton" id="tabCustomers"
-                onclick="tabControl(event, 'customers')">Customers</button>
+            <button class="tabControlButton" id="tabNewInvoice">New Invoice</button>
+            <button class="tabControlButton" id="tabInvoices">Invoices</button>
+            <button class="tabControlButton" id="tabProducts">Products</button>
+            <button class="tabControlButton" id="tabCustomers">Customers</button>
             <hr class="line">
             <div class="tab newInvoice" id="newInvoice">
-                <div class="invoiceGroupBox">
+                <div class="groupBox invoiceGroupBox">
                     <fieldset>
                         <legend>Invoice</legend>
                         <div class="control">
@@ -34,7 +36,7 @@
                         </div>
                     </fieldset>
                 </div>
-                <div class="totalGroupBox">
+                <div class="groupBox totalGroupBox">
                     <fieldset>
                         <legend>Total</legend>
                         <div class="control">
@@ -43,8 +45,8 @@
                         </div>
                         <div class="control">
                             <label>ДДС</label>
-                            <input type="radio" name="DDS20" id="DDS20">20%
-                            <input type="radio" name="DDS9" id="DDS9">9%
+                            <input type="radio" name="DDS" id="DDS20" value="20%" checked>20%
+                            <input type="radio" name="DDS" id="DDS9" value="9%">9%
                             <input type="text" name="txtBoxDDS" id="txtBoxDDS">
                         </div>
                         <div class="control">
@@ -54,29 +56,32 @@
                     </fieldset>
                 </div>
                 <div class="ddsShowDDSPercent">
-                    <label style="font-size: 40px; margin-left: 1em;">ДДС</label>
+                    <label style="font-size: 40px; margin-left: 0.5em;">ДДС</label>
                     <div><label id="labelDDS">labelDDS</label></div>
                 </div>
-                <div class="clientsGroupBox">
+                <div class="groupBox clientsGroupBox">
                     <fieldset>
                         <legend>Clients</legend>
                         <select name="clientsComboBox" id="clientsComboBox"></select>
                     </fieldset>
                 </div>
-                <div class="paymentMethodGroupBox">
+                <div class="groupBox paymentMethodGroupBox">
                     <fieldset>
                         <legend>Начин на плащане</legend>
-                        <select name="paymentMethodComboBox" id="paymentMethodComboBox"></select>
+                        <select name="paymentMethodComboBox" id="paymentMethodComboBox">
+                            <option value="1">Наложен платеж</option>
+                            <option value="2">С карта</option>
+                            <option value="3">Банков превод</option>
+                        </select>
                     </fieldset>
                 </div>
-                <div class="poluchatelGroupBox">
+                <div class="groupBox firmsGroupBox">
                     <fieldset>
-                        <legend>Получател</legend>
-                        <input type="radio">МОЛ <br>
-                        <input type="radio">...
+                        <legend>Firms</legend>
+                        <select name="firmsComboBox" id="firmsComboBox"></select>
                     </fieldset>
                 </div>
-                <div class="productsGroupBox">
+                <div class="groupBox productsGroupBox">
                     <fieldset>
                         <legend>Products</legend>
                         <select name="productsComboBox" id="productsComboBox"></select>
@@ -85,53 +90,44 @@
                 </div>
                 <div class="dataGridAddedProducts">
                     <table class="addedProducts">
-                        <tr>
-                            <th>Код</th>
-                            <th>Продукт</th>
-                            <th>Мярка</th>
-                            <th>Количество</th>
-                            <th>Ед. Цена</th>
-                        </tr>
-                        <tr>
-                            <td>hi</td>
-                            <td>hi</td>
-                            <td>hi</td>
-                            <td>hi</td>
-                            <td>hi</td>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>Код</th>
+                                <th>Продукт</th>
+                                <th>Мярка</th>
+                                <th>Количество</th>
+                                <th>Ед. Цена</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
                     </table>
                 </div>
                 <div class="buttonsRow">
                     <div class="firstRowButtons">
-                        <button>|&#60</button>
-                        <button>&#60</button>
-                        <button>&#62</button>
-                        <button>&#62|</button>
+                        <button id="btnFirstRow">|&#60</button>
+                        <button id="btnPreviousRow">&#60</button>
+                        <button id="btnNextRow">&#62</button>
+                        <button id="btnLastRow">&#62|</button>
                     </div>
                     <div class="secondRowButtons">
-                        <input type="text">
-                        <button>S</button>
+                        <input type="text" id="inputSearch">
+                        <button id="btnSearch">S</button>
                     </div>
-                    <div><button>New Invoice</button></div>
-                    <div><button>Refresh</button></div>
-                    <div><button>Delete Row</button></div>
-                    <div><button>Save</button></div>
-                    <div><button>Edit Invoice</button></div>
-                    <div><button>Del Invoice</button></div>
-                    <div class="chkBoxOriginal"><input type="checkbox">Оригинал</div>
-                    <div><button>Print Preview</button></div>
-                    <div><button>Print</button></div>
-                    <div><button>Print Dialog</button></div>
-                    <div><button>Save PDF</button></div>
+                    <div><button id="btnNewInvoice">New Invoice</button></div>
+                    <div><button id="btnDelRow">Delete Row</button></div>
+                    <div><button id="btnSave">Save</button></div>
+                    <div><button id="btnDelInvoice">Del Invoice</button></div>
+                    <div class="chkBoxOriginal"><input type="checkbox" id="chkBox" value="Оригинал">Оригинал</div>
+                    <div><button id="btnPrintPreview">Print Preview</button></div>
+                    <div><button id="btnDialog">Print Dialog</button></div>
                     <div><button id="btnCancel">Cancel</button></div>
-                    <div><button>Exit</button></div>
                 </div>
             </div>
         </div>
         <div class="tabControl">
             <div class="tab invoices" id="invoices">
                 <div class="invoicesDataGridShowInvoices">
-                    <table class="invoicesInDB" onclick="clickedRowNumber(); tdClick()">
+                    <table class="invoicesInDB">
                         <tr>
                             <th>Фактура</th>
                             <th>Фирма</th>
@@ -282,6 +278,163 @@
                     <div><button>Delete</button></div>
                     <div class="btnCustomersExit"><button>Exit</button></div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="popups">
+        <div id="newInvoicePopup">
+            <div id="closeButton"><button id="xButton">X</button></div>
+            <div id="warningMessage"></div>
+            <div id="newInvoicePopUpSave"><button id="btnSaveNewInvoicePopup">Save</button></div>
+            <div id="newInvoicePopUpCancel"><button id="btnCancelNewInvoicePopup">Cancel</button></div>
+        </div>
+        <div id="printPreviewPopup">
+            <div id="closePrintPreview">
+                <button>X</button>
+            </div>
+            <div id="groupRecipient">
+                <div id="groupRecipientFirstRow">
+                    <div>
+                        <p>Получател</p>
+                    </div>
+                </div>
+                <div id="groupRecipientSecondRow">
+                    <div>
+
+                    </div>
+                    <div>
+                        <p>ЕИК:</p>
+                    </div>
+                    <div>
+                        <p>ИН по ЗДДС:</p>
+                    </div>
+                    <div>
+                        <p>Адрес:</p>
+                    </div>
+                    <div>
+                        <p>МОЛ:</p>
+                    </div>
+                </div>
+            </div>
+            <div id="groupSeller">
+                <div id="groupSellerFirstRow">
+                    <div>
+                        <p>Доставчик</p>
+                    </div>
+                </div>
+                <div id="groupSellerSecondRow">
+                    <div>
+
+                    </div>
+                    <div>
+                        <p>ЕИК:</p>
+                    </div>
+                    <div>
+                        <p>ИН по ЗДДС:</p>
+                    </div>
+                    <div>
+                        <p>Адрес:</p>
+                    </div>
+                    <div>
+                        <p>МОЛ:</p>
+                    </div>
+                </div>
+            </div>
+            <div id="groupTextInvNo">
+                <div>
+                    <p>Фактура №</p>
+                </div>
+            </div>
+            <div id="groupInvDataDates">
+                <div>
+                    <p>Дата на издаване:</p>
+                </div>
+                <div>
+                    <p>Данъчно събитие:</p>
+                </div>
+                <div>
+                    <p>Място на издаване:</p>
+                </div>
+            </div>
+            <div id="groupDataTable">
+                <div>
+                    <table>
+                        <thead>
+                            <th>№</th>
+                            <th>Код</th>
+                            <th>Наименование на стоката</th>
+                            <th>Мярка</th>
+                            <th>Колич.</th>
+                            <th>Ед. Цена</th>
+                            <th>Сума</th>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="groupBankAndSum">
+                <div>
+                    <div>
+                        <p>БАНКА:</p>
+                    </div>
+                    <div>
+                        <p>IBAN:</p>
+                    </div>
+                    <div>
+                        <p>BIC:</p>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <p>Данъчна основа:</p>
+                    </div>
+                    <div>
+                        <p>Данъчна ставка %:</p>
+                    </div>
+                    <div>
+                        <p>Сума за плащане:</p>
+                    </div>
+                </div>
+                <div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div id="groupPaymentMethodAndVerbally">
+                <div>
+                    <div>
+                        <p>Начин на плащане:</p>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <p>Словом:</p>
+                        <p>To be implemented</p>
+                    </div>
+                </div>
+            </div>
+            <div id="groupProtocolData">
+                <div>
+                    <div>
+                        <p>Получател:</p>
+                    </div>
+                    <div>
+                        <p>Подпис: ...............</p>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <p>Съставил:</p>
+                    </div>
+                    <div>
+                        <p>Подпис/Идентификационен шифър:</p>
+                    </div>
+                </div>
+            </div>
+            <div id="groupBottomMessage">
+                <p>Съгласно чл. 6, ал. 1 от Закона за счетоводството, чл. 114 от ЗДДС и чл. 78 от ППЗДДС печатът не е задължителен реквизит на фактурата, а подписите са заменени с идентификационни шифри.</p>
             </div>
         </div>
     </div>
