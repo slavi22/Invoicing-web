@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 5.2.0
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1:3307
--- Generation Time: May 04, 2023 at 10:32 AM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.1.12
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -65,7 +56,7 @@ CREATE TABLE `invoice_product` (
   `INVPRODID` int(11) NOT NULL,
   `PRODUCTMEASURE` varchar(45) DEFAULT NULL,
   `PRODUCTUNITPRICE` varchar(45) DEFAULT NULL,
-  `INVOICEQUANTITY` varchar(45) DEFAULT NULL,
+  `PRODUCTQUANTITY` varchar(45) NOT NULL DEFAULT '1',
   `INVOICEID` int(11) NOT NULL,
   `PRODUCTID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -101,7 +92,8 @@ CREATE TABLE `products` (
   `PRODUCTMEASURE` varchar(45) DEFAULT NULL,
   `QUANTITY` varchar(45) DEFAULT '1',
   `PRODUCT_DOST_CENA` varchar(45) DEFAULT NULL,
-  `PRODUCT_PROD_CENA` varchar(45) DEFAULT NULL
+  `PRODUCT_PROD_CENA` varchar(45) DEFAULT NULL,
+  `IsDeleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
