@@ -323,36 +323,41 @@ td {
 .products {
     display: grid;
     margin-left: 0.5em;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.4fr 1fr 1fr;
     grid-template-rows: 1fr 1.5fr;
     grid-template-areas:
-        "inputFields productsButtons"
-        "inputGrid productsButtons";
+        "inputLabels inputFields productsButtons"
+        "inputGrid inputGrid productsButtons";
     gap: 0.75em 0em;
     margin-bottom: 1em;
     height: 100%;
 }
 
 .productsInputFields div:not(.dataGridProductsInDB) {
+    grid-area: inputFields;
     display: flex;
+    font-size: 18px;
+    margin-top: 1em;
+    
+}
+
+.productsLabels div{
+    grid-area: inputLabels;
     font-size: 18px;
     margin-left: 4em;
     margin-top: 1em;
-    margin-right: auto;
+
 }
-
-
-
 
 #kodNaProduktInput,
-#naimenovanieInput,
+#naimenovanieInput ,
 #mqrkaInput,
 #dostCenaInput,
-#prodCenaInput {
+#prodCenaInput,
+#quantityInput {
     width: 15em;
-    margin-left: auto;
-    margin-right: 30em;
 }
+
 
 .dataGridProductsInDB {
     grid-area: inputGrid;
@@ -368,6 +373,11 @@ td {
     border: 1px solid black;
     border-right: 1px solid black;
     width: 100%;
+    table-layout: fixed;
+}
+
+.productsInDB thead th:nth-child(2){
+    width: 25%;
 }
 
 .productsInDB th,

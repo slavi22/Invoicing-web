@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="/Invoicing-web/style.css"> <!-- make sure to change this subfolder if you are gonna deploy, because if i didnt do this xampp wouldnt find the css for the printThis function --> 
+    <link rel="stylesheet" href="/Invoicing-web/style.css">
+    <!-- make sure to change this subfolder if you are gonna deploy, because if i didnt do this xampp wouldnt find the css for the printThis function -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="./script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
@@ -154,45 +155,61 @@
         </div>
         <div class="tabControl">
             <div class="tab products" id="products">
+                <div class="productsLabels">
+                    <div>
+                        <label>Код на продукта</label>
+                    </div>
+                    <div>
+                        <label>Наименование</label>
+                    </div>
+                    <div>
+                        <label>Мярка</label>
+                    </div>
+                    <div>
+                        <label>Количество</label>
+                    </div>
+                    <div>
+                        <label>Доставна цена</label>
+                    </div>
+                    <div>
+                        <label>Продажна цена</label>
+                    </div>
+                </div>
                 <div class="productsInputFields">
                     <div>
-                        <label>Код на продукта*</label>
                         <input id="kodNaProduktInput">
                     </div>
                     <div>
-                        <label>Наименование*</label>
                         <input id="naimenovanieInput">
                     </div>
                     <div>
-                        <label>Мярка*</label>
                         <input id="mqrkaInput">
                     </div>
                     <div>
-                        <label>Доставна цена*</label>
+                        <input id="quantityInput">
+                    </div>
+                    <div>
                         <input id="dostCenaInput">
                     </div>
                     <div>
-                        <label>Продажна цена*</label>
                         <input id="prodCenaInput">
                     </div>
                 </div>
                 <div class="dataGridProductsInDB">
                     <div class="productsGrid">
                         <table class="productsInDB">
-                            <tr>
-                                <th>Код</th>
-                                <th>Продукт</th>
-                                <th>Мярка</th>
-                                <th>Количество</th>
-                                <th>Ед. Цена</th>
-                            </tr>
-                            <tr>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th>Код</th>
+                                    <th>Продукт</th>
+                                    <th>Мярка</th>
+                                    <th>Количество</th>
+                                    <th>Доставна Цена</th>
+                                    <th>Продажна Цена</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -207,7 +224,7 @@
                         <input type="text">
                         <button>S</button>
                     </div>
-                    <div><button>Insert</button></div>
+                    <div><button id="productsBtnInsert">Insert</button></div>
                     <div><button>Edit</button></div>
                     <div><button>Cancel</button></div>
                     <div><button>Save</button></div>
@@ -434,7 +451,8 @@
                 </div>
             </div>
             <div id="groupBottomMessage">
-                <p>Съгласно чл. 6, ал. 1 от Закона за счетоводството, чл. 114 от ЗДДС и чл. 78 от ППЗДДС печатът не е задължителен реквизит на фактурата, а подписите са заменени с идентификационни шифри.</p>
+                <p>Съгласно чл. 6, ал. 1 от Закона за счетоводството, чл. 114 от ЗДДС и чл. 78 от ППЗДДС печатът не е
+                    задължителен реквизит на фактурата, а подписите са заменени с идентификационни шифри.</p>
             </div>
         </div>
     </div>

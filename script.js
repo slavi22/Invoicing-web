@@ -55,7 +55,8 @@ function dataGridCellClick() {
 }
 
 document.addEventListener("DOMContentLoaded", function (e) {
-    tabControl(e, "newInvoice")
+    //tabControl(e, "newInvoice")
+    tabControl(e, "products") //using this currently so i dont have to constantly switch tabs when i refresh the page, when done remove this line and uncomment the one above
     setAutoHeight('newInvoice');
     setAutoHeight('invoices');
     setAutoHeight('products');
@@ -676,7 +677,7 @@ function totalTextBoxes() {
 }
 
 function fillPrintPreviewInfo() {
-    if($(".addedProducts tbody tr").length>20){
+    if ($(".addedProducts tbody tr").length > 20) {
         alert("You have reached the maximum allowed table rows!\nMaximum table rows are 20, please remove some rows if you wish to print this invoice.");
         return;
     }
@@ -830,13 +831,13 @@ function newInvoiceDeleteInvoice() {
 
 function printDialog() {
     if (newInvoiceGroupBoxesValidated()) {
-        if($(".addedProducts tbody tr").length>20){
+        if ($(".addedProducts tbody tr").length > 20) {
             alert("You have reached the maximum allowed table rows!\nMaximum table rows are 20, please remove some rows if you wish to print this invoice.");
             return;
         }
         fillPrintPreviewInfo();
         document.title = `Фактура номер ${$("#invNumber").val()}`;
-        $("#printPreviewPopup").css({"overflow-y": "hidden"});
+        $("#printPreviewPopup").css({ "overflow-y": "hidden" });
         $("#closePrintPreview").hide();
         $("#printPreviewPopup").printThis({
             afterPrint: setTimeout(function () {
@@ -846,7 +847,7 @@ function printDialog() {
                 closePopupWindow("printPreviewPopup");
                 $("#closePrintPreview").show();
                 document.title = "Document";
-                $("#printPreviewPopup").css({"overflow-y": "auto", "height":""});
+                $("#printPreviewPopup").css({ "overflow-y": "auto", "height": "" });
             }, 1000),
         });
     }
@@ -932,5 +933,116 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     document.getElementById("btnDialog").addEventListener("click", function () {
         printDialog();
+    })
+})
+
+/*END OF NEW INVOICE TAB*/
+
+/*START OF PRODUCTS TAB*/
+
+//FUNCTIONS
+function productsTableOnLoad() {
+    $.ajax({
+        url: "phpScript.php",
+        type: "GET",
+        data: {
+            function: "ProductsTableOnLoad",
+        },
+        success: function (result) {
+            $(".productsInDB tbody").append(result)
+        }
+    })
+}
+
+function emptyInputAddPopup(divEq, inputID) {
+    if ($(`#${inputID}`).val().length == 0 && !$(`.productsInputFields div:eq(${divEq}) .popupError`).length > 0) {
+        if (divEq == "0" || divEq == "3" || divEq == "4" || divEq == "5") {
+            $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност<br>Може да е само цифра!</span></i>').appendTo($(`.productsInputFields div:eq(${divEq})`)).css({ "display": "flex", "margin-left": "0.7em" });
+        }
+        else if (divEq == "1" || divEq == "2") {
+            $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност</span></i>').appendTo($(`.productsInputFields div:eq(${divEq})`)).css({ "display": "flex", "margin-left": "0.7em" });
+        }
+    }
+    else {
+        if(inputID == "naimenovanieInput" || inputID == "mqrkaInput"){
+            if ($(`#${inputID}`).val().length == 0) {
+                if($(`.productsInputFields div:eq(${divEq}) .popupError`).length > 0){
+                    toggleErrorPopup();
+                    return;
+                }
+                toggleErrorPopup();
+                return;
+            }
+            else {
+                $(`.productsInputFields div:eq(${divEq})`).find(".popupError").fadeOut(150, function () {
+                    $(this).remove();
+                });
+            }
+        }
+        else{
+            if (!$.isNumeric($(`#${inputID}`).val())) {
+                if($(`.productsInputFields div:eq(${divEq}) .popupError`).length > 0){
+                    toggleErrorPopup();
+                    return;
+                }
+                toggleErrorPopup();
+                return;
+            }
+            else {
+                $(`.productsInputFields div:eq(${divEq})`).find(".popupError").fadeOut(150, function () {
+                    $(this).remove();
+                });
+            }
+        }
+    }
+
+    // $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля изберете стойност</span></i>').appendTo($(`.productsInputFields div:eq(${divEq})`)).css({ "display": "flex", "margin-left":"1em"});
+}
+
+function productsInputsValidated() {
+    if (!$.isNumeric($("#kodNaProduktInput").val()) || $("#naimenovanieInput").val().length == 0 || $("#mqrkaInput").val().length == 0 || !$.isNumeric($("#quantityInput").val()) || !$.isNumeric($("#dostCenaInput").val()) || !$.isNumeric($("#prodCenaInput").val())) {
+        console.log("Invalid");
+    }
+    else {
+        console.log("Valid");
+    }
+}
+
+//EVENTS
+document.addEventListener("DOMContentLoaded", function () {
+    productsTableOnLoad();
+    emptyInputAddPopup("0", "kodNaProduktInput");
+    emptyInputAddPopup("1", "naimenovanieInput");
+    emptyInputAddPopup("2", "mqrkaInput");
+    emptyInputAddPopup("3", "quantityInput");
+    emptyInputAddPopup("4", "dostCenaInput");
+    emptyInputAddPopup("5", "prodCenaInput");
+    toggleErrorPopup();
+    document.getElementById("kodNaProduktInput").addEventListener("input", function () {
+        emptyInputAddPopup("0", "kodNaProduktInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("naimenovanieInput").addEventListener("input", function () {
+        emptyInputAddPopup("1", "naimenovanieInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("mqrkaInput").addEventListener("input", function () {
+        emptyInputAddPopup("2", "mqrkaInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("quantityInput").addEventListener("input", function () {
+        emptyInputAddPopup("3", "quantityInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("dostCenaInput").addEventListener("input", function () {
+        emptyInputAddPopup("4", "dostCenaInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("prodCenaInput").addEventListener("input", function () {
+        emptyInputAddPopup("5", "prodCenaInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("productsBtnInsert").addEventListener("click", function () {
+        productsInputsValidated();
     })
 })
