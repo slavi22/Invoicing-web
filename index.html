@@ -129,26 +129,34 @@
             <div class="tab invoices" id="invoices">
                 <div class="invoicesDataGridShowInvoices">
                     <table class="invoicesInDB">
-                        <tr>
-                            <th>Фактура</th>
-                            <th>Фирма</th>
-                            <th>Дата</th>
-                            <th>Дан. основа</th>
-                            <th>ДДС</th>
-                            <th>Общо</th>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>Фактура</th>
+                                <th>Фирма</th>
+                                <th>Дата</th>
+                                <th>Дан. основа</th>
+                                <th>ДДС</th>
+                                <th>Общо</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
                         <!--load invoices from db-->
                     </table>
                 </div>
                 <div class="datagridSelectedCellInvoiceInfo">
                     <table class="selectedCellInfo">
-                        <tr>
-                            <th>Код</th>
-                            <th>Продукт</th>
-                            <th>Мярка</th>
-                            <th>Количество</th>
-                            <th>Ед. Цена</th>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>Код</th>
+                                <th>Продукт</th>
+                                <th>Мярка</th>
+                                <th>Количество</th>
+                                <th>Ед. Цена</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -215,21 +223,20 @@
                 </div>
                 <div class="productsButtons">
                     <div class="firstRowButtons">
-                        <button>|&#60</button>
-                        <button>&#60</button>
-                        <button>&#62</button>
-                        <button>&#62|</button>
+                        <button id="btnProductsFirstRow">|&#60</button>
+                        <button id="btnProductsPreviousRow">&#60</button>
+                        <button id="btnProductsNextRow">&#62</button>
+                        <button id="btnProductsLastRow">&#62|</button>
                     </div>
                     <div class="secondRowButtons">
-                        <input type="text">
-                        <button>S</button>
+                        <input type="text" id="productsSearchBox">
+                        <button id="btnProductsSearch">S</button>
                     </div>
                     <div><button id="productsBtnInsert">Insert</button></div>
-                    <div><button>Edit</button></div>
-                    <div><button>Cancel</button></div>
-                    <div><button>Save</button></div>
+                    <div><button id="productsBtnSave">Save</button></div>
+                    <div><button id="productsBtnEdit">Edit</button></div>
                     <div><button>Delete</button></div>
-                    <div class="btnProductsExit"><button>Exit</button></div>
+                    <div id="btnProductsCancel"><button>Cancel</button></div>
                 </div>
             </div>
         </div>
@@ -454,6 +461,59 @@
                 <p>Съгласно чл. 6, ал. 1 от Закона за счетоводството, чл. 114 от ЗДДС и чл. 78 от ППЗДДС печатът не е
                     задължителен реквизит на фактурата, а подписите са заменени с идентификационни шифри.</p>
             </div>
+        </div>
+        <div id="productsSavePopup">
+            <div id="productsCloseButton"><button id="productsXButton">X</button></div>
+            <div id="productsWarningMessage">
+                <p>Има нови записи в таблицата.<br>Искате ли да запишете всички промени?</p>
+            </div>
+            <div id="productsPopUpSave"><button id="btnSaveProductsPopup">Save</button></div>
+            <div id="productsPopUpCancel"><button id="btnCancelProductsPopup">Cancel</button></div>
+        </div>
+        <div id="productsEditPopup">
+            <div><button id="editPopupXButton">X</button></div>
+            <div>
+                <div>
+                    <label>Код на продукта</label>
+                </div>
+                <div>
+                    <label>Наименование</label>
+                </div>
+                <div>
+                    <label>Мярка</label>
+                </div>
+                <div>
+                    <label>Количество</label>
+                </div>
+                <div>
+                    <label>Доставна цена</label>
+                </div>
+                <div>
+                    <label>Продажна цена</label>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <input id="editPopupKod">
+                </div>
+                <div>
+                    <input id="editPopupName">
+                </div>
+                <div>
+                    <input id="editPopupMeasure">
+                </div>
+                <div>
+                    <input id="editPopupQuantity">
+                </div>
+                <div>
+                    <input id="editPopupDostCena">
+                </div>
+                <div>
+                    <input id="editPopupProdCena">
+                </div>
+            </div>
+            <div><button id="editPopupSaveButton">Save</button></div>
+            <div><button id="editPopupCancelButton">Cancel</button></div>
         </div>
     </div>
 </body>

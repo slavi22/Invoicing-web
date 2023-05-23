@@ -185,6 +185,16 @@
             ";
         }
     }
+    
+    function AddProductsToDB($id, $code, $name, $measure, $quantity, $dostCena, $prodCena){
+        $query = "INSERT INTO `products` (`PRODUCTID`, `PRODUCTCODE`, `PRODUCTNAME`, `PRODUCTMEASURE`, `QUANTITY`, `PRODUCT_DOST_CENA`, `PRODUCT_PROD_CENA`, `IsDeleted`) VALUES ('$id', '$code', '$name', '$measure', '$quantity', '$dostCena', '$prodCena', '0') ON DUPLICATE KEY UPDATE PRODUCTID = PRODUCTID";
+        $GLOBALS['conn'] -> query($query);
+    }
+
+    function EditProductInDB($id, $code, $name, $measure, $quantity, $dostCena, $prodCena){
+        $query = "UPDATE products SET ProductID = '$code', ProductCode = '$code', ProductName = '$name', ProductMeasure = '$measure', Quantity = '$quantity', Product_Dost_Cena = '$dostCena', Product_Prod_Cena = '$prodCena', IsDeleted = '0' WHERE ProductID = $id";
+        $GLOBALS['conn'] -> query($query);
+    }
 
     //CALLS
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
@@ -250,6 +260,12 @@
         }
         elseif($_POST['function'] == "AddDataToInvoiceProduct"){
             AddDataToInvoiceProduct($_POST['invProdID'], $_POST['productQuantity'], $_POST['invoiceID'], $_POST['productID']);
+        }
+        elseif($_POST['function'] == "AddProductsToDB"){
+            AddProductsToDB($_POST['id'], $_POST['code'], $_POST['name'], $_POST['measure'], $_POST['quantity'], $_POST['dostCena'], $_POST['prodCena']);
+        }
+        elseif($_POST['function'] == "EditProductInDB"){
+            EditProductInDB($_POST['id'], $_POST['code'], $_POST['name'], $_POST['measure'], $_POST['quantity'], $_POST['dostCena'], $_POST['prodCena']);
         }
     }
 ?>
