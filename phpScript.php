@@ -6,6 +6,8 @@
     //https://www.reddit.com/r/PHPhelp/comments/imop53/how_can_i_hide_sensitive_data_like_database/ -> this is a good idea on how to hide credentials from the db
     //https://stackoverflow.com/questions/14752470/creating-a-config-file-in-php -> thats the one i ended up using
 
+
+    //INVOICES TAB
     function InvoicesDBOnLoad(){
         $sql = "SELECT  INVOICENUMBER as \"Фактура\", MyFirmName as \"Фирма\", INVOICEVATDATE as \"Дата\", INVOICESUM as \"Дан. основа\", INVOICEVAT as \"ДДС\", INVOICETOTAL as \"Общо\" from invoices join myfirms on (myfirms.myfirmid = invoices.myfirmid) order by INVOICENUMBER asc";
         $result = $GLOBALS['conn'] -> query($sql);
@@ -40,6 +42,8 @@
             ";
         }
     }
+
+    // NEW INVOICE TAB
     function NextInvoiceNumber(){
         $query = "SELECT INVOICENUMBER FROM mydb.invoices order by INVOICENUMBER desc limit 1;";
         $result = $GLOBALS['conn'] -> query($query);
@@ -158,10 +162,44 @@
     }
 
     function AddDataToInvoiceProduct($invProdID, $productQuantity, $invoiceID, $productID){
-        $query = "INSERT INTO `invoice_product` (`INVPRODID`, `PRODUCTMEASURE`, `PRODUCTUNITPRICE`, `PRODUCTQUANTITY`, `INVOICEID`, `PRODUCTID`) SELECT $invProdID, products.PRODUCTMEASURE, products.PRODUCT_DOST_CENA, $productQuantity, $invoiceID, $productID FROM products WHERE products.PRODUCTID=$productID"; //invprodid - ot ajaxa, quantity ot kletkata v tablicata, invoice id ot ajax i productid ot kletkata v tablicata
+        $query = "INSERT INTO `invoice_product` (`INVPRODID`, `PRODUCTMEASURE`, `PRODUCTUNITPRICE`, `PRODUCTQUANTITY`, `INVOICEID`, `PRODUCTID`) SELECT $invProdID, products.PRODUCTMEASURE, products.PRODUCT_DOST_CENA, $productQuantity, $invoiceID, $productID FROM products WHERE products.PRODUCTID=$productID";
         $GLOBALS['conn'] -> query($query);
     }
 
+
+    //PRODUCTS TAB
+    function ProductsTableOnLoad(){
+        $query = "SELECT PRODUCTCODE, PRODUCTNAME, PRODUCTMEASURE, QUANTITY, PRODUCT_DOST_CENA, PRODUCT_PROD_CENA FROM `products` WHERE IsDeleted = 0";
+        $result = $GLOBALS['conn'] -> query($query);
+        while($row = $result -> fetch_assoc()){
+            echo
+            "
+                <tr>
+                <td>".$row["PRODUCTCODE"]."</td>
+                <td>".$row["PRODUCTNAME"]."</td>
+                <td>".$row["PRODUCTMEASURE"]."</td>
+                <td>".$row["QUANTITY"]."</td>
+                <td>".$row["PRODUCT_DOST_CENA"]."</td>
+                <td>".$row["PRODUCT_PROD_CENA"]."</td>
+                </tr>
+            ";
+        }
+    }
+    
+    function AddProductsToDB($id, $code, $name, $measure, $quantity, $dostCena, $prodCena){
+        $query = "INSERT INTO `products` (`PRODUCTID`, `PRODUCTCODE`, `PRODUCTNAME`, `PRODUCTMEASURE`, `QUANTITY`, `PRODUCT_DOST_CENA`, `PRODUCT_PROD_CENA`, `IsDeleted`) VALUES ('$id', '$code', '$name', '$measure', '$quantity', '$dostCena', '$prodCena', '0') ON DUPLICATE KEY UPDATE PRODUCTID = PRODUCTID";
+        $GLOBALS['conn'] -> query($query);
+    }
+
+    function EditProductInDB($id, $code, $name, $measure, $quantity, $dostCena, $prodCena){
+        $query = "UPDATE products SET ProductID = '$code', ProductCode = '$code', ProductName = '$name', ProductMeasure = '$measure', Quantity = '$quantity', Product_Dost_Cena = '$dostCena', Product_Prod_Cena = '$prodCena', IsDeleted = '0' WHERE ProductID = $id";
+        $GLOBALS['conn'] -> query($query);
+    }
+
+    function ProductsDeleteProduct($code){
+        $query = "UPDATE products SET IsDeleted = 1 WHERE ProductCode = $code";
+        $GLOBALS['conn'] -> query($query);
+    }
 
     //CALLS
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
@@ -183,7 +221,10 @@
         }  
         elseif($_GET['function'] == 'GetLastInvoiceProductID'){
             GetLastInvoiceProductID();
-        }   
+        }  
+        elseif($_GET['function'] == 'ProductsTableOnLoad'){
+            ProductsTableOnLoad();
+        }
     }
 
     if(isset($_POST['function'])){
@@ -224,6 +265,15 @@
         }
         elseif($_POST['function'] == "AddDataToInvoiceProduct"){
             AddDataToInvoiceProduct($_POST['invProdID'], $_POST['productQuantity'], $_POST['invoiceID'], $_POST['productID']);
+        }
+        elseif($_POST['function'] == "AddProductsToDB"){
+            AddProductsToDB($_POST['id'], $_POST['code'], $_POST['name'], $_POST['measure'], $_POST['quantity'], $_POST['dostCena'], $_POST['prodCena']);
+        }
+        elseif($_POST['function'] == "EditProductInDB"){
+            EditProductInDB($_POST['id'], $_POST['code'], $_POST['name'], $_POST['measure'], $_POST['quantity'], $_POST['dostCena'], $_POST['prodCena']);
+        }
+        elseif($_POST['function'] == "ProductsDeleteProduct"){
+            ProductsDeleteProduct($_POST['code']);
         }
     }
 ?>

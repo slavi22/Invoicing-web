@@ -323,36 +323,40 @@ td {
 .products {
     display: grid;
     margin-left: 0.5em;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.4fr 1fr 1fr;
     grid-template-rows: 1fr 1.5fr;
     grid-template-areas:
-        "inputFields productsButtons"
-        "inputGrid productsButtons";
+        "inputLabels inputFields productsButtons"
+        "inputGrid inputGrid productsButtons";
     gap: 0.75em 0em;
     margin-bottom: 1em;
-    height: 100%;
 }
 
 .productsInputFields div:not(.dataGridProductsInDB) {
+    grid-area: inputFields;
     display: flex;
+    font-size: 18px;
+    margin-top: 1em;
+    
+}
+
+.productsLabels div{
+    grid-area: inputLabels;
     font-size: 18px;
     margin-left: 4em;
     margin-top: 1em;
-    margin-right: auto;
+
 }
-
-
-
 
 #kodNaProduktInput,
-#naimenovanieInput,
+#naimenovanieInput ,
 #mqrkaInput,
 #dostCenaInput,
-#prodCenaInput {
+#prodCenaInput,
+#quantityInput {
     width: 15em;
-    margin-left: auto;
-    margin-right: 30em;
 }
+
 
 .dataGridProductsInDB {
     grid-area: inputGrid;
@@ -360,6 +364,8 @@ td {
     background-color: rgb(160, 160, 160);
     margin-top: 1em;
     width: 52em;
+    padding-bottom: 1em;
+    overflow-y: auto;
 }
 
 .productsInDB {
@@ -368,6 +374,13 @@ td {
     border: 1px solid black;
     border-right: 1px solid black;
     width: 100%;
+    table-layout: fixed;
+    overflow-y: scroll;
+    padding-bottom: 15em;
+}
+
+.productsInDB thead th:nth-child(2){
+    width: 25%;
 }
 
 .productsInDB th,
@@ -382,7 +395,9 @@ td {
 
 .productsButtons {
     grid-area: productsButtons;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
 }
 
 .productsButtons div {
@@ -393,7 +408,7 @@ td {
     width: 10.3em;
 }
 
-.btnProductsExit {
+#btnProductsCancel {
     margin-top: 16em;
 }
 
@@ -488,6 +503,8 @@ td {
 
 
 /*---------------------------THINGS FOR THE POPUPS-START---------------------------*/
+
+/*new invoice popups*/
 .popups {
     display: flex;
     justify-content: center;
@@ -944,4 +961,161 @@ td {
         page-break-inside:avoid; 
         page-break-after:auto 
     }
+}
+
+/*products page popups*/
+
+#productsSavePopup{
+    display: grid;
+    grid-template-columns: 1fr 0fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        ". . xButton"
+        "message message message"
+        "button1 . button2 ";
+    justify-items: center;
+    text-align: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 10em;
+}
+
+#productsXButton {
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+#productsCloseButton{
+    grid-area: xButton;
+    margin-left: auto;
+    margin-top: -1px;
+}
+
+#productsWarningMessage{
+    grid-area: message;
+}
+
+#productsSavePopup button:not(#productsXButton) {
+    width: 8em;
+}
+
+#productsPopUpSave {
+    grid-area: button1;
+}
+
+#productsPopUpCancel {
+    grid-area: button2;
+}
+
+#productsEditPopup{
+    display: grid;
+    grid-template-columns: 1fr 1fr 0fr;
+    grid-template-areas: 
+    ". . xButton"
+    "labels inputs ."
+    "button1 button2 .";
+    grid-template-rows: 0fr 2fr 1fr;
+    justify-items: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 16em;
+}
+
+#productsEditPopup>div:nth-child(1){
+    grid-area: xButton;
+    margin-top: -1px;
+}
+
+#productsEditPopup>div:nth-child(1) button{
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+
+#productsEditPopup>div:nth-child(2){ 
+    grid-area: labels;
+    margin-top: 1.5em;
+}
+
+#productsEditPopup div:nth-child(2) div{ 
+    margin-bottom: 0.5em;
+}
+
+#productsEditPopup>div:nth-child(3){ 
+    grid-area: inputs;
+    justify-self: start;
+    margin-top: 1.5em;
+    margin-bottom: 1em;
+}
+
+#productsEditPopup div:nth-child(3) div{ 
+    margin-bottom: 0.3em;
+}
+
+#productsEditPopup>div:nth-child(4){
+    margin: auto;
+    grid-area: button1;
+}
+
+#productsEditPopup>div:nth-child(4) button{
+    width: 6.5em;
+}
+
+#productsEditPopup>div:nth-child(5){
+    margin: auto;
+    grid-area: button2;
+}
+
+#productsEditPopup>div:nth-child(5) button{
+    width: 6.5em;
+}
+
+#productsDeleteProductPopup{
+    display: grid;
+    grid-template-columns: 1fr 1fr 0fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        ". . xButton"
+        "message message message"
+        "button1 button2 .";
+    justify-items: center;
+    text-align: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 10em;   
+}
+
+#productsDeleteCloseButton{
+    grid-area: xButton;
+    margin-top: -1px;
+}
+
+#productsDeleteWarningMessage{
+    grid-area: message;
+}
+
+#productsDeleteYes{
+    grid-area: button1;
+}
+
+#productsDeleteCancel{
+    grid-area: button2;
+}
+
+#productsDeleteXButton{
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+#productsDeleteYes button, #productsDeleteCancel button{
+    width: 6.5em;
 }

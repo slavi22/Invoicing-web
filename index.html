@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="/Invoicing-web/style.css"> <!-- make sure to change this subfolder if you are gonna deploy, because if i didnt do this xampp wouldnt find the css for the printThis function --> 
+    <link rel="stylesheet" href="/Invoicing-web/style.css">
+    <!-- make sure to change this subfolder if you are gonna deploy, because if i didnt do this xampp wouldnt find the css for the printThis function -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="./script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
@@ -128,57 +129,24 @@
             <div class="tab invoices" id="invoices">
                 <div class="invoicesDataGridShowInvoices">
                     <table class="invoicesInDB">
-                        <tr>
-                            <th>Фактура</th>
-                            <th>Фирма</th>
-                            <th>Дата</th>
-                            <th>Дан. основа</th>
-                            <th>ДДС</th>
-                            <th>Общо</th>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>Фактура</th>
+                                <th>Фирма</th>
+                                <th>Дата</th>
+                                <th>Дан. основа</th>
+                                <th>ДДС</th>
+                                <th>Общо</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
                         <!--load invoices from db-->
                     </table>
                 </div>
                 <div class="datagridSelectedCellInvoiceInfo">
                     <table class="selectedCellInfo">
-                        <tr>
-                            <th>Код</th>
-                            <th>Продукт</th>
-                            <th>Мярка</th>
-                            <th>Количество</th>
-                            <th>Ед. Цена</th>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="tabControl">
-            <div class="tab products" id="products">
-                <div class="productsInputFields">
-                    <div>
-                        <label>Код на продукта*</label>
-                        <input id="kodNaProduktInput">
-                    </div>
-                    <div>
-                        <label>Наименование*</label>
-                        <input id="naimenovanieInput">
-                    </div>
-                    <div>
-                        <label>Мярка*</label>
-                        <input id="mqrkaInput">
-                    </div>
-                    <div>
-                        <label>Доставна цена*</label>
-                        <input id="dostCenaInput">
-                    </div>
-                    <div>
-                        <label>Продажна цена*</label>
-                        <input id="prodCenaInput">
-                    </div>
-                </div>
-                <div class="dataGridProductsInDB">
-                    <div class="productsGrid">
-                        <table class="productsInDB">
+                        <thead>
                             <tr>
                                 <th>Код</th>
                                 <th>Продукт</th>
@@ -186,33 +154,89 @@
                                 <th>Количество</th>
                                 <th>Ед. Цена</th>
                             </tr>
-                            <tr>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tabControl">
+            <div class="tab products" id="products">
+                <div class="productsLabels">
+                    <div>
+                        <label>Код на продукта</label>
+                    </div>
+                    <div>
+                        <label>Наименование</label>
+                    </div>
+                    <div>
+                        <label>Мярка</label>
+                    </div>
+                    <div>
+                        <label>Количество</label>
+                    </div>
+                    <div>
+                        <label>Доставна цена</label>
+                    </div>
+                    <div>
+                        <label>Продажна цена</label>
+                    </div>
+                </div>
+                <div class="productsInputFields">
+                    <div>
+                        <input id="kodNaProduktInput">
+                    </div>
+                    <div>
+                        <input id="naimenovanieInput">
+                    </div>
+                    <div>
+                        <input id="mqrkaInput">
+                    </div>
+                    <div>
+                        <input id="quantityInput">
+                    </div>
+                    <div>
+                        <input id="dostCenaInput">
+                    </div>
+                    <div>
+                        <input id="prodCenaInput">
+                    </div>
+                </div>
+                <div class="dataGridProductsInDB">
+                    <div class="productsGrid">
+                        <table class="productsInDB">
+                            <thead>
+                                <tr>
+                                    <th>Код</th>
+                                    <th>Продукт</th>
+                                    <th>Мярка</th>
+                                    <th>Количество</th>
+                                    <th>Доставна Цена</th>
+                                    <th>Продажна Цена</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="productsButtons">
                     <div class="firstRowButtons">
-                        <button>|&#60</button>
-                        <button>&#60</button>
-                        <button>&#62</button>
-                        <button>&#62|</button>
+                        <button id="btnProductsFirstRow">|&#60</button>
+                        <button id="btnProductsPreviousRow">&#60</button>
+                        <button id="btnProductsNextRow">&#62</button>
+                        <button id="btnProductsLastRow">&#62|</button>
                     </div>
                     <div class="secondRowButtons">
-                        <input type="text">
-                        <button>S</button>
+                        <input type="text" id="productsSearchBox">
+                        <button id="btnProductsSearch">S</button>
                     </div>
-                    <div><button>Insert</button></div>
-                    <div><button>Edit</button></div>
-                    <div><button>Cancel</button></div>
-                    <div><button>Save</button></div>
-                    <div><button>Delete</button></div>
-                    <div class="btnProductsExit"><button>Exit</button></div>
+                    <div><button id="productsBtnInsert">Insert</button></div>
+                    <div><button id="productsBtnSave">Save</button></div>
+                    <div><button id="productsBtnEdit">Edit</button></div>
+                    <div><button id="productsBtnDelete">Delete</button></div>
+                    <div id="btnProductsCancel"><button id="productsBtnCancel">Cancel</button></div>
                 </div>
             </div>
         </div>
@@ -434,8 +458,68 @@
                 </div>
             </div>
             <div id="groupBottomMessage">
-                <p>Съгласно чл. 6, ал. 1 от Закона за счетоводството, чл. 114 от ЗДДС и чл. 78 от ППЗДДС печатът не е задължителен реквизит на фактурата, а подписите са заменени с идентификационни шифри.</p>
+                <p>Съгласно чл. 6, ал. 1 от Закона за счетоводството, чл. 114 от ЗДДС и чл. 78 от ППЗДДС печатът не е
+                    задължителен реквизит на фактурата, а подписите са заменени с идентификационни шифри.</p>
             </div>
+        </div>
+        <div id="productsSavePopup">
+            <div id="productsCloseButton"><button id="productsXButton">X</button></div>
+            <div id="productsWarningMessage">
+                <p>Има нови записи в таблицата.<br>Искате ли да запишете всички промени?</p>
+            </div>
+            <div id="productsPopUpSave"><button id="btnSaveProductsPopup">Save</button></div>
+            <div id="productsPopUpCancel"><button id="btnCancelProductsPopup">Cancel</button></div>
+        </div>
+        <div id="productsEditPopup">
+            <div><button id="editPopupXButton">X</button></div>
+            <div>
+                <div>
+                    <label>Код на продукта</label>
+                </div>
+                <div>
+                    <label>Наименование</label>
+                </div>
+                <div>
+                    <label>Мярка</label>
+                </div>
+                <div>
+                    <label>Количество</label>
+                </div>
+                <div>
+                    <label>Доставна цена</label>
+                </div>
+                <div>
+                    <label>Продажна цена</label>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <input id="editPopupKod">
+                </div>
+                <div>
+                    <input id="editPopupName">
+                </div>
+                <div>
+                    <input id="editPopupMeasure">
+                </div>
+                <div>
+                    <input id="editPopupQuantity">
+                </div>
+                <div>
+                    <input id="editPopupDostCena">
+                </div>
+                <div>
+                    <input id="editPopupProdCena">
+                </div>
+            </div>
+            <div><button id="editPopupSaveButton">Save</button></div>
+            <div><button id="editPopupCancelButton">Cancel</button></div>
+        </div>
+        <div id="productsDeleteProductPopup">
+            <div id="productsDeleteCloseButton"><button id="productsDeleteXButton">X</button></div>
+            <div id="productsDeleteWarningMessage"></div>
+            <div id="productsDeleteYes"><button id="productsBtnDeleteYes">Yes</button></div>
+            <div id="productsDeleteCancel"><button id="productsDeleteBtnCancel">Cancel</button></div>
         </div>
     </div>
 </body>
