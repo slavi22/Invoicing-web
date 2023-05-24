@@ -24,7 +24,8 @@ CREATE TABLE `customers` (
   `CustomerAddress` varchar(45) DEFAULT NULL,
   `CustomerMOL` varchar(45) DEFAULT NULL,
   `CustomerECODE` varchar(45) DEFAULT NULL,
-  `CustomerVATCODE` varchar(45) DEFAULT NULL
+  `CustomerVATCODE` varchar(45) DEFAULT NULL,
+  `IsDeleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -76,7 +77,8 @@ CREATE TABLE `myfirms` (
   `MyFirmVATECODE` varchar(45) DEFAULT NULL,
   `MyFirmIBAN` varchar(45) DEFAULT NULL,
   `MyFirmBANKNAME` varchar(45) DEFAULT NULL,
-  `MyFirmBANKCODE` varchar(45) DEFAULT NULL
+  `MyFirmBANKCODE` varchar(45) DEFAULT NULL,
+  `IsDeleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
