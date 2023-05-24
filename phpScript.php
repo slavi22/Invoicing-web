@@ -196,6 +196,11 @@
         $GLOBALS['conn'] -> query($query);
     }
 
+    function ProductsDeleteProduct($code){
+        $query = "UPDATE products SET IsDeleted = 1 WHERE ProductCode = $code";
+        $GLOBALS['conn'] -> query($query);
+    }
+
     //CALLS
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
     if(isset($_GET['function'])){
@@ -266,6 +271,9 @@
         }
         elseif($_POST['function'] == "EditProductInDB"){
             EditProductInDB($_POST['id'], $_POST['code'], $_POST['name'], $_POST['measure'], $_POST['quantity'], $_POST['dostCena'], $_POST['prodCena']);
+        }
+        elseif($_POST['function'] == "ProductsDeleteProduct"){
+            ProductsDeleteProduct($_POST['code']);
         }
     }
 ?>

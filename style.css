@@ -1075,3 +1075,47 @@ td {
 #productsEditPopup>div:nth-child(5) button{
     width: 6.5em;
 }
+
+#productsDeleteProductPopup{
+    display: grid;
+    grid-template-columns: 1fr 1fr 0fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        ". . xButton"
+        "message message message"
+        "button1 button2 .";
+    justify-items: center;
+    text-align: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 10em;   
+}
+
+#productsDeleteCloseButton{
+    grid-area: xButton;
+    margin-top: -1px;
+}
+
+#productsDeleteWarningMessage{
+    grid-area: message;
+}
+
+#productsDeleteYes{
+    grid-area: button1;
+}
+
+#productsDeleteCancel{
+    grid-area: button2;
+}
+
+#productsDeleteXButton{
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+#productsDeleteYes button, #productsDeleteCancel button{
+    width: 6.5em;
+}

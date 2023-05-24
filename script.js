@@ -350,8 +350,9 @@ function addDataToInvoiceProduct() {
         },
         success: function (result) {
             let parsedJson = JSON.parse(result);
-            lastInvProdID = Number(parsedJson[0].INVPRODID) + 1;
+            lastInvProdID = Number(parsedJson[0].INVPRODID);
             $(".addedProducts tbody tr").each(function () {
+                lastInvProdID++;
                 $.ajax({
                     url: "phpScript.php",
                     type: "POST",
@@ -363,7 +364,6 @@ function addDataToInvoiceProduct() {
                         productID: $(this).children("td").eq(0).text()
                     }
                 })
-                lastInvProdID++;
             })
         }
     });
@@ -1010,7 +1010,7 @@ function editProductPopup() {
         form.style.filter = "blur(10px)";
         form.style.pointerEvents = "none";
         $("#editPopupSaveButton").on("click", function () {
-            if(productsEditPopupInputsValidated()){
+            if (productsEditPopupInputsValidated()) {
                 $.ajax({
                     url: "phpScript.php",
                     type: "POST",
@@ -1034,7 +1034,7 @@ function editProductPopup() {
                 })
                 alert("Record successfully updated!");
             }
-            else{
+            else {
                 alert("Invalid values in one or more inputs!");
             }
         })
@@ -1106,13 +1106,74 @@ function productsEditPopupInputsValidated() {
     }
 }
 
-//only thing left in this tab is the delete button
+function productsDeleteProduct() {
+    if ($(".products").find(".selected").length > 0) {
+        let form = document.querySelector(".form");
+        form.style.filter = "blur(10px)";
+        form.style.pointerEvents = "none";
+        $("#productsDeleteProductPopup").css("display", "grid");
+        $("#productsDeleteWarningMessage p").remove();
+        $(".productsInDB").find(".selected").removeClass("selected").css({ "background-color": "", "color": "" }).closest("tr").addClass("selected");
+        $("#productsDeleteWarningMessage").append(`<p>Сигурни ли сте, че искате да изтриете продукт с код - <b>${$(".selected td:eq(0)").text()}</b></p>`);
+        $("#productsBtnDeleteYes").on("click", function () {
+            $.ajax({
+                url: "phpScript.php",
+                type: "POST",
+                data: {
+                    function: "ProductsDeleteProduct",
+                    code: $(".selected td:eq(0)").text()
+                },
+                success: function () {
+                    form.style.filter = "blur(0px)";
+                    form.style.pointerEvents = "auto";
+                    closePopupWindow("productsDeleteProductPopup");
+                    $(".productsInDB tbody").empty();
+                    productsTableOnLoad();
+                }
+            })
+            alert(`Product with a code - ${$(".selected td:eq(0)").text()} has been successfully deleted!`);
+            $(".productsInDB .selected").remove();
+        })
+        $("#productsDeleteXButton").on("click", function () {
+            form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
+            closePopupWindow("productsDeleteProductPopup");
+        })
+        $("#productsDeleteBtnCancel").on("click", function () {
+            form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
+            closePopupWindow("productsDeleteProductPopup");
+        })
+    }
+    else {
+        alert("Please select the row from the table you wish to edit!");
+    }
+}
+
+function productsCancelButton(){
+    $(".productsInDB").find(".selected").css({ "background-color": "", "color": "" }).removeClass("selected");
+    $(".productsInDB").find(".foundText").css({ "background-color": "", "color": "" }).removeClass("foundText");
+    $("#productsSearchBox").val("");
+    $("#kodNaProduktInput").val("");
+    $("#naimenovanieInput").val("");
+    $("#mqrkaInput").val("");
+    $("#quantityInput").val("");
+    $("#dostCenaInput").val("");
+    $("#prodCenaInput").val("");
+    emptyInputProductsInputFieldsAddPopup("0", "kodNaProduktInput");
+    emptyInputProductsInputFieldsAddPopup("1", "naimenovanieInput");
+    emptyInputProductsInputFieldsAddPopup("2", "mqrkaInput");
+    emptyInputProductsInputFieldsAddPopup("3", "quantityInput");
+    emptyInputProductsInputFieldsAddPopup("4", "dostCenaInput");
+    emptyInputProductsInputFieldsAddPopup("5", "prodCenaInput");
+}
+
 
 //EVENTS
 document.addEventListener("DOMContentLoaded", function (e) {
     //invoices tab
-    //tabControl(e, "newInvoice");
-    tabControl(e, "products"); //using this currently so i dont have to constantly switch tabs when i refresh the page, when done remove this line and uncomment the one above
+    tabControl(e, "newInvoice");
+    //tabControl(e, "products"); //using this currently so i dont have to constantly switch tabs when i refresh the page, when done remove this line and uncomment the one above
     setAutoHeight('newInvoice');
     setAutoHeight('invoices');
     setAutoHeight('products');
@@ -1208,6 +1269,8 @@ document.addEventListener("DOMContentLoaded", function (e) {
     })
     document.getElementById("tabNewInvoice").addEventListener("click", function (e) {
         tabControl(e, "newInvoice");
+        $("#productsComboBox").empty();
+        productsComboBoxOnLoad();
         $(".form").find(".selected").css({ "background-color": "", "color": "" }).removeClass("selected");
         toggleErrorPopup();
     })
@@ -1315,5 +1378,12 @@ document.addEventListener("DOMContentLoaded", function (e) {
     document.getElementById("editPopupProdCena").addEventListener("input", function () {
         emptyInputProductsEditPopupAddPopup("5", "editPopupProdCena");
         toggleErrorPopup();
+    })
+    document.getElementById("productsDeleteProductPopup").style.display = "none"
+    document.getElementById("productsBtnDelete").addEventListener("click", function () {
+        productsDeleteProduct();
+    })
+    document.getElementById("productsBtnCancel").addEventListener("click", function(){
+        productsCancelButton();
     })
 })
