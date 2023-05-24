@@ -236,51 +236,67 @@
                     <div><button id="productsBtnSave">Save</button></div>
                     <div><button id="productsBtnEdit">Edit</button></div>
                     <div><button id="productsBtnDelete">Delete</button></div>
-                    <div id="btnProductsCancel"><button id="productsBtnCancel">Cancel</button></div>
+                    <div id="btnProductsCancelDiv"><button id="productsBtnCancel">Cancel</button></div>
                 </div>
             </div>
         </div>
         <div class="tabControl">
             <div class="tab customers" id="customers">
-                <div class="customersInputFields">
+                <div class="customersLabels">
                     <div>
-                        <label>Клиент</label>
-                        <input id="clientInput">
+                        <label>Код</label>
                     </div>
                     <div>
-                        <label>ЕИК</label>
-                        <input id="eikInput">
-                    </div>
-                    <div>
-                        <label>ИН по ЗДДС</label>
-                        <input id="zddsInput">
+                        <label>Име</label>
                     </div>
                     <div>
                         <label>Адрес</label>
-                        <input id="adresInput">
                     </div>
                     <div>
                         <label>МОЛ</label>
-                        <input id="molInput">
+                    </div>
+                    <div>
+                        <label>Е-КОД</label>
+                    </div>
+                    <div>
+                        <label>ИН по ЗДДС</label>
+                    </div>
+                </div>
+                <div class="customersInputFields">
+                    <div>
+                        <input id="customersKodInput">
+                    </div>
+                    <div>
+                        <input id="customersImeInput">
+                    </div>
+                    <div>
+                        <input id="customersAddressInput">
+                    </div>
+                    <div>
+                        <input id="customersMOLInput">
+                    </div>
+                    <div>
+                        <input id="customersEKodInput">
+                    </div>
+                    <div>
+                        <input id="customersZDDSInput">
                     </div>
                 </div>
                 <div class="dataGridCustomersInDB">
                     <div class="customersGrid">
                         <table class="customersInDB">
-                            <tr>
-                                <th>Код</th>
-                                <th>Продукт</th>
-                                <th>Мярка</th>
-                                <th>Количество</th>
-                                <th>Ед. Цена</th>
-                            </tr>
-                            <tr>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th>Код</th>
+                                    <th>Име</th>
+                                    <th>Адрес</th>
+                                    <th>МОЛ</th>
+                                    <th>Е-КОД</th>
+                                    <th>ИН по ЗДДС</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -295,12 +311,11 @@
                         <input type="text">
                         <button>S</button>
                     </div>
-                    <div><button>Insert</button></div>
+                    <div><button id="customersBtnInsert">Insert</button></div>
+                    <div><button id="customersBtnSave">Save</button></div>
                     <div><button>Edit</button></div>
-                    <div><button>Cancel</button></div>
-                    <div><button>Save</button></div>
                     <div><button>Delete</button></div>
-                    <div class="btnCustomersExit"><button>Exit</button></div>
+                    <div id="customersBtnCancelDiv"><button id="btnCustomersCancel">Cancel</button></div>
                 </div>
             </div>
         </div>
@@ -520,6 +535,14 @@
             <div id="productsDeleteWarningMessage"></div>
             <div id="productsDeleteYes"><button id="productsBtnDeleteYes">Yes</button></div>
             <div id="productsDeleteCancel"><button id="productsDeleteBtnCancel">Cancel</button></div>
+        </div>
+        <div id="customersSavePopup">
+            <div id="customersCloseButton"><button id="customersXButton">X</button></div>
+            <div id="customersWarningMessage">
+                <p>Има нови записи в таблицата.<br>Искате ли да запишете всички промени?</p>
+            </div>
+            <div id="customersPopupSave"><button id="btnSaveCustomersPopup">Save</button></div>
+            <div id="customersPopupCancel"><button id="btnCancelCustomersPopup">Cancel</button></div>
         </div>
     </div>
 </body>

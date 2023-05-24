@@ -337,7 +337,6 @@ td {
     display: flex;
     font-size: 18px;
     margin-top: 1em;
-    
 }
 
 .productsLabels div{
@@ -408,7 +407,7 @@ td {
     width: 10.3em;
 }
 
-#btnProductsCancel {
+#btnProductsCancelDiv {
     margin-top: 16em;
 }
 
@@ -419,27 +418,32 @@ td {
 .customers {
     display: grid;
     margin-left: 0.5em;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.4fr 1fr 1fr;
     grid-template-rows: 1fr 1.5fr;
     grid-template-areas:
-        "inputFields customersButtons"
-        "inputGrid customersButtons";
+        "inputLabels inputFields customersButtons"
+        "inputGrid inputGrid customersButtons";
     gap: 0.75em 0em;
     margin-bottom: 1em;
 }
 
 .customersInputFields div:not(.dataGridCustomersInDB) {
+    grid-area: inputFields;
     display: flex;
+    font-size: 18px;
+    margin-top: 1em;
+}
+
+.customersLabels div{
+    grid-area: inputLabels;
     font-size: 18px;
     margin-left: 4em;
     margin-top: 1em;
-    margin-right: auto;
+
 }
 
 .customersInputFields input {
     width: 15em;
-    margin-left: auto;
-    margin-right: 30em;
 }
 
 .dataGridCustomersInDB {
@@ -448,6 +452,8 @@ td {
     background-color: rgb(160, 160, 160);
     margin-top: 1em;
     width: 52em;
+    padding-bottom: 1em;
+    overflow-y: auto;
 }
 
 .customersInDB {
@@ -456,6 +462,17 @@ td {
     border: 1px solid black;
     border-right: 1px solid black;
     width: 100%;
+    table-layout: fixed;
+    overflow-y: scroll;
+    padding-bottom: 15em;
+}
+
+.customersInDB thead th:nth-child(1){
+    width: 10%;
+}
+
+.customersInDB thead th:nth-child(2), .customersInDB thead th:nth-child(3), .customersInDB thead th:nth-child(4){
+    width: 20%;
 }
 
 .customersInDB th,
@@ -470,7 +487,9 @@ td {
 
 .customersButtons {
     grid-area: customersButtons;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
 }
 
 .customersButtons div {
@@ -495,7 +514,7 @@ td {
     margin-left: 0.3em;
 }
 
-.btnCustomersExit {
+#customersBtnCancelDiv {
     margin-top: 16em;
 }
 
@@ -1118,4 +1137,51 @@ td {
 
 #productsDeleteYes button, #productsDeleteCancel button{
     width: 6.5em;
+}
+
+/* customers page popup*/
+
+#customersSavePopup{
+    display: grid;
+    grid-template-columns: 1fr 0fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        ". . xButton"
+        "message message message"
+        "button1 . button2 ";
+    justify-items: center;
+    text-align: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 10em;
+}
+
+#customersXButton{
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+#customersCloseButton{
+    grid-area: xButton;
+    margin-left: auto;
+    margin-top: -1px;
+}
+
+#customersWarningMessage{
+    grid-area: message;
+}
+
+#customersSavePopup button:not(#customersXButton) {
+    width: 8em;
+}
+
+#customersPopupSave {
+    grid-area: button1;
+}
+
+#customersPopupCancel {
+    grid-area: button2;
 }

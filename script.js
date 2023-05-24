@@ -1150,7 +1150,7 @@ function productsDeleteProduct() {
     }
 }
 
-function productsCancelButton(){
+function productsCancelButton() {
     $(".productsInDB").find(".selected").css({ "background-color": "", "color": "" }).removeClass("selected");
     $(".productsInDB").find(".foundText").css({ "background-color": "", "color": "" }).removeClass("foundText");
     $("#productsSearchBox").val("");
@@ -1168,12 +1168,168 @@ function productsCancelButton(){
     emptyInputProductsInputFieldsAddPopup("5", "prodCenaInput");
 }
 
+/*END OF PRODUCTS TAB*/
+
+/*START OF CUSTOMERS TAB*/
+
+let customersTableCountOnLoad = 0;
+function customersTableOnLoad() {
+    $.ajax({
+        url: "phpScript.php",
+        type: "GET",
+        data: {
+            function: "CustomersTableOnLoad",
+        },
+        success: function (result) {
+            $(".customersInDB tbody").append(result)
+            customersTableCountOnLoad = $(".customersInDB tbody tr").length;
+        }
+    })
+}
+
+function emptyInputCustomersInputFieldsAddPopup(divEq, inputID) {
+    if ($(`#${inputID}`).val().length == 0 && !$(`.customersInputFields div:eq(${divEq}) .popupError`).length > 0) {
+        if (divEq == "0" || divEq == "4" || divEq == "5") {
+            $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност<br>Може да е само цифра!</span></i>').appendTo($(`.customersInputFields div:eq(${divEq})`)).css({ "display": "flex", "margin-left": "0.7em" });
+        }
+        else if (divEq == "1" || divEq == "2" || divEq == "3") {
+            $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност</span></i>').appendTo($(`.customersInputFields div:eq(${divEq})`)).css({ "display": "flex", "margin-left": "0.7em" });
+        }
+    }
+    else {
+        if (inputID == "customersImeInput" || inputID == "customersAddressInput" || inputID == "customersMOLInput") {
+            if ($(`#${inputID}`).val().length == 0) {
+                if ($(`.customersInputFields div:eq(${divEq}) .popupError`).length > 0) {
+                    toggleErrorPopup();
+                    return;
+                }
+                toggleErrorPopup();
+                return;
+            }
+            else {
+                $(`.customersInputFields div:eq(${divEq})`).find(".popupError").fadeOut(150, function () {
+                    $(this).remove();
+                });
+            }
+        }
+        else {
+            if (!$.isNumeric($(`#${inputID}`).val())) {
+                if ($(`.customersInputFields div:eq(${divEq}) .popupError`).length > 0) {
+                    toggleErrorPopup();
+                    return;
+                }
+                toggleErrorPopup();
+                return;
+            }
+            else {
+                $(`.customersInputFields div:eq(${divEq})`).find(".popupError").fadeOut(150, function () {
+                    $(this).remove();
+                });
+            }
+        }
+    }
+}
+
+function customersInputsValidated() {
+    if (!$.isNumeric($("#customersKodInput").val()) || $("#customersImeInput").val().length == 0 || $("#customersAddressInput").val().length == 0 || $("#customersMOLInput").val().length == 0 || !$.isNumeric($("#customersEKodInput").val()) || !$.isNumeric($("#customersZDDSInput").val())) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+function customersAddInputsAsTableRow() {
+    if (customersInputsValidated()) {
+        let hasDuplicates = false;
+        $(".customersInDB tbody tr td").each(function () {
+            if ($("#kodNaProduktInput").val() == $(this).text()) {
+                alert(`There is a product with code ${$(this).text()} in the table!\nPlease type in a different product code`);
+                hasDuplicates = true;
+                return false;
+            }
+        });
+        if (hasDuplicates == false) {
+            $(".customersInDB tbody").append(`
+            <tr>
+            <td>${$("#customersKodInput").val()}</td>
+            <td>${$("#customersImeInput").val()}</td>
+            <td>${$("#customersAddressInput").val()}</td>
+            <td>${$("#customersMOLInput").val()}</td>
+            <td>${$("#customersEKodInput").val()}</td>
+            <td>${$("#customersZDDSInput").val()}</td>
+            </tr>`);
+        }
+    }
+    else {
+        alert("Please make sure you have entered the respective value for each input!");
+        return;
+    }
+}
+
+function addCustomersToDB(){
+    if($(".customersInDB tbody tr").length > customersTableCountOnLoad){
+        document.getElementById("customersSavePopup").style.display = "grid";
+        let form = document.querySelector(".form");
+        form.style.filter = "blur(10px)";
+        form.style.pointerEvents = "none";
+        let buttonSave = document.getElementById("btnSaveCustomersPopup");
+        buttonSave.addEventListener("click", function(){
+            $(".customersInDB tbody tr").each(function () {
+                $.ajax({
+                    url: "phpScript.php",
+                    type: "POST",
+                    data: {
+                        function: "AddCustomersToDB",
+                        id: $(this).children("td").eq(0).text(),
+                        name: $(this).children("td").eq(1).text(),
+                        address: $(this).children("td").eq(2).text(),
+                        mol: $(this).children("td").eq(3).text(),
+                        ecode: $(this).children("td").eq(4).text(),
+                        vatcode: $(this).children("td").eq(5).text()
+                    },
+                    success: function() {
+                        form.style.filter = "blur(0px)";
+                        form.style.pointerEvents = "auto";
+                        closePopupWindow("customersSavePopup");
+                        $("#customersKodInput").val("");
+                        $("#customersImeInput").val("");
+                        $("#customersAddressInput").val("");
+                        $("#customersMOLInput").val("");
+                        $("#customersEKodInput").val("");
+                        $("#customersZDDSInput").val("");
+                        emptyInputCustomersInputFieldsAddPopup("0", "customersKodInput");
+                        emptyInputCustomersInputFieldsAddPopup("1", "customersImeInput");
+                        emptyInputCustomersInputFieldsAddPopup("2", "customersAddressInput");
+                        emptyInputCustomersInputFieldsAddPopup("3", "customersMOLInput");
+                        emptyInputCustomersInputFieldsAddPopup("4", "customersEKodInput");
+                        emptyInputCustomersInputFieldsAddPopup("5", "customersZDDSInput");
+                    }
+                })
+            })
+            alert("Changes saved successfully!");
+        })
+        $("#btnCancelCustomersPopup").on("click", function(){
+            form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
+            closePopupWindow("customersSavePopup")
+        })
+        $("#customersXButton").on("click", function(){
+            form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
+            closePopupWindow("customersSavePopup")
+        })
+    }
+    else {
+        alert("Няма нови записи в таблицата!");
+    }
+}
 
 //EVENTS
 document.addEventListener("DOMContentLoaded", function (e) {
     //invoices tab
-    tabControl(e, "newInvoice");
-    //tabControl(e, "products"); //using this currently so i dont have to constantly switch tabs when i refresh the page, when done remove this line and uncomment the one above
+    //tabControl(e, "newInvoice");
+    tabControl(e, "customers"); //using this currently so i dont have to constantly switch tabs when i refresh the page, when done remove this line and uncomment the one above
     setAutoHeight('newInvoice');
     setAutoHeight('invoices');
     setAutoHeight('products');
@@ -1383,7 +1539,47 @@ document.addEventListener("DOMContentLoaded", function (e) {
     document.getElementById("productsBtnDelete").addEventListener("click", function () {
         productsDeleteProduct();
     })
-    document.getElementById("productsBtnCancel").addEventListener("click", function(){
+    document.getElementById("productsBtnCancel").addEventListener("click", function () {
         productsCancelButton();
+    })
+    //customers tab
+    customersTableOnLoad();
+    emptyInputCustomersInputFieldsAddPopup("0", "customersKodInput");
+    emptyInputCustomersInputFieldsAddPopup("1", "customersImeInput");
+    emptyInputCustomersInputFieldsAddPopup("2", "customersAddressInput");
+    emptyInputCustomersInputFieldsAddPopup("3", "customersMOLInput");
+    emptyInputCustomersInputFieldsAddPopup("4", "customersEKodInput");
+    emptyInputCustomersInputFieldsAddPopup("5", "customersZDDSInput");
+    toggleErrorPopup();
+    document.getElementById("customersKodInput").addEventListener("input", function () {
+        emptyInputCustomersInputFieldsAddPopup("0", "customersKodInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("customersImeInput").addEventListener("input", function () {
+        emptyInputCustomersInputFieldsAddPopup("1", "customersImeInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("customersAddressInput").addEventListener("input", function () {
+        emptyInputCustomersInputFieldsAddPopup("2", "customersAddressInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("customersMOLInput").addEventListener("input", function () {
+        emptyInputCustomersInputFieldsAddPopup("3", "customersMOLInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("customersEKodInput").addEventListener("input", function () {
+        emptyInputCustomersInputFieldsAddPopup("4", "customersEKodInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("customersZDDSInput").addEventListener("input", function () {
+        emptyInputCustomersInputFieldsAddPopup("5", "customersZDDSInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("customersBtnInsert").addEventListener("click", function () {
+        customersAddInputsAsTableRow();
+    })
+    document.getElementById("customersSavePopup").style.display = "none";
+    document.getElementById("customersBtnSave").addEventListener("click", function(){
+        addCustomersToDB();
     })
 })
