@@ -53,7 +53,7 @@
         }
     }
     function FirmsComboBoxOnLoad(){
-        $query = "SELECT MyFirmID, MyFirmName FROM myfirms";
+        $query = "SELECT MyFirmID, MyFirmName FROM myfirms WHERE IsDeleted = 0";
         $result = $GLOBALS['conn'] -> query($query);
         while($row=$result -> fetch_assoc()){
             echo
@@ -62,7 +62,7 @@
     }
 
     function ClientsComboBoxOnLoad(){
-        $query = "SELECT CustomersID, CustomerName FROM customers";
+        $query = "SELECT CustomersID, CustomerName FROM customers WHERE IsDeleted = 0";
         $result = $GLOBALS['conn'] -> query($query);
         while($row=$result -> fetch_assoc()){
             echo
@@ -201,6 +201,41 @@
         $GLOBALS['conn'] -> query($query);
     }
 
+    //CUSTOMERS TAB
+
+    function CustomersTableOnLoad(){
+        $query = "SELECT CustomersID, CustomerName, CustomerAddress, CustomerMOL, CustomerECODE, CustomerVATCODE FROM `customers` WHERE IsDeleted = 0";
+        $result = $GLOBALS['conn'] -> query($query);
+        while($row = $result -> fetch_assoc()){
+            echo
+            "
+                <tr>
+                <td>".$row["CustomersID"]."</td>
+                <td>".$row["CustomerName"]."</td>
+                <td>".$row["CustomerAddress"]."</td>
+                <td>".$row["CustomerMOL"]."</td>
+                <td>".$row["CustomerECODE"]."</td>
+                <td>".$row["CustomerVATCODE"]."</td>
+                </tr>
+            ";
+        }
+    }
+
+    function AddCustomersToDB($id, $name, $address, $mol, $ecode, $vatcode){
+        $query =  "INSERT INTO `customers`(`CustomersID`, `CustomerName`, `CustomerAddress`, `CustomerMOL`, `CustomerECODE`, `CustomerVATCODE`) VALUES ('$id','$name','$address','$mol','$ecode','$vatcode')";
+        $GLOBALS['conn'] -> query($query);
+    }
+
+    function EditCustomersInDB($id, $editId, $name, $address, $mol, $ecode, $zdds){
+        $query = "UPDATE `customers` SET `CustomersID`='$editId',`CustomerName`='$name',`CustomerAddress`='$address',`CustomerMOL`='$mol',`CustomerECODE`='$ecode',`CustomerVATCODE`='$zdds',`IsDeleted`='0' WHERE CustomersID = $id";
+        $GLOBALS['conn'] -> query($query);
+    }
+
+    function CustomersDeleteCustomer($code){
+        $query = "UPDATE customers SET IsDeleted = 1 WHERE CustomersID = $code";
+        $GLOBALS['conn'] -> query($query);
+    }
+
     //CALLS
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
     if(isset($_GET['function'])){
@@ -224,6 +259,9 @@
         }  
         elseif($_GET['function'] == 'ProductsTableOnLoad'){
             ProductsTableOnLoad();
+        }
+        elseif($_GET['function'] == 'CustomersTableOnLoad'){
+            CustomersTableOnLoad();
         }
     }
 
@@ -274,6 +312,15 @@
         }
         elseif($_POST['function'] == "ProductsDeleteProduct"){
             ProductsDeleteProduct($_POST['code']);
+        }
+        elseif($_POST['function'] == "AddCustomersToDB"){
+            AddCustomersToDB($_POST['id'], $_POST['name'], $_POST['address'], $_POST['mol'], $_POST['ecode'], $_POST['vatcode']);
+        }
+        elseif($_POST['function'] == "EditCustomersInDB"){
+            EditCustomersInDB($_POST['id'], $_POST['editId'], $_POST['name'], $_POST['address'], $_POST['mol'], $_POST['ecode'], $_POST['zdds']);
+        }
+        elseif($_POST['function'] == "CustomersDeleteCustomer"){
+            CustomersDeleteCustomer($_POST['code']);
         }
     }
 ?>

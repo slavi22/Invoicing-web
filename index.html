@@ -236,71 +236,86 @@
                     <div><button id="productsBtnSave">Save</button></div>
                     <div><button id="productsBtnEdit">Edit</button></div>
                     <div><button id="productsBtnDelete">Delete</button></div>
-                    <div id="btnProductsCancel"><button id="productsBtnCancel">Cancel</button></div>
+                    <div id="btnProductsCancelDiv"><button id="productsBtnCancel">Cancel</button></div>
                 </div>
             </div>
         </div>
         <div class="tabControl">
             <div class="tab customers" id="customers">
-                <div class="customersInputFields">
+                <div class="customersLabels">
                     <div>
-                        <label>Клиент</label>
-                        <input id="clientInput">
+                        <label>Код</label>
                     </div>
                     <div>
-                        <label>ЕИК</label>
-                        <input id="eikInput">
-                    </div>
-                    <div>
-                        <label>ИН по ЗДДС</label>
-                        <input id="zddsInput">
+                        <label>Име</label>
                     </div>
                     <div>
                         <label>Адрес</label>
-                        <input id="adresInput">
                     </div>
                     <div>
                         <label>МОЛ</label>
-                        <input id="molInput">
+                    </div>
+                    <div>
+                        <label>Е-КОД</label>
+                    </div>
+                    <div>
+                        <label>ИН по ЗДДС</label>
+                    </div>
+                </div>
+                <div class="customersInputFields">
+                    <div>
+                        <input id="customersKodInput">
+                    </div>
+                    <div>
+                        <input id="customersImeInput">
+                    </div>
+                    <div>
+                        <input id="customersAddressInput">
+                    </div>
+                    <div>
+                        <input id="customersMOLInput">
+                    </div>
+                    <div>
+                        <input id="customersEKodInput">
+                    </div>
+                    <div>
+                        <input id="customersZDDSInput">
                     </div>
                 </div>
                 <div class="dataGridCustomersInDB">
                     <div class="customersGrid">
                         <table class="customersInDB">
-                            <tr>
-                                <th>Код</th>
-                                <th>Продукт</th>
-                                <th>Мярка</th>
-                                <th>Количество</th>
-                                <th>Ед. Цена</th>
-                            </tr>
-                            <tr>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                                <td>hi</td>
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th>Код</th>
+                                    <th>Име</th>
+                                    <th>Адрес</th>
+                                    <th>МОЛ</th>
+                                    <th>Е-КОД</th>
+                                    <th>ИН по ЗДДС</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="customersButtons">
                     <div class="customersFirstRowButtons">
-                        <button>|&#60</button>
-                        <button>&#60</button>
-                        <button>&#62</button>
-                        <button>&#62|</button>
+                        <button id="btnCustomersFirstRow">|&#60</button>
+                        <button id="btnCustomersPreviousRow">&#60</button>
+                        <button id="btnCustomersNextRow">&#62</button>
+                        <button id="btnCustomersLastRow">&#62|</button>
                     </div>
                     <div class="customersSecondRowButtons">
-                        <input type="text">
-                        <button>S</button>
+                        <input type="text" id="customersSearchBox">
+                        <button id="btnCustomersSearch">S</button>
                     </div>
-                    <div><button>Insert</button></div>
-                    <div><button>Edit</button></div>
-                    <div><button>Cancel</button></div>
-                    <div><button>Save</button></div>
-                    <div><button>Delete</button></div>
-                    <div class="btnCustomersExit"><button>Exit</button></div>
+                    <div><button id="customersBtnInsert">Insert</button></div>
+                    <div><button id="customersBtnSave">Save</button></div>
+                    <div><button id="customersBtnEdit">Edit</button></div>
+                    <div><button id="customersBtnDelete">Delete</button></div>
+                    <div id="customersBtnCancelDiv"><button id="btnCustomersCancel">Cancel</button></div>
                 </div>
             </div>
         </div>
@@ -521,7 +536,65 @@
             <div id="productsDeleteYes"><button id="productsBtnDeleteYes">Yes</button></div>
             <div id="productsDeleteCancel"><button id="productsDeleteBtnCancel">Cancel</button></div>
         </div>
-    </div>
+        <div id="customersSavePopup">
+            <div id="customersCloseButton"><button id="customersXButton">X</button></div>
+            <div id="customersWarningMessage">
+                <p>Има нови записи в таблицата.<br>Искате ли да запишете всички промени?</p>
+            </div>
+            <div id="customersPopupSave"><button id="btnSaveCustomersPopup">Save</button></div>
+            <div id="customersPopupCancel"><button id="btnCancelCustomersPopup">Cancel</button></div>
+        </div>
+        <div id="customersEditPopup">
+            <div><button id="customersEditPopupXButton">X</button></div>
+            <div>
+                <div>
+                    <label>Код</label>
+                </div>
+                <div>
+                    <label>Име</label>
+                </div>
+                <div>
+                    <label>Адрес</label>
+                </div>
+                <div>
+                    <label>МОЛ</label>
+                </div>
+                <div>
+                    <label>Е-КОД</label>
+                </div>
+                <div>
+                    <label>ИН по ЗДДС</label>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <input id="customersEditPopupKod">
+                </div>
+                <div>
+                    <input id="customersEditPopupName">
+                </div>
+                <div>
+                    <input id="customersEditPopupAddress">
+                </div>
+                <div>
+                    <input id="customersEditPopupMOL">
+                </div>
+                <div>
+                    <input id="customersEditPopupECODE">
+                </div>
+                <div>
+                    <input id="customersEditPopupZDDS">
+                </div>
+            </div>
+            <div><button id="customersEditPopupSaveButton">Save</button></div>
+            <div><button id="customersEditPopupCancelButton">Cancel</button></div>
+        </div>
+        <div id="customersDeleteCustomerPopup">
+            <div id="customersDeleteCloseButton"><button id="customersDeleteXButton">X</button></div>
+            <div id="customersDeleteWarningMessage"></div>
+            <div id="customersDeleteYes"><button id="customersBtnDeleteYes">Yes</button></div>
+            <div id="customersDeleteCancel"><button id="customersDeleteBtnCancel">Cancel</button></div>
+        </div>
 </body>
 
 </html>
