@@ -226,6 +226,16 @@
         $GLOBALS['conn'] -> query($query);
     }
 
+    function EditCustomersInDB($id, $editId, $name, $address, $mol, $ecode, $zdds){
+        $query = "UPDATE `customers` SET `CustomersID`='$editId',`CustomerName`='$name',`CustomerAddress`='$address',`CustomerMOL`='$mol',`CustomerECODE`='$ecode',`CustomerVATCODE`='$zdds',`IsDeleted`='0' WHERE CustomersID = $id";
+        $GLOBALS['conn'] -> query($query);
+    }
+
+    function CustomersDeleteCustomer($code){
+        $query = "UPDATE customers SET IsDeleted = 1 WHERE CustomersID = $code";
+        $GLOBALS['conn'] -> query($query);
+    }
+
     //CALLS
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
     if(isset($_GET['function'])){
@@ -305,6 +315,12 @@
         }
         elseif($_POST['function'] == "AddCustomersToDB"){
             AddCustomersToDB($_POST['id'], $_POST['name'], $_POST['address'], $_POST['mol'], $_POST['ecode'], $_POST['vatcode']);
+        }
+        elseif($_POST['function'] == "EditCustomersInDB"){
+            EditCustomersInDB($_POST['id'], $_POST['editId'], $_POST['name'], $_POST['address'], $_POST['mol'], $_POST['ecode'], $_POST['zdds']);
+        }
+        elseif($_POST['function'] == "CustomersDeleteCustomer"){
+            CustomersDeleteCustomer($_POST['code']);
         }
     }
 ?>

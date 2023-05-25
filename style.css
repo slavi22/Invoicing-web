@@ -1185,3 +1185,113 @@ td {
 #customersPopupCancel {
     grid-area: button2;
 }
+
+#customersEditPopup{
+    display: grid;
+    grid-template-columns: 1fr 1fr 0fr;
+    grid-template-areas: 
+    ". . xButton"
+    "labels inputs ."
+    "button1 button2 .";
+    grid-template-rows: 0fr 2fr 1fr;
+    justify-items: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 16em;
+}
+
+#customersEditPopup>div:nth-child(1){
+    grid-area: xButton;
+    margin-top: -1px;
+}
+
+#customersEditPopup>div:nth-child(1) button{
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+
+#customersEditPopup>div:nth-child(2){ 
+    grid-area: labels;
+    margin-top: 1.5em;
+}
+
+#customersEditPopup div:nth-child(2) div{ 
+    margin-bottom: 0.5em;
+}
+
+#customersEditPopup>div:nth-child(3){ 
+    grid-area: inputs;
+    justify-self: start;
+    margin-top: 1.5em;
+    margin-bottom: 1em;
+}
+
+#customersEditPopup div:nth-child(3) div{ 
+    margin-bottom: 0.3em;
+}
+
+#customersEditPopup>div:nth-child(4){
+    margin: auto;
+    grid-area: button1;
+}
+
+#customersEditPopup>div:nth-child(4) button{
+    width: 6.5em;
+}
+
+#customersEditPopup>div:nth-child(5){
+    margin: auto;
+    grid-area: button2;
+}
+
+#customersEditPopup>div:nth-child(5) button{
+    width: 6.5em;
+}
+
+#customersDeleteCustomerPopup{
+    display: grid;
+    grid-template-columns: 1fr 1fr 0fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        ". . xButton"
+        "message message message"
+        "button1 button2 .";
+    justify-items: center;
+    text-align: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 10em;   
+}
+
+#customersDeleteCloseButton{
+    grid-area: xButton;
+    margin-top: -1px;
+}
+
+#customersDeleteWarningMessage{
+    grid-area: message;
+}
+
+#customersDeleteYes{
+    grid-area: button1;
+}
+
+#customersDeleteCancel{
+    grid-area: button2;
+}
+
+#customersDeleteXButton{
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+#customersDeleteYes button, #customersDeleteCancel button{
+    width: 6.5em;
+}

@@ -302,19 +302,19 @@
                 </div>
                 <div class="customersButtons">
                     <div class="customersFirstRowButtons">
-                        <button>|&#60</button>
-                        <button>&#60</button>
-                        <button>&#62</button>
-                        <button>&#62|</button>
+                        <button id="btnCustomersFirstRow">|&#60</button>
+                        <button id="btnCustomersPreviousRow">&#60</button>
+                        <button id="btnCustomersNextRow">&#62</button>
+                        <button id="btnCustomersLastRow">&#62|</button>
                     </div>
                     <div class="customersSecondRowButtons">
-                        <input type="text">
-                        <button>S</button>
+                        <input type="text" id="customersSearchBox">
+                        <button id="btnCustomersSearch">S</button>
                     </div>
                     <div><button id="customersBtnInsert">Insert</button></div>
                     <div><button id="customersBtnSave">Save</button></div>
-                    <div><button>Edit</button></div>
-                    <div><button>Delete</button></div>
+                    <div><button id="customersBtnEdit">Edit</button></div>
+                    <div><button id="customersBtnDelete">Delete</button></div>
                     <div id="customersBtnCancelDiv"><button id="btnCustomersCancel">Cancel</button></div>
                 </div>
             </div>
@@ -544,7 +544,57 @@
             <div id="customersPopupSave"><button id="btnSaveCustomersPopup">Save</button></div>
             <div id="customersPopupCancel"><button id="btnCancelCustomersPopup">Cancel</button></div>
         </div>
-    </div>
+        <div id="customersEditPopup">
+            <div><button id="customersEditPopupXButton">X</button></div>
+            <div>
+                <div>
+                    <label>Код</label>
+                </div>
+                <div>
+                    <label>Име</label>
+                </div>
+                <div>
+                    <label>Адрес</label>
+                </div>
+                <div>
+                    <label>МОЛ</label>
+                </div>
+                <div>
+                    <label>Е-КОД</label>
+                </div>
+                <div>
+                    <label>ИН по ЗДДС</label>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <input id="customersEditPopupKod">
+                </div>
+                <div>
+                    <input id="customersEditPopupName">
+                </div>
+                <div>
+                    <input id="customersEditPopupAddress">
+                </div>
+                <div>
+                    <input id="customersEditPopupMOL">
+                </div>
+                <div>
+                    <input id="customersEditPopupECODE">
+                </div>
+                <div>
+                    <input id="customersEditPopupZDDS">
+                </div>
+            </div>
+            <div><button id="customersEditPopupSaveButton">Save</button></div>
+            <div><button id="customersEditPopupCancelButton">Cancel</button></div>
+        </div>
+        <div id="customersDeleteCustomerPopup">
+            <div id="customersDeleteCloseButton"><button id="customersDeleteXButton">X</button></div>
+            <div id="customersDeleteWarningMessage"></div>
+            <div id="customersDeleteYes"><button id="customersBtnDeleteYes">Yes</button></div>
+            <div id="customersDeleteCancel"><button id="customersDeleteBtnCancel">Cancel</button></div>
+        </div>
 </body>
 
 </html>
