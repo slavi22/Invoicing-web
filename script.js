@@ -365,6 +365,22 @@ function addDataToInvoiceProduct() {
                     }
                 })
             })
+            $("#invNumber").val((parseInt($("#invNumber").val())) + 1);
+            $("#clientsComboBox").prop("selectedIndex", -1);
+            $("#firmsComboBox").prop("selectedIndex", -1);
+            $("#paymentMethodComboBox").prop("selectedIndex", -1);
+            $("#productsComboBox").prop("selectedIndex", -1);
+            $(".addedProducts tbody").empty();
+            $("#txtBoxDanOsnova").val("");
+            $("#txtBoxDDS").val("");
+            $("#txtBoxSum").val("");
+            txtBoxesSum = 0;
+            document.getElementById("invDate").valueAsDate = new Date();
+            emptyComboBoxAddPopup("clientsGroupBox");
+            emptyComboBoxAddPopup("firmsGroupBox");
+            emptyComboBoxAddPopup("paymentMethodGroupBox");
+            emptyComboBoxAddPopup("productsGroupBox");
+            toggleErrorPopup();
         }
     });
 }
@@ -386,10 +402,8 @@ function addNewInvoiceToDB() {
         message.setAttribute("id", "msg")
         message.innerHTML = `Сигурни ли сте че искате да добавите <br>фактура № <u>${fakNo.value}</u> в базата данни?`;
         document.getElementById("warningMessage").append(message)
-        let buttonSave = document.getElementById("btnSaveNewInvoicePopup")
         let buttonCancel = document.getElementById("btnCancelNewInvoicePopup");
-        buttonSave.addEventListener("click", function (e) {
-            e.stopImmediatePropagation(); //https://stackoverflow.com/questions/7822407/why-is-my-alert-showing-more-than-once
+        $("#btnSaveNewInvoicePopup").off("click").on("click", function () {
             $.ajax({
                 url: 'phpScript.php',
                 type: "POST",
@@ -408,27 +422,11 @@ function addNewInvoiceToDB() {
                 success: function () {
                     form.style.filter = "blur(0px)";
                     closePopupWindow("newInvoicePopup");
-                    alert(`Invoice number ${$("#invNumber").val()} has been successfully added to the db!`);
-                    $("#invNumber").val((parseInt($("#invNumber").val())) + 1);
-                    $("#clientsComboBox").prop("selectedIndex", -1);
-                    $("#firmsComboBox").prop("selectedIndex", -1);
-                    $("#paymentMethodComboBox").prop("selectedIndex", -1);
-                    $("#productsComboBox").prop("selectedIndex", -1);
-                    $(".addedProducts tbody").empty();
-                    $("#txtBoxDanOsnova").val("");
-                    $("#txtBoxDDS").val("");
-                    $("#txtBoxSum").val("");
-                    txtBoxesSum = 0;
-                    document.getElementById("invDate").valueAsDate = new Date();
-                    emptyComboBoxAddPopup("clientsGroupBox");
-                    emptyComboBoxAddPopup("firmsGroupBox");
-                    emptyComboBoxAddPopup("paymentMethodGroupBox");
-                    emptyComboBoxAddPopup("productsGroupBox");
-                    toggleErrorPopup();
+                    form.style.pointerEvents = "auto";
+                    addDataToInvoiceProduct();
                 }
             });
-            addDataToInvoiceProduct();
-            form.style.pointerEvents = "auto";
+
         });
         buttonCancel.addEventListener("click", function () {
             form.style.filter = "blur(0px)";
