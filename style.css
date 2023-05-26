@@ -46,7 +46,7 @@ tr {
     width: 95%;
 }
 
-#tabNewInvoice, #tabInvoices, #tabProducts, #tabCustomers {
+#tabNewInvoice, #tabInvoices, #tabProducts, #tabCustomers, #tabFirms {
     margin-left: 1em;
     font-size: 20px;
     margin-bottom: 1em;
@@ -520,6 +520,117 @@ td {
 
 /*---------------------------END OF CUSTOMERS CONTAIENR---------------------------*/
 
+/*---------------------------START OF FIRMS CONTAIENR---------------------------*/
+
+.firms {
+    display: grid;
+    margin-left: 0.5em;
+    grid-template-columns: 0.5fr 1fr 1fr;
+    grid-template-rows: 1fr 1.5fr;
+    grid-template-areas:
+        "inputLabels inputFields firmsButtons"
+        "inputGrid inputGrid firmsButtons";
+    gap: 0.75em 0em;
+    margin-bottom: 1em;
+}
+
+.firmsInputFields div{
+    grid-area: inputFields;
+    display: flex;
+    font-size: 18px;
+    margin-top: 0.31em;
+}
+
+.firmsLabels div{
+    grid-area: inputLabels;
+    white-space: nowrap;
+    font-size: 18px;
+    margin-left: 4em;
+    margin-top: 0.3em;
+
+}
+
+.firmsInputFields input {
+    width: 15em;
+}
+
+.dataGridFirmsInDB {
+    grid-area: inputGrid;
+    border: 1px solid black;
+    background-color: rgb(160, 160, 160);
+    margin-top: 1em;
+    width: 52em;
+    padding-bottom: 1em;
+    overflow-y: auto;
+}
+
+.firmsInDB {
+    background-color: white;
+    border-collapse: collapse;
+    border: 1px solid black;
+    border-right: 1px solid black;
+    width: 100%;
+    overflow-y: scroll;
+    padding-bottom: 15em;
+}
+
+.firmsInDB thead th:nth-child(5){
+    width: 10%;
+}
+
+.firmsInDB thead th:nth-child(6){
+    width: 12%;
+}
+
+.firmsInDB th,
+td {
+    border-right: 1px solid black;
+    text-align: center;
+}
+
+.firmsInDB th {
+    border-bottom: 1px solid black;
+}
+
+.firmsInDB td {
+    height: 36px;
+}
+
+.firmsButtons {
+    grid-area: firmsButtons;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
+}
+
+.firmsButtons div {
+    margin-bottom: 1em;
+}
+
+.firmsButtons button:not(.firmsFirstRowButtons button):not(.firmsSecondRowButtons button) {
+    width: 10.3em;
+}
+
+.firmsFirstRowButtons button {
+    width: 2.1em;
+    margin-right: 0.3em;
+}
+
+.firmsSecondRowButtons input {
+    width: 7em;
+}
+
+.firmsSecondRowButtons button {
+    width: 2.1em;
+    margin-left: 0.3em;
+}
+
+#firmsBtnCancelDiv {
+    margin-top: 16em;
+}
+
+
+/*---------------------------END OF FIRMS CONTAIENR---------------------------*/
 
 /*---------------------------THINGS FOR THE POPUPS-START---------------------------*/
 
@@ -1139,7 +1250,7 @@ td {
     width: 6.5em;
 }
 
-/* customers page popup*/
+/* customers page popup */
 
 #customersSavePopup{
     display: grid;
@@ -1293,5 +1404,159 @@ td {
 }
 
 #customersDeleteYes button, #customersDeleteCancel button{
+    width: 6.5em;
+}
+
+/* firms page popup */
+
+#firmsSavePopup{
+    display: grid;
+    grid-template-columns: 1fr 0fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        ". . xButton"
+        "message message message"
+        "button1 . button2 ";
+    justify-items: center;
+    text-align: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 10em;
+}
+
+#firmsXButton{
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+#firmsCloseButton{
+    grid-area: xButton;
+    margin-left: auto;
+    margin-top: -1px;
+}
+
+#firmsWarningMessage{
+    grid-area: message;
+}
+
+#firmsSavePopup button:not(#firmsXButton) {
+    width: 8em;
+}
+
+#firmsPopupSave {
+    grid-area: button1;
+}
+
+#firmsPopupCancel {
+    grid-area: button2;
+}
+
+#firmsEditPopup{
+    display: grid;
+    grid-template-columns: 1fr 1fr 0fr;
+    grid-template-areas: 
+    ". . xButton"
+    "labels inputs ."
+    "button1 button2 .";
+    grid-template-rows: 0fr 2fr 1fr;
+    justify-items: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 19em;
+    margin-top: -4em;
+}
+
+#firmsEditPopup>div:nth-child(1){
+    grid-area: xButton;
+    margin-top: -1px;
+}
+
+#firmsEditPopup>div:nth-child(1) button{
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+
+#firmsEditPopup>div:nth-child(2){ 
+    grid-area: labels;
+}
+
+#firmsEditPopup div:nth-child(2) div{ 
+    margin-bottom: 0.5em;
+}
+
+#firmsEditPopup>div:nth-child(3){ 
+    grid-area: inputs;
+    justify-self: start;
+    margin-bottom: 1em;
+}
+
+#firmsEditPopup div:nth-child(3) div{ 
+    margin-bottom: 0.3em;
+}
+
+#firmsEditPopup>div:nth-child(4){
+    grid-area: button1;
+}
+
+#firmsEditPopup>div:nth-child(4) button{
+    width: 6.5em;
+}
+
+#firmsEditPopup>div:nth-child(5){
+    grid-area: button2;
+}
+
+#firmsEditPopup>div:nth-child(5) button{
+    width: 6.5em;
+}
+
+#firmsDeleteFirmPopup{
+    display: grid;
+    grid-template-columns: 1fr 1fr 0fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        ". . xButton"
+        "message message message"
+        "button1 button2 .";
+    justify-items: center;
+    text-align: center;
+    background-color: white;
+    border: 1px solid black;
+    width: 30em;
+    height: 10em;   
+}
+
+#firmsDeleteCloseButton{
+    grid-area: xButton;
+    margin-top: -1px;
+}
+
+#firmsDeleteWarningMessage{
+    grid-area: message;
+}
+
+#firmsDeleteYes{
+    grid-area: button1;
+}
+
+#firmsDeleteCancel{
+    grid-area: button2;
+}
+
+#firmsDeleteXButton{
+    background-color: red;
+    color: white;
+    border-right: none;
+    border-top: none;
+}
+
+#firmsDeleteYes button, #firmsDeleteCancel button{
     width: 6.5em;
 }

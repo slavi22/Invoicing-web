@@ -365,6 +365,22 @@ function addDataToInvoiceProduct() {
                     }
                 })
             })
+            $("#invNumber").val((parseInt($("#invNumber").val())) + 1);
+            $("#clientsComboBox").prop("selectedIndex", -1);
+            $("#firmsComboBox").prop("selectedIndex", -1);
+            $("#paymentMethodComboBox").prop("selectedIndex", -1);
+            $("#productsComboBox").prop("selectedIndex", -1);
+            $(".addedProducts tbody").empty();
+            $("#txtBoxDanOsnova").val("");
+            $("#txtBoxDDS").val("");
+            $("#txtBoxSum").val("");
+            txtBoxesSum = 0;
+            document.getElementById("invDate").valueAsDate = new Date();
+            emptyComboBoxAddPopup("clientsGroupBox");
+            emptyComboBoxAddPopup("firmsGroupBox");
+            emptyComboBoxAddPopup("paymentMethodGroupBox");
+            emptyComboBoxAddPopup("productsGroupBox");
+            toggleErrorPopup();
         }
     });
 }
@@ -386,10 +402,8 @@ function addNewInvoiceToDB() {
         message.setAttribute("id", "msg")
         message.innerHTML = `Сигурни ли сте че искате да добавите <br>фактура № <u>${fakNo.value}</u> в базата данни?`;
         document.getElementById("warningMessage").append(message)
-        let buttonSave = document.getElementById("btnSaveNewInvoicePopup")
         let buttonCancel = document.getElementById("btnCancelNewInvoicePopup");
-        buttonSave.addEventListener("click", function (e) {
-            e.stopImmediatePropagation(); //https://stackoverflow.com/questions/7822407/why-is-my-alert-showing-more-than-once
+        $("#btnSaveNewInvoicePopup").off("click").on("click", function () {
             $.ajax({
                 url: 'phpScript.php',
                 type: "POST",
@@ -408,27 +422,11 @@ function addNewInvoiceToDB() {
                 success: function () {
                     form.style.filter = "blur(0px)";
                     closePopupWindow("newInvoicePopup");
-                    alert(`Invoice number ${$("#invNumber").val()} has been successfully added to the db!`);
-                    $("#invNumber").val((parseInt($("#invNumber").val())) + 1);
-                    $("#clientsComboBox").prop("selectedIndex", -1);
-                    $("#firmsComboBox").prop("selectedIndex", -1);
-                    $("#paymentMethodComboBox").prop("selectedIndex", -1);
-                    $("#productsComboBox").prop("selectedIndex", -1);
-                    $(".addedProducts tbody").empty();
-                    $("#txtBoxDanOsnova").val("");
-                    $("#txtBoxDDS").val("");
-                    $("#txtBoxSum").val("");
-                    txtBoxesSum = 0;
-                    document.getElementById("invDate").valueAsDate = new Date();
-                    emptyComboBoxAddPopup("clientsGroupBox");
-                    emptyComboBoxAddPopup("firmsGroupBox");
-                    emptyComboBoxAddPopup("paymentMethodGroupBox");
-                    emptyComboBoxAddPopup("productsGroupBox");
-                    toggleErrorPopup();
+                    form.style.pointerEvents = "auto";
+                    addDataToInvoiceProduct();
                 }
             });
-            addDataToInvoiceProduct();
-            form.style.pointerEvents = "auto";
+
         });
         buttonCancel.addEventListener("click", function () {
             form.style.filter = "blur(0px)";
@@ -564,7 +562,7 @@ function searchBoxSearch(inputBoxId, tableClass) {
     $(`.${table.className}`).find("tr").each(function () {
         $(this).find("td").eq(1).each(function () {
             if (this.innerText == valueOfSearchBox) {
-                $(".selected").css("background-color", "").removeClass("selected");
+                $(".selected").css({ "background-color": "", "color": "" }).removeClass("selected");
                 $(this).addClass("foundText").css({ "background-color": "green", "color": "" });
             }
         })
@@ -847,7 +845,7 @@ function productsTableOnLoad() {
 }
 
 function emptyInputProductsInputFieldsAddPopup(divEq, inputID) {
-    if ($(`#${inputID}`).val().length == 0 && !$(`.productsInputFields div:eq(${divEq}) .popupError`).length > 0) {
+    if ($(`#${inputID}`).val().trim().length == 0 && !$(`.productsInputFields div:eq(${divEq}) .popupError`).length > 0) {
         if (divEq == "0" || divEq == "3" || divEq == "4" || divEq == "5") {
             $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност<br>Може да е само цифра!</span></i>').appendTo($(`.productsInputFields div:eq(${divEq})`)).css({ "display": "flex", "margin-left": "0.7em" });
         }
@@ -857,7 +855,7 @@ function emptyInputProductsInputFieldsAddPopup(divEq, inputID) {
     }
     else {
         if (inputID == "naimenovanieInput" || inputID == "mqrkaInput") {
-            if ($(`#${inputID}`).val().length == 0) {
+            if ($(`#${inputID}`).val().trim().length == 0) {
                 if ($(`.productsInputFields div:eq(${divEq}) .popupError`).length > 0) {
                     toggleErrorPopup();
                     return;
@@ -872,7 +870,7 @@ function emptyInputProductsInputFieldsAddPopup(divEq, inputID) {
             }
         }
         else {
-            if (!$.isNumeric($(`#${inputID}`).val())) {
+            if (!$.isNumeric($(`#${inputID}`).val().trim())) {
                 if ($(`.productsInputFields div:eq(${divEq}) .popupError`).length > 0) {
                     toggleErrorPopup();
                     return;
@@ -890,7 +888,7 @@ function emptyInputProductsInputFieldsAddPopup(divEq, inputID) {
 }
 
 function productsInputsValidated() {
-    if (!$.isNumeric($("#kodNaProduktInput").val()) || $("#naimenovanieInput").val().length == 0 || $("#mqrkaInput").val().length == 0 || !$.isNumeric($("#quantityInput").val()) || !$.isNumeric($("#dostCenaInput").val()) || !$.isNumeric($("#prodCenaInput").val())) {
+    if (!$.isNumeric($("#kodNaProduktInput").val().trim()) || $("#naimenovanieInput").val().trim().length == 0 || $("#mqrkaInput").val().trim().length == 0 || !$.isNumeric($("#quantityInput").val().trim()) || !$.isNumeric($("#dostCenaInput").val().trim()) || !$.isNumeric($("#prodCenaInput").val().trim())) {
         return false;
     }
     else {
@@ -902,7 +900,7 @@ function productsAddInputsAsTableRow() {
     if (productsInputsValidated()) {
         let hasDuplicates = false;
         $(".productsInDB tbody tr td").each(function () {
-            if ($("#kodNaProduktInput").val() == $(this).text()) {
+            if ($("#kodNaProduktInput").val().trim() == $(this).text()) {
                 alert(`There is a product with code ${$(this).text()} in the table!\nPlease type in a different product code`);
                 hasDuplicates = true;
                 return false;
@@ -911,12 +909,12 @@ function productsAddInputsAsTableRow() {
         if (hasDuplicates == false) {
             $(".productsInDB tbody").append(`
             <tr>
-            <td>${$("#kodNaProduktInput").val()}</td>
-            <td>${$("#naimenovanieInput").val()}</td>
-            <td>${$("#mqrkaInput").val()}</td>
-            <td>${$("#quantityInput").val()}</td>
-            <td>${$("#dostCenaInput").val()}</td>
-            <td>${$("#prodCenaInput").val()}</td>
+            <td>${$("#kodNaProduktInput").val().trim()}</td>
+            <td>${$("#naimenovanieInput").val().trim()}</td>
+            <td>${$("#mqrkaInput").val().trim()}</td>
+            <td>${$("#quantityInput").val().trim()}</td>
+            <td>${$("#dostCenaInput").val().trim()}</td>
+            <td>${$("#prodCenaInput").val().trim()}</td>
             </tr>`);
         }
     }
@@ -964,6 +962,7 @@ function addProductsToDB() {
                         emptyInputProductsInputFieldsAddPopup("3", "quantityInput");
                         emptyInputProductsInputFieldsAddPopup("4", "dostCenaInput");
                         emptyInputProductsInputFieldsAddPopup("5", "prodCenaInput");
+                        productTableCountOnLoad = $(".productsInDB tbody tr").length;
                     }
                 })
             })
@@ -974,12 +973,12 @@ function addProductsToDB() {
             form.style.filter = "blur(0px)";
             form.style.pointerEvents = "auto";
             closePopupWindow("productsSavePopup")
-        }, { once: true });
+        });
         document.getElementById("productsXButton").addEventListener("click", function () {
             form.style.filter = "blur(0px)";
             form.style.pointerEvents = "auto";
             closePopupWindow("productsSavePopup");
-        }, { once: true });
+        });
     }
     else {
         alert("Няма нови записи в таблицата!");
@@ -1018,12 +1017,12 @@ function editProductPopup() {
                     data: {
                         function: "EditProductInDB",
                         id: selectedRowCode,
-                        code: $("#editPopupKod").val(),
-                        name: $("#editPopupName").val(),
-                        measure: $("#editPopupMeasure").val(),
-                        quantity: $("#editPopupQuantity").val(),
-                        dostCena: $("#editPopupDostCena").val(),
-                        prodCena: $("#editPopupProdCena").val()
+                        code: $("#editPopupKod").val().trim(),
+                        name: $("#editPopupName").val().trim(),
+                        measure: $("#editPopupMeasure").val().trim(),
+                        quantity: $("#editPopupQuantity").val().trim(),
+                        dostCena: $("#editPopupDostCena").val().trim(),
+                        prodCena: $("#editPopupProdCena").val().trim()
                     },
                     success: function () {
                         form.style.filter = "blur(0px)";
@@ -1056,7 +1055,7 @@ function editProductPopup() {
 }
 
 function emptyInputProductsEditPopupAddPopup(divEq, inputID) {
-    if ($(`#${inputID}`).val().length == 0 && !$(`#productsEditPopup div:nth-child(3) div:eq(${divEq}) .popupError`).length > 0) {
+    if ($(`#${inputID}`).val().trim().length == 0 && !$(`#productsEditPopup div:nth-child(3) div:eq(${divEq}) .popupError`).length > 0) {
         if (divEq == "0" || divEq == "3" || divEq == "4" || divEq == "5") {
             $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност<br>Може да е само цифра!</span></i>').appendTo($(`#productsEditPopup div:nth-child(3) div:eq(${divEq})`)).css({ "display": "inline" });
         }
@@ -1066,7 +1065,7 @@ function emptyInputProductsEditPopupAddPopup(divEq, inputID) {
     }
     else {
         if (inputID == "editPopupName" || inputID == "editPopupMeasure") {
-            if ($(`#${inputID}`).val().length == 0) {
+            if ($(`#${inputID}`).val().trim().length == 0) {
                 if ($(`#productsEditPopup div:nth-child(3) div:eq(${divEq}) .popupError`).length > 0) {
                     toggleErrorPopup();
                     return;
@@ -1081,7 +1080,7 @@ function emptyInputProductsEditPopupAddPopup(divEq, inputID) {
             }
         }
         else {
-            if (!$.isNumeric($(`#${inputID}`).val())) {
+            if (!$.isNumeric($(`#${inputID}`).val().trim())) {
                 if ($(`#productsEditPopup div:nth-child(3) div:eq(${divEq}) .popupError`).length > 0) {
                     toggleErrorPopup();
                     return;
@@ -1099,7 +1098,7 @@ function emptyInputProductsEditPopupAddPopup(divEq, inputID) {
 }
 
 function productsEditPopupInputsValidated() {
-    if (!$.isNumeric($("#editPopupKod").val()) || $("#editPopupName").val().length == 0 || $("#editPopupMeasure").val().length == 0 || !$.isNumeric($("#editPopupQuantity").val()) || !$.isNumeric($("#editPopupDostCena").val()) || !$.isNumeric($("#editPopupProdCena").val())) {
+    if (!$.isNumeric($("#editPopupKod").val().trim()) || $("#editPopupName").val().trim().length == 0 || $("#editPopupMeasure").val().trim().length == 0 || !$.isNumeric($("#editPopupQuantity").val().trim()) || !$.isNumeric($("#editPopupDostCena").val().trim()) || !$.isNumeric($("#editPopupProdCena").val().trim())) {
         return false;
     }
     else {
@@ -1147,7 +1146,7 @@ function productsDeleteProduct() {
         })
     }
     else {
-        alert("Please select the row from the table you wish to edit!");
+        alert("Please select the row from the table you wish to delete!");
     }
 }
 
@@ -1181,7 +1180,7 @@ function customersTableOnLoad() {
         url: "phpScript.php",
         type: "GET",
         data: {
-            function: "CustomersTableOnLoad",
+            function: "CustomersTableOnLoad"
         },
         success: function (result) {
             $(".customersInDB tbody").append(result)
@@ -1191,7 +1190,7 @@ function customersTableOnLoad() {
 }
 
 function emptyInputCustomersInputFieldsAddPopup(divEq, inputID) {
-    if ($(`#${inputID}`).val().length == 0 && !$(`.customersInputFields div:eq(${divEq}) .popupError`).length > 0) {
+    if ($(`#${inputID}`).val().trim().length == 0 && !$(`.customersInputFields div:eq(${divEq}) .popupError`).length > 0) {
         if (divEq == "0" || divEq == "4" || divEq == "5") {
             $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност<br>Може да е само цифра!</span></i>').appendTo($(`.customersInputFields div:eq(${divEq})`)).css({ "display": "flex", "margin-left": "0.7em" });
         }
@@ -1201,7 +1200,7 @@ function emptyInputCustomersInputFieldsAddPopup(divEq, inputID) {
     }
     else {
         if (inputID == "customersImeInput" || inputID == "customersAddressInput" || inputID == "customersMOLInput") {
-            if ($(`#${inputID}`).val().length == 0) {
+            if ($(`#${inputID}`).val().trim().length == 0) {
                 if ($(`.customersInputFields div:eq(${divEq}) .popupError`).length > 0) {
                     toggleErrorPopup();
                     return;
@@ -1216,7 +1215,7 @@ function emptyInputCustomersInputFieldsAddPopup(divEq, inputID) {
             }
         }
         else {
-            if (!$.isNumeric($(`#${inputID}`).val())) {
+            if (!$.isNumeric($(`#${inputID}`).val().trim())) {
                 if ($(`.customersInputFields div:eq(${divEq}) .popupError`).length > 0) {
                     toggleErrorPopup();
                     return;
@@ -1234,7 +1233,7 @@ function emptyInputCustomersInputFieldsAddPopup(divEq, inputID) {
 }
 
 function customersInputsValidated() {
-    if (!$.isNumeric($("#customersKodInput").val()) || $("#customersImeInput").val().length == 0 || $("#customersAddressInput").val().length == 0 || $("#customersMOLInput").val().length == 0 || !$.isNumeric($("#customersEKodInput").val()) || !$.isNumeric($("#customersZDDSInput").val())) {
+    if (!$.isNumeric($("#customersKodInput").val().trim()) || $("#customersImeInput").val().trim().length == 0 || $("#customersAddressInput").val().trim().length == 0 || $("#customersMOLInput").val().trim().length == 0 || !$.isNumeric($("#customersEKodInput").val().trim()) || !$.isNumeric($("#customersZDDSInput").val().trim())) {
         return false;
     }
     else {
@@ -1246,8 +1245,8 @@ function customersAddInputsAsTableRow() {
     if (customersInputsValidated()) {
         let hasDuplicates = false;
         $(".customersInDB tbody tr td").each(function () {
-            if ($("#customersKodInput").val() == $(this).text()) {
-                alert(`There is a product with code ${$(this).text()} in the table!\nPlease type in a different product code`);
+            if ($("#customersKodInput").val().trim() == $(this).text()) {
+                alert(`There is already a customer with code ${$(this).text()} in the table!\nPlease type in a different product code`);
                 hasDuplicates = true;
                 return false;
             }
@@ -1255,12 +1254,12 @@ function customersAddInputsAsTableRow() {
         if (hasDuplicates == false) {
             $(".customersInDB tbody").append(`
             <tr>
-            <td>${$("#customersKodInput").val()}</td>
-            <td>${$("#customersImeInput").val()}</td>
-            <td>${$("#customersAddressInput").val()}</td>
-            <td>${$("#customersMOLInput").val()}</td>
-            <td>${$("#customersEKodInput").val()}</td>
-            <td>${$("#customersZDDSInput").val()}</td>
+            <td>${$("#customersKodInput").val().trim()}</td>
+            <td>${$("#customersImeInput").val().trim()}</td>
+            <td>${$("#customersAddressInput").val().trim()}</td>
+            <td>${$("#customersMOLInput").val().trim()}</td>
+            <td>${$("#customersEKodInput").val().trim()}</td>
+            <td>${$("#customersZDDSInput").val().trim()}</td>
             </tr>`);
         }
     }
@@ -1307,6 +1306,7 @@ function addCustomersToDB() {
                         emptyInputCustomersInputFieldsAddPopup("3", "customersMOLInput");
                         emptyInputCustomersInputFieldsAddPopup("4", "customersEKodInput");
                         emptyInputCustomersInputFieldsAddPopup("5", "customersZDDSInput");
+                        customersTableCountOnLoad = $(".customersInDB tbody tr").length;
                     }
                 })
             })
@@ -1315,12 +1315,12 @@ function addCustomersToDB() {
         $("#btnCancelCustomersPopup").on("click", function () {
             form.style.filter = "blur(0px)";
             form.style.pointerEvents = "auto";
-            closePopupWindow("customersSavePopup")
+            closePopupWindow("customersSavePopup");
         })
         $("#customersXButton").on("click", function () {
             form.style.filter = "blur(0px)";
             form.style.pointerEvents = "auto";
-            closePopupWindow("customersSavePopup")
+            closePopupWindow("customersSavePopup");
         })
     }
     else {
@@ -1361,12 +1361,12 @@ function editCustomersPopup() {
                     data: {
                         function: "EditCustomersInDB",
                         id: selectedRowCode,
-                        editId: $("#customersEditPopupKod").val(),
-                        name: $("#customersEditPopupName").val(),
-                        address: $("#customersEditPopupAddress").val(),
-                        mol: $("#customersEditPopupMOL").val(),
-                        ecode: $("#customersEditPopupECODE").val(),
-                        zdds: $("#customersEditPopupZDDS").val()
+                        editId: $("#customersEditPopupKod").val().trim(),
+                        name: $("#customersEditPopupName").val().trim(),
+                        address: $("#customersEditPopupAddress").val().trim(),
+                        mol: $("#customersEditPopupMOL").val().trim(),
+                        ecode: $("#customersEditPopupECODE").val().trim(),
+                        zdds: $("#customersEditPopupZDDS").val().trim()
                     },
                     success: function () {
                         form.style.filter = "blur(0px)";
@@ -1399,7 +1399,7 @@ function editCustomersPopup() {
 }
 
 function emptyInputCustomersEditPopupAddPopup(divEq, inputID) {
-    if ($(`#${inputID}`).val().length == 0 && !$(`#customersEditPopup div:nth-child(3) div:eq(${divEq}) .popupError`).length > 0) {
+    if ($(`#${inputID}`).val().trim().length == 0 && !$(`#customersEditPopup div:nth-child(3) div:eq(${divEq}) .popupError`).length > 0) {
         if (divEq == "0" || divEq == "4" || divEq == "5") {
             $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност<br>Може да е само цифра!</span></i>').appendTo($(`#customersEditPopup div:nth-child(3) div:eq(${divEq})`)).css({ "display": "inline" });
         }
@@ -1409,7 +1409,7 @@ function emptyInputCustomersEditPopupAddPopup(divEq, inputID) {
     }
     else {
         if (inputID == "customersEditPopupName" || inputID == "customersEditPopupAddress" || inputID == "customersEditPopupMOL") {
-            if ($(`#${inputID}`).val().length == 0) {
+            if ($(`#${inputID}`).val().trim().length == 0) {
                 if ($(`#customersEditPopup div:nth-child(3) div:eq(${divEq}) .popupError`).length > 0) {
                     toggleErrorPopup();
                     return;
@@ -1424,7 +1424,7 @@ function emptyInputCustomersEditPopupAddPopup(divEq, inputID) {
             }
         }
         else {
-            if (!$.isNumeric($(`#${inputID}`).val())) {
+            if (!$.isNumeric($(`#${inputID}`).val().trim())) {
                 if ($(`#customersEditPopup div:nth-child(3) div:eq(${divEq}) .popupError`).length > 0) {
                     toggleErrorPopup();
                     return;
@@ -1442,7 +1442,7 @@ function emptyInputCustomersEditPopupAddPopup(divEq, inputID) {
 }
 
 function customersEditPopupInputsValidated() {
-    if (!$.isNumeric($("#customersEditPopupKod").val()) || $("#customersEditPopupName").val().length == 0 || $("#customersEditPopupAddress").val().length == 0 || $("#customersEditPopupMOL").val().length == 0 || !$.isNumeric($("#customersEditPopupECODE").val()) || !$.isNumeric($("#customersEditPopupZDDS").val())) {
+    if (!$.isNumeric($("#customersEditPopupKod").val().trim()) || $("#customersEditPopupName").val().trim().length == 0 || $("#customersEditPopupAddress").val().trim().length == 0 || $("#customersEditPopupMOL").val().trim().length == 0 || !$.isNumeric($("#customersEditPopupECODE").val().trim()) || !$.isNumeric($("#customersEditPopupZDDS").val().trim())) {
         return false;
     }
     else {
@@ -1490,7 +1490,7 @@ function customersDeleteCustomer() {
         })
     }
     else {
-        alert("Please select the row from the table you wish to edit!");
+        alert("Please select the row from the table you wish to delete!");
     }
 }
 
@@ -1512,22 +1512,389 @@ function customersCancelButton() {
     emptyInputCustomersInputFieldsAddPopup("5", "customersZDDSInput");
 }
 
+/*START OF FIRMS TAB*/
+
+let firmsTableCountOnLoad = 0;
+function firmsTableOnLoad() {
+    $.ajax({
+        url: "phpScript.php",
+        type: "GET",
+        data: {
+            function: "FirmsTableOnLoad"
+        },
+        success: function (result) {
+            $(".firmsInDB tbody").append(result);
+            firmsTableCountOnLoad = $(".firmsInDB tbody tr").length;
+        }
+    })
+}
+
+function emptyInputFirmsInputFieldsAddPopup(divEq, inputID) {
+    if ($(`#${inputID}`).val().trim().length == 0 && !$(`.firmsInputFields div:eq(${divEq}) .popupError`).length > 0) {
+        if (divEq == "0" || divEq == "4" || divEq == "5" || divEq == "8") {
+            $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност<br>Може да е само цифра!</span></i>').appendTo($(`.firmsInputFields div:eq(${divEq})`)).css({ "display": "flex", "margin-left": "0.7em" });
+        }
+        else if (divEq == "1" || divEq == "2" || divEq == "3" || divEq == "6" || divEq == "7") {
+            $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност</span></i>').appendTo($(`.firmsInputFields div:eq(${divEq})`)).css({ "display": "flex", "margin-left": "0.7em" });
+        }
+    }
+    else {
+        if (inputID == "firmsNameInput" || inputID == "firmsAddressInput" || inputID == "firmsMOLInput" || inputID == "firmsIBANInput" || inputID == "firmsBankNameInput") {
+            if ($(`#${inputID}`).val().trim().length == 0) {
+                if ($(`.firmsInputFields div:eq(${divEq}) .popupError`).length > 0) {
+                    toggleErrorPopup();
+                    return;
+                }
+                toggleErrorPopup();
+                return;
+            }
+            else {
+                $(`.firmsInputFields div:eq(${divEq})`).find(".popupError").fadeOut(150, function () {
+                    $(this).remove();
+                });
+            }
+        }
+        else {
+            if (!$.isNumeric($(`#${inputID}`).val().trim())) {
+                if ($(`.firmsInputFields div:eq(${divEq}) .popupError`).length > 0) {
+                    toggleErrorPopup();
+                    return;
+                }
+                toggleErrorPopup();
+                return;
+            }
+            else {
+                $(`.firmsInputFields div:eq(${divEq})`).find(".popupError").fadeOut(150, function () {
+                    $(this).remove();
+                });
+            }
+        }
+    }
+}
+
+function firmsInputsValidated() {
+    if (!$.isNumeric($("#firmsCodeInput").val().trim()) || $("#firmsNameInput").val().length == 0 || $("#firmsAddressInput").val().trim().length == 0 || $("#firmsMOLInput").val().trim().length == 0 || !$.isNumeric($("#firmsECODEInput").val().trim()) || !$.isNumeric($("#firmsZDDSInput").val().trim()) || $("#firmsIBANInput").val().trim().length == 0 || $("#firmsBankNameInput").val().trim().length == 0 || !$.isNumeric($("#firmsBankCodeInput").val().trim())) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+function firmsAddInputsAsTableRow() {
+    if (firmsInputsValidated()) {
+        let hasDuplicates = false;
+        $(".firmsInDB tbody tr td").each(function () {
+            if ($("#firmsCodeInput").val().trim() == $(this).text()) {
+                alert(`There is already a firm with code ${$(this).text()} in the table!\nPlease type in a different firm code`);
+                hasDuplicates = true;
+                return false;
+            }
+        });
+        if (hasDuplicates == false) {
+            $(".firmsInDB tbody").append(`
+            <tr>
+            <td>${$("#firmsCodeInput").val()}</td>
+            <td>${$("#firmsNameInput").val()}</td>
+            <td>${$("#firmsAddressInput").val()}</td>
+            <td>${$("#firmsMOLInput").val()}</td>
+            <td>${$("#firmsECODEInput").val()}</td>
+            <td>${$("#firmsZDDSInput").val()}</td>
+            <td>${$("#firmsIBANInput").val()}</td>
+            <td>${$("#firmsBankNameInput").val()}</td>
+            <td>${$("#firmsBankCodeInput").val()}</td>
+            </tr>`);
+        }
+    }
+    else {
+        alert("Please make sure you have entered the respective value for each input!");
+        return;
+    }
+}
+
+function addFirmsToDB() {
+    if ($(".firmsInDB tbody tr").length > firmsTableCountOnLoad) {
+        document.getElementById("firmsSavePopup").style.display = "grid";
+        let form = document.querySelector(".form");
+        form.style.filter = "blur(10px)";
+        form.style.pointerEvents = "none";
+        let buttonSave = document.getElementById("btnSaveFirmsPopup");
+        buttonSave.addEventListener("click", function () {
+            $(".firmsInDB tbody tr").each(function () {
+                $.ajax({
+                    url: "phpScript.php",
+                    type: "POST",
+                    data: {
+                        function: "AddFirmsToDB",
+                        id: $(this).children("td").eq(0).text(),
+                        name: $(this).children("td").eq(1).text(),
+                        address: $(this).children("td").eq(2).text(),
+                        mol: $(this).children("td").eq(3).text(),
+                        ecode: $(this).children("td").eq(4).text(),
+                        vatcode: $(this).children("td").eq(5).text(),
+                        iban: $(this).children("td").eq(6).text(),
+                        bankName: $(this).children("td").eq(7).text(),
+                        bankCode: $(this).children("td").eq(8).text()
+                    },
+                    success: function () {
+                        form.style.filter = "blur(0px)";
+                        form.style.pointerEvents = "auto";
+                        closePopupWindow("firmsSavePopup");
+                        $("#firmsCodeInput").val("");
+                        $("#firmsNameInput").val("");
+                        $("#firmsAddressInput").val("");
+                        $("#firmsMOLInput").val("");
+                        $("#firmsECODEInput").val("");
+                        $("#firmsZDDSInput").val("");
+                        $("#firmsIBANInput").val("");
+                        $("#firmsBankNameInput").val("");
+                        $("#firmsBankCodeInput").val("");
+                        emptyInputFirmsInputFieldsAddPopup("0", "firmsCodeInput");
+                        emptyInputFirmsInputFieldsAddPopup("1", "firmsNameInput");
+                        emptyInputFirmsInputFieldsAddPopup("2", "firmsAddressInput");
+                        emptyInputFirmsInputFieldsAddPopup("3", "firmsMOLInput");
+                        emptyInputFirmsInputFieldsAddPopup("4", "firmsECODEInput");
+                        emptyInputFirmsInputFieldsAddPopup("5", "firmsZDDSInput");
+                        emptyInputFirmsInputFieldsAddPopup("6", "firmsIBANInput");
+                        emptyInputFirmsInputFieldsAddPopup("7", "firmsBankNameInput");
+                        emptyInputFirmsInputFieldsAddPopup("8", "firmsBankCodeInput");
+                        firmsTableCountOnLoad = $(".firmsInDB tbody tr").length;
+                    }
+                })
+            })
+            alert("Changes saved successfully!");
+        })
+        $("#btnCancelFirmsPopup").on("click", function () {
+            form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
+            closePopupWindow("firmsSavePopup");
+        })
+        $("#firmsXButton").on("click", function () {
+            form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
+            closePopupWindow("firmsSavePopup");
+        })
+    }
+    else {
+        alert("Няма нови записи в таблицата!");
+    }
+}
+
+function editFirmsPopup() {
+    if ($(".firms").find(".selected").length > 0) {
+        $(".firmsInDB").find(".selected").removeClass("selected").css({ "background-color": "", "color": "" }).closest("tr").addClass("selected");
+        let selectedRowCode = $(".selected td:eq(0)").text();
+        $(".selected").each(function () {
+            $("#firmsEditPopupKod").val($(this).children("td").eq(0).text());
+            $("#firmsEditPopupName").val($(this).children("td").eq(1).text());
+            $("#firmsEditPopupAddress").val($(this).children("td").eq(2).text());
+            $("#firmsEditPopupMOL").val($(this).children("td").eq(3).text());
+            $("#firmsEditPopupECODE").val($(this).children("td").eq(4).text());
+            $("#firmsEditPopupZDDS").val($(this).children("td").eq(5).text());
+            $("#firmsEditPopupIBAN").val($(this).children("td").eq(6).text());
+            $("#firmsEditPopupBankName").val($(this).children("td").eq(7).text());
+            $("#firmsEditPopupBankCode").val($(this).children("td").eq(8).text());
+        })
+        emptyInputFirmsEditPopupAddPopup("0", "firmsEditPopupKod");
+        emptyInputFirmsEditPopupAddPopup("1", "firmsEditPopupName");
+        emptyInputFirmsEditPopupAddPopup("2", "firmsEditPopupAddress");
+        emptyInputFirmsEditPopupAddPopup("3", "firmsEditPopupMOL");
+        emptyInputFirmsEditPopupAddPopup("4", "firmsEditPopupECODE");
+        emptyInputFirmsEditPopupAddPopup("5", "firmsEditPopupZDDS");
+        emptyInputFirmsEditPopupAddPopup("6", "firmsEditPopupIBAN");
+        emptyInputFirmsEditPopupAddPopup("7", "firmsEditPopupBankName");
+        emptyInputFirmsEditPopupAddPopup("8", "firmsEditPopupBankCode");
+        toggleErrorPopup();
+        document.getElementById("firmsEditPopup").style.display = "grid";
+        let form = document.querySelector(".form");
+        form.style.filter = "blur(10px)";
+        form.style.pointerEvents = "none";
+        //fixed triggering multiple alerts below - https://stackoverflow.com/questions/8408826/bind-event-only-once
+        $("#firmsEditPopupSaveButton").off("click").on("click", function () {
+            if (firmsEditPopupInputsValidated()) {
+                $.ajax({
+                    url: "phpScript.php",
+                    type: "POST",
+                    data: {
+                        function: "EditFirmsInDB",
+                        id: selectedRowCode,
+                        editId: $("#firmsEditPopupKod").val().trim(),
+                        name: $("#firmsEditPopupName").val().trim(),
+                        address: $("#firmsEditPopupAddress").val().trim(),
+                        mol: $("#firmsEditPopupMOL").val().trim(),
+                        ecode: $("#firmsEditPopupECODE").val().trim(),
+                        zdds: $("#firmsEditPopupZDDS").val().trim(),
+                        iban: $("#firmsEditPopupIBAN").val().trim(),
+                        bankName: $("#firmsEditPopupZDDS").val().trim(),
+                        bankCode: $("#firmsEditPopupBankCode").val().trim()
+                    },
+                    success: function () {
+                        form.style.filter = "blur(0px)";
+                        form.style.pointerEvents = "auto";
+                        closePopupWindow("firmsEditPopup");
+                        $(".firmsInDB tbody").empty();
+                        firmsTableOnLoad();
+                    }
+                })
+                alert("Record successfully updated!");
+            }
+            else {
+                alert("Invalid values in one or more inputs!");
+            }
+        })
+        $("#firmsEditPopupXButton").on("click", function () {
+            form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
+            closePopupWindow("firmsEditPopup");
+        })
+        $("#firmsEditPopupCancelButton").on("click", function () {
+            form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
+            closePopupWindow("firmsEditPopup");
+        })
+    }
+    else {
+        alert("Please select the row from the table you wish to edit!");
+    }
+}
+
+function emptyInputFirmsEditPopupAddPopup(divEq, inputID) {
+    if ($(`#${inputID}`).val().trim().length == 0 && !$(`#firmsEditPopup div:nth-child(3) div:eq(${divEq}) .popupError`).length > 0) {
+        if (divEq == "0" || divEq == "4" || divEq == "5" || divEq == "8") {
+            $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност<br>Може да е само цифра!</span></i>').appendTo($(`#firmsEditPopup div:nth-child(3) div:eq(${divEq})`)).css({ "display": "inline" });
+        }
+        else if (divEq == "1" || divEq == "2" || divEq == "3" || divEq == "6" || divEq == "7") {
+            $('<i class="popupError fa-solid fa-circle-exclamation" style="color: #ff0000;"><span class="popupErrorText">Моля въведете стойност</span></i>').appendTo($(`#firmsEditPopup div:nth-child(3) div:eq(${divEq})`)).css({ "display": "inline" });
+        }
+    }
+    else {
+        if (inputID == "firmsEditPopupName" || inputID == "firmsEditPopupAddress" || inputID == "firmsEditPopupMOL" || inputID == "firmsEditPopupIBAN" || inputID == "firmsEditPopupBankName") {
+            if ($(`#${inputID}`).val().trim().length == 0) {
+                if ($(`#firmsEditPopup div:nth-child(3) div:eq(${divEq}) .popupError`).length > 0) {
+                    toggleErrorPopup();
+                    return;
+                }
+                toggleErrorPopup();
+                return;
+            }
+            else {
+                $(`#firmsEditPopup div:nth-child(3) div:eq(${divEq})`).find(".popupError").fadeOut(150, function () {
+                    $(this).remove();
+                });
+            }
+        }
+        else {
+            if (!$.isNumeric($(`#${inputID}`).val().trim())) {
+                if ($(`#firmsEditPopup div:nth-child(3) div:eq(${divEq}) .popupError`).length > 0) {
+                    toggleErrorPopup();
+                    return;
+                }
+                toggleErrorPopup();
+                return;
+            }
+            else {
+                $(`#firmsEditPopup div:nth-child(3) div:eq(${divEq})`).find(".popupError").fadeOut(150, function () {
+                    $(this).remove();
+                });
+            }
+        }
+    }
+}
+
+function firmsEditPopupInputsValidated() {
+    if (!$.isNumeric($("#firmsEditPopupKod").val().trim()) || $("#firmsEditPopupName").val().trim().length == 0 || $("#firmsEditPopupAddress").val().trim().length == 0 || $("#firmsEditPopupMOL").val().trim().length == 0 || !$.isNumeric($("#firmsEditPopupECODE").val().trim()) || !$.isNumeric($("#firmsEditPopupZDDS").val().trim()) || $("#firmsEditPopupIBAN").val().trim().length == 0 || $("#firmsEditPopupBankName").val().trim().length == 0 || !$.isNumeric($("#firmsEditPopupBankCode").val().trim())) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+function firmsDeleteFirm() {
+    if ($(".firms").find(".selected").length > 0) {
+        let form = document.querySelector(".form");
+        form.style.filter = "blur(10px)";
+        form.style.pointerEvents = "none";
+        $("#firmsDeleteFirmPopup").css("display", "grid");
+        $("#firmsDeleteWarningMessage p").remove();
+        $(".firmsInDB").find(".selected").removeClass("selected").css({ "background-color": "", "color": "" }).closest("tr").addClass("selected");
+        $("#firmsDeleteWarningMessage").append(`<p>Сигурни ли сте, че искате да изтриете фирма с код - <b>${$(".selected td:eq(0)").text()}</b></p>`);
+        $("#firmsBtnDeleteYes").off("click").on("click", function () {
+            $.ajax({
+                url: "phpScript.php",
+                type: "POST",
+                data: {
+                    function: "FirmsDeleteFirm",
+                    id: $(".selected td:eq(0)").text()
+                },
+                success: function () {
+                    form.style.filter = "blur(0px)";
+                    form.style.pointerEvents = "auto";
+                    closePopupWindow("firmsDeleteFirmPopup");
+                    $(".firmsInDB tbody").empty();
+                    firmsTableOnLoad();
+                }
+            })
+            alert(`Firm with a code - ${$(".selected td:eq(0)").text()} has been successfully deleted!`);
+            $(".firmsInDB .selected").remove();
+        })
+        $("#firmsDeleteXButton").on("click", function () {
+            form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
+            closePopupWindow("firmsDeleteFirmPopup");
+        })
+        $("#firmsDeleteBtnCancel").on("click", function () {
+            form.style.filter = "blur(0px)";
+            form.style.pointerEvents = "auto";
+            closePopupWindow("firmsDeleteFirmPopup");
+        })
+    }
+    else {
+        alert("Please select the row from the table you wish to delete!");
+    }
+}
+
+function firmsCancelButton() {
+    $(".firmsInDB").find(".selected").css({ "background-color": "", "color": "" }).removeClass("selected");
+    $(".firmsInDB").find(".foundText").css({ "background-color": "", "color": "" }).removeClass("foundText");
+    $("#firmsSearchBox").val("");
+    $("#firmsCodeInput").val("");
+    $("#firmsNameInput").val("");
+    $("#firmsAddressInput").val("");
+    $("#firmsMOLInput").val("");
+    $("#firmsECODEInput").val("");
+    $("#firmsZDDSInput").val("");
+    $("#firmsIBANInput").val("");
+    $("#firmsBankNameInput").val("");
+    $("#firmsBankCodeInput").val("");
+    emptyInputFirmsInputFieldsAddPopup("0", "firmsCodeInput");
+    emptyInputFirmsInputFieldsAddPopup("1", "firmsNameInput");
+    emptyInputFirmsInputFieldsAddPopup("2", "firmsAddressInput");
+    emptyInputFirmsInputFieldsAddPopup("3", "firmsMOLInput");
+    emptyInputFirmsInputFieldsAddPopup("4", "firmsECODEInput");
+    emptyInputFirmsInputFieldsAddPopup("5", "firmsZDDSInput");
+    emptyInputFirmsInputFieldsAddPopup("6", "firmsIBANInput");
+    emptyInputFirmsInputFieldsAddPopup("7", "firmsBankNameInput");
+    emptyInputFirmsInputFieldsAddPopup("8", "firmsBankCodeInput");
+}
+
 //EVENTS
 document.addEventListener("DOMContentLoaded", function (e) {
-    //invoices tab
+    //general
     tabControl(e, "newInvoice");
-    //tabControl(e, "customers"); //using this currently so i dont have to constantly switch tabs when i refresh the page, when done remove this line and uncomment the one above
     setAutoHeight('newInvoice');
     setAutoHeight('invoices');
     setAutoHeight('products');
     setAutoHeight('customers');
+    setAutoHeight('firms')
+    //invoices tab
     invoicesGridAddSelectedClass();
-    dataGridCellClick("addedProducts");
     $(document).on("click", ".invoicesInDB td", function () {
         clickedRowNumberInvoices();
         cellClickNumberInvoices();
     })
     //new invoice tab
+    dataGridCellClick("addedProducts");
     $(document).on("click", ".addedProducts td", function () { //https://stackoverflow.com/questions/44302958/how-to-add-event-handler-on-row-of-table -- event delegation
         colorCells("addedProducts");
     })
@@ -1612,6 +1979,10 @@ document.addEventListener("DOMContentLoaded", function (e) {
     })
     document.getElementById("tabNewInvoice").addEventListener("click", function (e) {
         tabControl(e, "newInvoice");
+        $("#clientsComboBox").empty();
+        clientsComboBoxOnLoad();
+        $("#firmsComboBox").empty();
+        firmsComboBoxOnLoad();
         $("#productsComboBox").empty();
         productsComboBoxOnLoad();
         $(".form").find(".selected").css({ "background-color": "", "color": "" }).removeClass("selected");
@@ -1634,6 +2005,13 @@ document.addEventListener("DOMContentLoaded", function (e) {
         tabControl(e, "customers");
         $(".customersInDB tbody").empty();
         customersTableOnLoad();
+        $(".form").find(".selected").css({ "background-color": "", "color": "" }).removeClass("selected");
+        toggleErrorPopup();
+    })
+    document.getElementById("tabFirms").addEventListener("click", function (e) {
+        tabControl(e, "firms");
+        $(".firmsInDB tbody").empty();
+        firmsTableOnLoad();
         $(".form").find(".selected").css({ "background-color": "", "color": "" }).removeClass("selected");
         toggleErrorPopup();
     })
@@ -1824,5 +2202,126 @@ document.addEventListener("DOMContentLoaded", function (e) {
     })
     document.getElementById("btnCustomersCancel").addEventListener("click", function () {
         customersCancelButton();
+    })
+    //firms tab
+    firmsTableOnLoad();
+    emptyInputFirmsInputFieldsAddPopup("0", "firmsCodeInput");
+    emptyInputFirmsInputFieldsAddPopup("1", "firmsNameInput");
+    emptyInputFirmsInputFieldsAddPopup("2", "firmsAddressInput");
+    emptyInputFirmsInputFieldsAddPopup("3", "firmsMOLInput");
+    emptyInputFirmsInputFieldsAddPopup("4", "firmsECODEInput");
+    emptyInputFirmsInputFieldsAddPopup("5", "firmsZDDSInput");
+    emptyInputFirmsInputFieldsAddPopup("6", "firmsIBANInput");
+    emptyInputFirmsInputFieldsAddPopup("7", "firmsBankNameInput");
+    emptyInputFirmsInputFieldsAddPopup("8", "firmsBankCodeInput");
+    toggleErrorPopup();
+    dataGridCellClick("firmsInDB");
+    $(document).on("click", ".firmsInDB td", function () {
+        colorCells("firmsInDB");
+    })
+    document.getElementById("firmsCodeInput").addEventListener("input", function () {
+        emptyInputFirmsInputFieldsAddPopup("0", "firmsCodeInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsNameInput").addEventListener("input", function () {
+        emptyInputFirmsInputFieldsAddPopup("1", "firmsNameInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsAddressInput").addEventListener("input", function () {
+        emptyInputFirmsInputFieldsAddPopup("2", "firmsAddressInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsMOLInput").addEventListener("input", function () {
+        emptyInputFirmsInputFieldsAddPopup("3", "firmsMOLInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsECODEInput").addEventListener("input", function () {
+        emptyInputFirmsInputFieldsAddPopup("4", "firmsECODEInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsZDDSInput").addEventListener("input", function () {
+        emptyInputFirmsInputFieldsAddPopup("5", "firmsZDDSInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsIBANInput").addEventListener("input", function () {
+        emptyInputFirmsInputFieldsAddPopup("6", "firmsIBANInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsBankNameInput").addEventListener("input", function () {
+        emptyInputFirmsInputFieldsAddPopup("7", "firmsBankNameInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsBankCodeInput").addEventListener("input", function () {
+        emptyInputFirmsInputFieldsAddPopup("8", "firmsBankCodeInput");
+        toggleErrorPopup();
+    })
+    document.getElementById("btnFirmsFirstRow").addEventListener("click", function () {
+        buttonFirstRow("firmsInDB");
+    })
+    document.getElementById("btnFirmsPreviousRow").addEventListener("click", function () {
+        buttonPreviousRow("firmsInDB");
+    })
+    document.getElementById("btnFirmsNextRow").addEventListener("click", function () {
+        buttonNextRow("firmsInDB");
+    })
+    document.getElementById("btnFirmsLastRow").addEventListener("click", function () {
+        buttonLastRow("firmsInDB");
+    })
+    document.getElementById("firmsBtnInsert").addEventListener("click", function () {
+        firmsAddInputsAsTableRow();
+    })
+    document.getElementById("firmsSavePopup").style.display = "none";
+    document.getElementById("firmsBtnSave").addEventListener("click", function () {
+        addFirmsToDB();
+    })
+    document.getElementById("firmsEditPopup").style.display = "none";
+    document.getElementById("firmsBtnEdit").addEventListener("click", function () {
+        editFirmsPopup();
+    })
+    document.getElementById("firmsEditPopupKod").addEventListener("input", function () {
+        emptyInputFirmsEditPopupAddPopup("0", "firmsEditPopupKod");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsEditPopupName").addEventListener("input", function () {
+        emptyInputFirmsEditPopupAddPopup("1", "firmsEditPopupName");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsEditPopupAddress").addEventListener("input", function () {
+        emptyInputFirmsEditPopupAddPopup("2", "firmsEditPopupAddress");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsEditPopupMOL").addEventListener("input", function () {
+        emptyInputFirmsEditPopupAddPopup("3", "firmsEditPopupMOL");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsEditPopupECODE").addEventListener("input", function () {
+        emptyInputFirmsEditPopupAddPopup("4", "firmsEditPopupECODE");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsEditPopupZDDS").addEventListener("input", function () {
+        emptyInputFirmsEditPopupAddPopup("5", "firmsEditPopupZDDS");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsEditPopupIBAN").addEventListener("input", function () {
+        emptyInputFirmsEditPopupAddPopup("6", "firmsEditPopupIBAN");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsEditPopupBankName").addEventListener("input", function () {
+        emptyInputFirmsEditPopupAddPopup("7", "firmsEditPopupBankName");
+        toggleErrorPopup();
+    })
+    document.getElementById("firmsEditPopupBankCode").addEventListener("input", function () {
+        emptyInputFirmsEditPopupAddPopup("8", "firmsEditPopupBankCode");
+        toggleErrorPopup();
+    })
+    document.getElementById("btnFirmsSearch").addEventListener("click", function () {
+        searchBoxSearch("firmsSearchBox", "firmsInDB");
+    })
+    document.getElementById("firmsDeleteFirmPopup").style.display = "none";
+    document.getElementById("firmsBtnDelete").addEventListener("click", function () {
+        firmsDeleteFirm();
+    })
+    document.getElementById("btnFirmsCancel").addEventListener("click", function () {
+        firmsCancelButton();
     })
 })
