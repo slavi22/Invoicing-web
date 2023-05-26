@@ -236,6 +236,44 @@
         $GLOBALS['conn'] -> query($query);
     }
 
+    //FIRMS TAB
+
+    function FirmsTableOnLoad(){
+        $query = "SELECT `MyFirmID`, `MyFirmName`, `MyFirmAddress`, `MyFirmMOL`, `MyFirmECODE`, `MyFirmVATECODE`, `MyFirmIBAN`, `MyFirmBANKNAME`, `MyFirmBANKCODE` FROM `myfirms` WHERE IsDeleted = 0";
+        $result = $GLOBALS['conn'] -> query($query);
+        while($row = $result -> fetch_assoc()){
+            echo
+            "
+                <tr>
+                <td>".$row["MyFirmID"]."</td>
+                <td>".$row["MyFirmName"]."</td>
+                <td>".$row["MyFirmAddress"]."</td>
+                <td>".$row["MyFirmMOL"]."</td>
+                <td>".$row["MyFirmECODE"]."</td>
+                <td>".$row["MyFirmVATECODE"]."</td>
+                <td>".$row["MyFirmIBAN"]."</td>
+                <td>".$row["MyFirmBANKNAME"]."</td>
+                <td>".$row["MyFirmBANKCODE"]."</td>
+                </tr>
+            ";
+        }
+    }
+
+    function AddFirmsToDB($id, $name, $address, $mol, $ecode, $vatcode, $iban, $bankName, $bankCode){
+        $query = "INSERT INTO `myfirms`(`MyFirmID`, `MyFirmName`, `MyFirmAddress`, `MyFirmMOL`, `MyFirmECODE`, `MyFirmVATECODE`, `MyFirmIBAN`, `MyFirmBANKNAME`, `MyFirmBANKCODE`) VALUES ('$id','$name','$address','$mol','$ecode','$vatcode','$iban','$bankName','$bankCode')";
+        $GLOBALS['conn'] -> query($query);
+    }
+
+    function EditFirmsInDB($id, $editId, $name, $address, $mol, $ecode, $zdds, $iban, $bankName, $bankCode){
+        $query = "UPDATE `myfirms` SET `MyFirmID`='$editId',`MyFirmName`='$name',`MyFirmAddress`='$address',`MyFirmMOL`='$mol',`MyFirmECODE`='$ecode',`MyFirmVATECODE`='$zdds',`MyFirmIBAN`='$iban',`MyFirmBANKNAME`='$bankName',`MyFirmBANKCODE`='$bankCode' WHERE MyFirmID = $id";
+        $GLOBALS['conn'] -> query($query);
+    }
+
+    function FirmsDeleteFirm($id){
+        $query = "UPDATE myfirms SET IsDeleted = 1 WHERE MyFirmID = $id";
+        $GLOBALS['conn'] -> query($query);
+    }
+
     //CALLS
     //https://stackoverflow.com/questions/2269307/using-jquery-ajax-to-call-a-php-function
     if(isset($_GET['function'])){
@@ -262,6 +300,9 @@
         }
         elseif($_GET['function'] == 'CustomersTableOnLoad'){
             CustomersTableOnLoad();
+        }
+        elseif($_GET['function'] == 'FirmsTableOnLoad'){
+            FirmsTableOnLoad();
         }
     }
 
@@ -321,6 +362,15 @@
         }
         elseif($_POST['function'] == "CustomersDeleteCustomer"){
             CustomersDeleteCustomer($_POST['code']);
+        }
+        elseif($_POST['function'] == "AddFirmsToDB"){
+            AddFirmsToDB($_POST['id'], $_POST['name'], $_POST['address'], $_POST['mol'], $_POST['ecode'], $_POST['vatcode'], $_POST['iban'], $_POST['bankName'], $_POST['bankCode']);
+        }
+        elseif($_POST['function'] == "EditFirmsInDB"){
+            EditFirmsInDB($_POST['id'], $_POST['editId'], $_POST['name'], $_POST['address'], $_POST['mol'], $_POST['ecode'], $_POST['zdds'], $_POST['iban'], $_POST['bankName'], $_POST['bankCode']);
+        }
+        elseif($_POST['function'] == "FirmsDeleteFirm"){
+            FirmsDeleteFirm($_POST['id']);
         }
     }
 ?>

@@ -22,6 +22,7 @@
             <button class="tabControlButton" id="tabInvoices">Invoices</button>
             <button class="tabControlButton" id="tabProducts">Products</button>
             <button class="tabControlButton" id="tabCustomers">Customers</button>
+            <button class="tabControlButton" id="tabFirms">Firms</button>
             <hr class="line">
             <div class="tab newInvoice" id="newInvoice">
                 <div class="groupBox invoiceGroupBox">
@@ -141,7 +142,6 @@
                         </thead>
                         <tbody>
                         </tbody>
-                        <!--load invoices from db-->
                     </table>
                 </div>
                 <div class="datagridSelectedCellInvoiceInfo">
@@ -316,6 +316,106 @@
                     <div><button id="customersBtnEdit">Edit</button></div>
                     <div><button id="customersBtnDelete">Delete</button></div>
                     <div id="customersBtnCancelDiv"><button id="btnCustomersCancel">Cancel</button></div>
+                </div>
+            </div>
+        </div>
+        <div class="tabControl">
+            <div class="tab firms" id="firms">
+                <div class="firmsLabels">
+                    <div>
+                        <label>Код</label>
+                    </div>
+                    <div>
+                        <label>Име на фирмата</label>
+                    </div>
+                    <div>
+                        <label>Адрес</label>
+                    </div>
+                    <div>
+                        <label>МОЛ на фирмата</label>
+                    </div>
+                    <div>
+                        <label>Е-КОД на фирмата</label>
+                    </div>
+                    <div>
+                        <label>ИН по ЗДДС на фирмата</label>
+                    </div>
+                    <div>
+                        <label>IBAN</label>
+                    </div>
+                    <div>
+                        <label>Банка</label>
+                    </div>
+                    <div>
+                        <label>Код на банката</label>
+                    </div>
+                </div>
+                <div class="firmsInputFields">
+                    <div>
+                        <input id="firmsCodeInput">
+                    </div>
+                    <div>
+                        <input id="firmsNameInput">
+                    </div>
+                    <div>
+                        <input id="firmsAddressInput">
+                    </div>
+                    <div>
+                        <input id="firmsMOLInput">
+                    </div>
+                    <div>
+                        <input id="firmsECODEInput">
+                    </div>
+                    <div>
+                        <input id="firmsZDDSInput">
+                    </div>
+                    <div>
+                        <input id="firmsIBANInput">
+                    </div>
+                    <div>
+                        <input id="firmsBankNameInput"> 
+                    </div>
+                    <div>
+                        <input id="firmsBankCodeInput"> 
+                    </div>
+                </div>
+                <div class="dataGridFirmsInDB">
+                    <div class="firmsGrid">
+                        <table class="firmsInDB">
+                            <thead>
+                                <tr>
+                                    <th>Код</th>
+                                    <th>Име</th>
+                                    <th>Адрес</th>
+                                    <th>МОЛ</th>
+                                    <th>Е-КОД</th>
+                                    <th>ИН по ЗДДС</th>
+                                    <th>IBAN</th>
+                                    <th>Банка</th>
+                                    <th>Код на банката</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="firmsButtons">
+                    <div class="firmsFirstRowButtons">
+                        <button id="btnFirmsFirstRow">|&#60</button>
+                        <button id="btnFirmsPreviousRow">&#60</button>
+                        <button id="btnFirmsNextRow">&#62</button>
+                        <button id="btnFirmsLastRow">&#62|</button>
+                    </div>
+                    <div class="firmsSecondRowButtons">
+                        <input type="text" id="firmsSearchBox">
+                        <button id="btnFirmsSearch">S</button>
+                    </div>
+                    <div><button id="firmsBtnInsert">Insert</button></div>
+                    <div><button id="firmsBtnSave">Save</button></div>
+                    <div><button id="firmsBtnEdit">Edit</button></div>
+                    <div><button id="firmsBtnDelete">Delete</button></div>
+                    <div id="firmsBtnCancelDiv"><button id="btnFirmsCancel">Cancel</button></div>
                 </div>
             </div>
         </div>
@@ -594,6 +694,83 @@
             <div id="customersDeleteWarningMessage"></div>
             <div id="customersDeleteYes"><button id="customersBtnDeleteYes">Yes</button></div>
             <div id="customersDeleteCancel"><button id="customersDeleteBtnCancel">Cancel</button></div>
+        </div>
+        <div id="firmsSavePopup">
+            <div id="firmsCloseButton"><button id="firmsXButton">X</button></div>
+            <div id="firmsWarningMessage">
+                <p>Има нови записи в таблицата.<br>Искате ли да запишете всички промени?</p>
+            </div>
+            <div id="firmsPopupSave"><button id="btnSaveFirmsPopup">Save</button></div>
+            <div id="firmsPopupCancel"><button id="btnCancelFirmsPopup">Cancel</button></div>
+        </div>
+        <div id="firmsEditPopup">
+            <div><button id="firmsEditPopupXButton">X</button></div>
+            <div>
+                <div>
+                    <label>Код</label>
+                </div>
+                <div>
+                    <label>Име на фирмата</label>
+                </div>
+                <div>
+                    <label>Адрес</label>
+                </div>
+                <div>
+                    <label>МОЛ на фирмата</label>
+                </div>
+                <div>
+                    <label>Е-КОД на фирмата</label>
+                </div>
+                <div>
+                    <label>ИН по ЗДДС на фирмата</label>
+                </div>
+                <div>
+                    <label>IBAN</label>
+                </div>
+                <div>
+                    <label>Банка</label>
+                </div>
+                <div>
+                    <label>Код на банката</label>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <input id="firmsEditPopupKod">
+                </div>
+                <div>
+                    <input id="firmsEditPopupName">
+                </div>
+                <div>
+                    <input id="firmsEditPopupAddress">
+                </div>
+                <div>
+                    <input id="firmsEditPopupMOL">
+                </div>
+                <div>
+                    <input id="firmsEditPopupECODE">
+                </div>
+                <div>
+                    <input id="firmsEditPopupZDDS">
+                </div>
+                <div>
+                    <input id="firmsEditPopupIBAN">
+                </div>
+                <div>
+                    <input id="firmsEditPopupBankName"> 
+                </div>
+                <div>
+                    <input id="firmsEditPopupBankCode"> 
+                </div>
+            </div>
+            <div><button id="firmsEditPopupSaveButton">Save</button></div>
+            <div><button id="firmsEditPopupCancelButton">Cancel</button></div>
+        </div>
+        <div id="firmsDeleteFirmPopup">
+            <div id="firmsDeleteCloseButton"><button id="firmsDeleteXButton">X</button></div>
+            <div id="firmsDeleteWarningMessage"></div>
+            <div id="firmsDeleteYes"><button id="firmsBtnDeleteYes">Yes</button></div>
+            <div id="firmsDeleteCancel"><button id="firmsDeleteBtnCancel">Cancel</button></div>
         </div>
 </body>
 
