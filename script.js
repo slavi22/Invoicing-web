@@ -167,7 +167,7 @@ function newInvoicesTabOnLoad(isDisabled) {
     for (let items of firstRowButtons) {
         items.disabled = false;
     }
-    let secondRowButtons = document.querySelectorAll(".secondRowButtons button, input[type=text]");
+    let secondRowButtons = document.querySelectorAll(".secondRowButtons button, .secondRowButtons input[type=text]");;
     for (let items of secondRowButtons) {
         items.disabled = !isDisabled;
     }
@@ -362,7 +362,12 @@ function addDataToInvoiceProduct() {
         },
         success: function (result) {
             let parsedJson = JSON.parse(result);
-            lastInvProdID = Number(parsedJson[0].INVPRODID);
+            if (parsedJson.length == 0) {
+                lastInvProdID = 0;
+            }
+            else {
+                lastInvProdID = Number(parsedJson[0].INVPRODID);
+            }
             $(".addedProducts tbody tr").each(function () {
                 lastInvProdID++;
                 $.ajax({
@@ -944,7 +949,7 @@ function productsAddInputsAsTableRow() {
                 hasDuplicates = true;
                 return false;
             }
-            else if($("#naimenovanieInput").val().trim() == $(this).text()){
+            else if ($("#naimenovanieInput").val().trim() == $(this).text()) {
                 alert(`There is already a product with name ${$(this).text()} in the table!\nPlease type in a different product name`);
                 hasDuplicates = true;
                 return false;
@@ -1294,7 +1299,7 @@ function customersAddInputsAsTableRow() {
                 hasDuplicates = true;
                 return false;
             }
-            else if($("#customersImeInput").val().trim() == $(this).text()){
+            else if ($("#customersImeInput").val().trim() == $(this).text()) {
                 alert(`There is already a customer with name "${$(this).text()}" in the table!\nPlease type in a different product name`); //solve this,currently there can only be one customer with the name lets say "Ivan Ivanov", if i try and and a second customer with that name it's gonna give me this alert, if i allow this input it would return multiple ids, while i only want one for everything else to function properly via the "GetCustomerIDAndFirmID" php function. Maybe add an email column in the table, or maybe a popup that lists the different people with like their phone numbers or emails. Or maybe add like a second combo box that lists the emails of people with the same name? Pretty much something else to identify the person
                 hasDuplicates = true;
                 return false;
@@ -1639,7 +1644,7 @@ function firmsAddInputsAsTableRow() {
                 hasDuplicates = true;
                 return false;
             }
-            else if($("#firmsNameInput").val().trim() == $(this).text()){
+            else if ($("#firmsNameInput").val().trim() == $(this).text()) {
                 alert(`There is already a firm that's named "${$(this).text()}" in the table!\nPlease type in a different product name`);
                 hasDuplicates = true;
                 return false;

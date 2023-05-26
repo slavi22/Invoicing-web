@@ -45,7 +45,7 @@
 
     // NEW INVOICE TAB
     function NextInvoiceNumber(){
-        $query = "SELECT INVOICENUMBER FROM mydb.invoices order by INVOICENUMBER desc limit 1;";
+        $query = "SELECT INVOICENUMBER FROM invoices order by INVOICENUMBER desc limit 1;";
         $result = $GLOBALS['conn'] -> query($query);
         while($row = $result -> fetch_assoc()){
             echo
