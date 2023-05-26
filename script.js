@@ -324,18 +324,30 @@ function productsComboBoxOnLoad() {
 }
 
 function addSelectedProductToGrid() {
-    let selectedIndex = document.getElementById("productsComboBox").selectedIndex;
+    let selectedOption = $("#productsComboBox option:selected").text();
     $.ajax({
-        url: 'phpScript.php',
+        url: "phpScript.php",
         type: "POST",
         data: {
-            function: "AddSelectedProductToGrid",
-            selectedIndex: selectedIndex
+            function: "ProductsComboBoxGetSelectedOptionID",
+            selectedOption: selectedOption
         },
         success: function (result) {
-            $(".addedProducts tbody").append(result);
-            $(".addedProducts td:eq(1)").width("25%")
-            totalTextBoxes();
+            let parsedJson = JSON.parse(result);
+            let productID = parsedJson[0].PRODUCTID;
+            $.ajax({
+                url: 'phpScript.php',
+                type: "POST",
+                data: {
+                    function: "AddSelectedProductToGrid",
+                    productID: productID
+                },
+                success: function (result) {
+                    $(".addedProducts tbody").append(result);
+                    $(".addedProducts td:eq(1)").width("25%")
+                    totalTextBoxes();
+                }
+            })
         }
     })
 }
@@ -405,28 +417,41 @@ function addNewInvoiceToDB() {
         let buttonCancel = document.getElementById("btnCancelNewInvoicePopup");
         $("#btnSaveNewInvoicePopup").off("click").on("click", function () {
             $.ajax({
-                url: 'phpScript.php',
+                url: "phpScript.php",
                 type: "POST",
                 data: {
-                    function: 'AddNewInvoiceToDb',
-                    invoiceNumber: $("#invNumber").val(),
-                    invoiceVATDate: formattedDate,
-                    invoiceDealDate: dealDate,
-                    invoiceSum: $("#txtBoxDanOsnova").val(),
-                    invoiceVat: $("#txtBoxDDS").val(),
-                    invoiceTotal: $("#txtBoxSum").val(),
-                    invoiceVatPercent: $("#labelDDS").text(),
-                    customerId: $("#customersComboBox").prop("selectedIndex"),
-                    myFirmId: $("#firmsComboBox").prop("selectedIndex")
+                    function: "GetCustomerIDAndFirmID",
+                    clientComboBoxSelectedOption: $("#clientsComboBox option:selected").text(),
+                    firmComboBoxSelectedOption: $("#firmsComboBox option:selected").text()
                 },
-                success: function () {
-                    form.style.filter = "blur(0px)";
-                    closePopupWindow("newInvoicePopup");
-                    form.style.pointerEvents = "auto";
-                    addDataToInvoiceProduct();
+                success: function (result) {
+                    let parsedJson = JSON.parse(result);
+                    let customerId = parsedJson[0].CustomersID;
+                    let firmId = parsedJson[0].MyFirmID;
+                    $.ajax({
+                        url: 'phpScript.php',
+                        type: "POST",
+                        data: {
+                            function: 'AddNewInvoiceToDb',
+                            invoiceNumber: $("#invNumber").val(),
+                            invoiceVATDate: formattedDate,
+                            invoiceDealDate: dealDate,
+                            invoiceSum: $("#txtBoxDanOsnova").val(),
+                            invoiceVat: $("#txtBoxDDS").val(),
+                            invoiceTotal: $("#txtBoxSum").val(),
+                            invoiceVatPercent: $("#labelDDS").text(),
+                            customerId: customerId,
+                            firmId: firmId
+                        },
+                        success: function () {
+                            form.style.filter = "blur(0px)";
+                            closePopupWindow("newInvoicePopup");
+                            form.style.pointerEvents = "auto";
+                            addDataToInvoiceProduct();
+                        }
+                    });
                 }
-            });
-
+            })
         });
         buttonCancel.addEventListener("click", function () {
             form.style.filter = "blur(0px)";
@@ -667,86 +692,100 @@ function fillPrintPreviewInfo() {
             url: "phpScript.php",
             type: "POST",
             data: {
-                function: "GetPrintPreviewRecipientInfo",
-                customerId: $("#clientsComboBox").prop("selectedIndex")
+                function: "GetCustomerIDAndFirmID",
+                clientComboBoxSelectedOption: $("#clientsComboBox option:selected").text(),
+                firmComboBoxSelectedOption: $("#firmsComboBox option:selected").text()
             },
             success: function (result) {
                 let parsedJson = JSON.parse(result);
-                $("#groupRecipientSecondRow div:eq(1)").append(`<p class="appended">${parsedJson[0].CustomerECODE}</p>`);
-                $("#groupRecipientSecondRow div:eq(2)").append(`<p class="appended">${parsedJson[0].CustomerVATCODE}</p>`);
-                $("#groupRecipientSecondRow div:eq(3)").append(`<p class="appended">${parsedJson[0].CustomerAddress}</p>`);
-                $("#groupRecipientSecondRow div:eq(4)").append(`<p class="appended">${parsedJson[0].CustomerMOL}</p>`);
-            }
-        });
-        $.ajax({
-            url: "phpScript.php",
-            type: "POST",
-            data: {
-                function: "GetPrintPreviewSellerInfo",
-                myFirmId: $("#firmsComboBox").prop("selectedIndex")
-            },
-            success: function (result) {
-                let parsedJson = JSON.parse(result);
-                $("#groupSellerSecondRow div:eq(0)").append(`<p class="appended" style="font-weight:bold">${parsedJson[0].MyFirmName}</p>`);
-                $("#groupSellerSecondRow div:eq(1)").append(`<p class="appended">${parsedJson[0].MyFirmECODE}</p>`);
-                $("#groupSellerSecondRow div:eq(2)").append(`<p class="appended">${parsedJson[0].MyFirmVATECODE}</p>`);
-                $("#groupSellerSecondRow div:eq(3)").append(`<p class="appended">${parsedJson[0].MyFirmAddress}</p>`);
-                $("#groupSellerSecondRow div:eq(4)").append(`<p class="appended">${parsedJson[0].MyFirmMOL}</p>`);
-            }
-        });
-        $("#groupTextInvNo div").append(`<p class="appended">${$("#invNumber").val()}</p>`);
-        if ($("#chkBox").is(":checked")) {
-            $("#groupTextInvNo div").append(`<p class="appended" style="position:absolute; margin-left:3em; margin-top:1.5em;font-weight:100; font-size:20px">${$("#chkBox").val()}</p>`);
-        }
-        $.ajax({
-            url: "phpScript.php",
-            type: "POST",
-            data: {
-                function: "GetPrintPreviewDatesInfo",
-                customerId: $("#clientsComboBox").prop("selectedIndex")
-            },
-            success: function (result) {
-                let parsedJson = JSON.parse(result);
-                $("#groupInvDataDates div:eq(0)").append(`<p class="appended">${formattedDate}</p>`);
-                $("#groupInvDataDates div:eq(1)").append(`<p class="appended">${dealDate}</p>`);
-                $("#groupInvDataDates div:eq(2)").append(`<p class="appended">${parsedJson[0].CustomerAddress}</p>`);
-            }
-        });
-        $(".addedProducts tbody tr").clone().appendTo("#groupDataTable table>tbody").css("border", "none").addClass("appended").find("td").removeAttr("style");
-        for (let i = 0; i < $("#groupDataTable table tr").length; i++) {
-            $("#groupDataTable table>tbody tr").eq(i).prepend(`<td>${i + 1}</td>`);
-            $("#groupDataTable table>tbody tr").eq(i).append($(`#groupDataTable table>tbody tr:eq(${i}) td`).eq(5).clone());
-        }
-        $.ajax({
-            url: "phpScript.php",
-            type: "POST",
-            data: {
-                function: "SellerBankInfo",
-                sellerId: $("#firmsComboBox").prop("selectedIndex")
-            },
-            success: function (result) {
-                let parsedJson = JSON.parse(result);
-                $("#groupBankAndSum div:eq(0)>div:eq(0)").append(`<p class="appended">${parsedJson[0].MyFirmBANKNAME}</p>`);
-                $("#groupBankAndSum div:eq(0)>div:eq(1)").append(`<p class="appended">${parsedJson[0].MyFirmIBAN}</p>`);
-                $("#groupBankAndSum div:eq(0)>div:eq(2)").append(`<p class="appended">${parsedJson[0].MyFirmBANKCODE}</p>`);
-                $("#groupBankAndSum div:nth-child(3)>div:eq(0)").append(`<p class="appended">${$("#txtBoxDanOsnova").val()}</p>`);
-                $("#groupBankAndSum div:nth-child(3)>div:eq(1)").append(`<p class="appended">${$("#txtBoxDDS").val()}</p>`);
-                $("#groupBankAndSum div:nth-child(3)>div:eq(2)").append(`<p class="appended">${$("#txtBoxSum").val()}</p>`);
-            }
-        })
-        $("#groupPaymentMethodAndVerbally div:eq(0) div").append(`<p class="appended">${$("#paymentMethodComboBox option:selected").text()}</p>`);
-        $.ajax({
-            url: "phpScript.php",
-            type: "POST",
-            data: {
-                function: "ProtocolDataInfo",
-                id: $("#firmsComboBox").prop("selectedIndex")
-            },
-            success: function (result) {
-                let parsedJson = JSON.parse(result);
-                $("#groupProtocolData div:eq(0)>div:eq(0)").append(`<p class="appended">${$("#clientsComboBox option:selected").text()}</p>`);
-                $("#groupProtocolData div:nth-child(2)>div:eq(0)").append(`<p class="appended">${parsedJson[0].MyFirmMOL}</p>`);
-                $("#groupProtocolData div:nth-child(2)>div:eq(1)").append(`<p class="appended">${parsedJson[0].MyFirmECODE}</p>`);
+                let customerId = parsedJson[0].CustomersID;
+                let firmId = parsedJson[0].MyFirmID;
+                $.ajax({
+                    url: "phpScript.php",
+                    type: "POST",
+                    data: {
+                        function: "GetPrintPreviewRecipientInfo",
+                        customerId: customerId
+                    },
+                    success: function (result) {
+                        let parsedJson = JSON.parse(result);
+                        $("#groupRecipientSecondRow div:eq(1)").append(`<p class="appended">${parsedJson[0].CustomerECODE}</p>`);
+                        $("#groupRecipientSecondRow div:eq(2)").append(`<p class="appended">${parsedJson[0].CustomerVATCODE}</p>`);
+                        $("#groupRecipientSecondRow div:eq(3)").append(`<p class="appended">${parsedJson[0].CustomerAddress}</p>`);
+                        $("#groupRecipientSecondRow div:eq(4)").append(`<p class="appended">${parsedJson[0].CustomerMOL}</p>`);
+                    }
+                });
+                $.ajax({
+                    url: "phpScript.php",
+                    type: "POST",
+                    data: {
+                        function: "GetPrintPreviewSellerInfo",
+                        myFirmId: firmId
+                    },
+                    success: function (result) {
+                        let parsedJson = JSON.parse(result);
+                        $("#groupSellerSecondRow div:eq(0)").append(`<p class="appended" style="font-weight:bold">${parsedJson[0].MyFirmName}</p>`);
+                        $("#groupSellerSecondRow div:eq(1)").append(`<p class="appended">${parsedJson[0].MyFirmECODE}</p>`);
+                        $("#groupSellerSecondRow div:eq(2)").append(`<p class="appended">${parsedJson[0].MyFirmVATECODE}</p>`);
+                        $("#groupSellerSecondRow div:eq(3)").append(`<p class="appended">${parsedJson[0].MyFirmAddress}</p>`);
+                        $("#groupSellerSecondRow div:eq(4)").append(`<p class="appended">${parsedJson[0].MyFirmMOL}</p>`);
+                    }
+                });
+                $("#groupTextInvNo div").append(`<p class="appended">${$("#invNumber").val()}</p>`);
+                if ($("#chkBox").is(":checked")) {
+                    $("#groupTextInvNo div").append(`<p class="appended" style="position:absolute; margin-left:3em; margin-top:1.5em;font-weight:100; font-size:20px">${$("#chkBox").val()}</p>`);
+                }
+                $.ajax({
+                    url: "phpScript.php",
+                    type: "POST",
+                    data: {
+                        function: "GetPrintPreviewDatesInfo",
+                        customerId: customerId
+                    },
+                    success: function (result) {
+                        let parsedJson = JSON.parse(result);
+                        $("#groupInvDataDates div:eq(0)").append(`<p class="appended">${formattedDate}</p>`);
+                        $("#groupInvDataDates div:eq(1)").append(`<p class="appended">${dealDate}</p>`);
+                        $("#groupInvDataDates div:eq(2)").append(`<p class="appended">${parsedJson[0].CustomerAddress}</p>`);
+                    }
+                });
+                $(".addedProducts tbody tr").clone().appendTo("#groupDataTable table>tbody").css("border", "none").addClass("appended").find("td").removeAttr("style");
+                for (let i = 0; i < $("#groupDataTable table tr").length; i++) {
+                    $("#groupDataTable table>tbody tr").eq(i).prepend(`<td>${i + 1}</td>`);
+                    $("#groupDataTable table>tbody tr").eq(i).append($(`#groupDataTable table>tbody tr:eq(${i}) td`).eq(5).clone());
+                }
+                $.ajax({
+                    url: "phpScript.php",
+                    type: "POST",
+                    data: {
+                        function: "SellerBankInfo",
+                        sellerId: firmId
+                    },
+                    success: function (result) {
+                        let parsedJson = JSON.parse(result);
+                        $("#groupBankAndSum div:eq(0)>div:eq(0)").append(`<p class="appended">${parsedJson[0].MyFirmBANKNAME}</p>`);
+                        $("#groupBankAndSum div:eq(0)>div:eq(1)").append(`<p class="appended">${parsedJson[0].MyFirmIBAN}</p>`);
+                        $("#groupBankAndSum div:eq(0)>div:eq(2)").append(`<p class="appended">${parsedJson[0].MyFirmBANKCODE}</p>`);
+                        $("#groupBankAndSum div:nth-child(3)>div:eq(0)").append(`<p class="appended">${$("#txtBoxDanOsnova").val()}</p>`);
+                        $("#groupBankAndSum div:nth-child(3)>div:eq(1)").append(`<p class="appended">${$("#txtBoxDDS").val()}</p>`);
+                        $("#groupBankAndSum div:nth-child(3)>div:eq(2)").append(`<p class="appended">${$("#txtBoxSum").val()}</p>`);
+                    }
+                })
+                $("#groupPaymentMethodAndVerbally div:eq(0) div").append(`<p class="appended">${$("#paymentMethodComboBox option:selected").text()}</p>`);
+                $.ajax({
+                    url: "phpScript.php",
+                    type: "POST",
+                    data: {
+                        function: "ProtocolDataInfo",
+                        id: firmId
+                    },
+                    success: function (result) {
+                        let parsedJson = JSON.parse(result);
+                        $("#groupProtocolData div:eq(0)>div:eq(0)").append(`<p class="appended">${$("#clientsComboBox option:selected").text()}</p>`);
+                        $("#groupProtocolData div:nth-child(2)>div:eq(0)").append(`<p class="appended">${parsedJson[0].MyFirmMOL}</p>`);
+                        $("#groupProtocolData div:nth-child(2)>div:eq(1)").append(`<p class="appended">${parsedJson[0].MyFirmECODE}</p>`);
+                    }
+                })
             }
         })
     }
@@ -902,6 +941,11 @@ function productsAddInputsAsTableRow() {
         $(".productsInDB tbody tr td").each(function () {
             if ($("#kodNaProduktInput").val().trim() == $(this).text()) {
                 alert(`There is a product with code ${$(this).text()} in the table!\nPlease type in a different product code`);
+                hasDuplicates = true;
+                return false;
+            }
+            else if($("#naimenovanieInput").val().trim() == $(this).text()){
+                alert(`There is already a product with name ${$(this).text()} in the table!\nPlease type in a different product name`);
                 hasDuplicates = true;
                 return false;
             }
@@ -1250,6 +1294,11 @@ function customersAddInputsAsTableRow() {
                 hasDuplicates = true;
                 return false;
             }
+            else if($("#customersImeInput").val().trim() == $(this).text()){
+                alert(`There is already a customer with name "${$(this).text()}" in the table!\nPlease type in a different product name`); //solve this,currently there can only be one customer with the name lets say "Ivan Ivanov", if i try and and a second customer with that name it's gonna give me this alert, if i allow this input it would return multiple ids, while i only want one for everything else to function properly via the "GetCustomerIDAndFirmID" php function. Maybe add an email column in the table, or maybe a popup that lists the different people with like their phone numbers or emails. Or maybe add like a second combo box that lists the emails of people with the same name? Pretty much something else to identify the person
+                hasDuplicates = true;
+                return false;
+            }
         });
         if (hasDuplicates == false) {
             $(".customersInDB tbody").append(`
@@ -1587,6 +1636,11 @@ function firmsAddInputsAsTableRow() {
         $(".firmsInDB tbody tr td").each(function () {
             if ($("#firmsCodeInput").val().trim() == $(this).text()) {
                 alert(`There is already a firm with code ${$(this).text()} in the table!\nPlease type in a different firm code`);
+                hasDuplicates = true;
+                return false;
+            }
+            else if($("#firmsNameInput").val().trim() == $(this).text()){
+                alert(`There is already a firm that's named "${$(this).text()}" in the table!\nPlease type in a different product name`);
                 hasDuplicates = true;
                 return false;
             }

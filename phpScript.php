@@ -79,8 +79,18 @@
         }
     }
 
-    function AddSelectedProductToGrid($selectedIndex){
-        $query = "SELECT p.PRODUCTCODE, p.PRODUCTNAME, p.PRODUCTMEASURE, p.QUANTITY, p.PRODUCT_DOST_CENA FROM products p WHERE PRODUCTCODE = $selectedIndex+1";
+    function ProductsComboBoxGetSelectedOptionID($selectedOption){
+        $query = "SELECT PRODUCTID from products WHERE PRODUCTNAME = '$selectedOption'";
+        $result = $GLOBALS['conn'] -> query($query);
+        $array = array();
+        while($row = $result -> fetch_assoc()){
+            $array[] = $row;
+        }
+        echo json_encode($array, JSON_UNESCAPED_UNICODE);
+    }
+
+    function AddSelectedProductToGrid($productID){
+        $query = "SELECT p.PRODUCTCODE, p.PRODUCTNAME, p.PRODUCTMEASURE, p.QUANTITY, p.PRODUCT_DOST_CENA FROM products p WHERE PRODUCTCODE = $productID";
         $result = $GLOBALS['conn'] -> query($query);
         while ($row = $result -> fetch_assoc()) {
             echo
@@ -96,13 +106,23 @@
         }
     }
 
-    function AddNewInvoiceToDb($invoiceNumber, $invoiceVATDate, $invoiceDealDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId, $myFirmId){
-        $query = "INSERT INTO `invoices` (`INVOICEID`, `INVOICENUMBER`, `INVOICEVATDATE`, `INVOICEDEALDATE`, `INVOICESUM`, `INVOICEVAT`, `INVOICETOTAL`, `INVOICEVATPERCENT`, `CUSTOMERID`, `MYFIRMID`) VALUES ('$invoiceNumber', '$invoiceNumber', '$invoiceVATDate', '$invoiceDealDate', '$invoiceSum', '$invoiceVat', '$invoiceTotal', '$invoiceVatPercent', '$customerId', '$myFirmId')";
+    function AddNewInvoiceToDb($invoiceNumber, $invoiceVATDate, $invoiceDealDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId, $firmId){
+        $query = "INSERT INTO `invoices` (`INVOICEID`, `INVOICENUMBER`, `INVOICEVATDATE`, `INVOICEDEALDATE`, `INVOICESUM`, `INVOICEVAT`, `INVOICETOTAL`, `INVOICEVATPERCENT`, `CUSTOMERID`, `MYFIRMID`) VALUES ('$invoiceNumber', '$invoiceNumber', '$invoiceVATDate', '$invoiceDealDate', '$invoiceSum', '$invoiceVat', '$invoiceTotal', '$invoiceVatPercent', '$customerId', '$firmId')";
         $GLOBALS['conn'] -> query($query);
     }
 
+    function GetCustomerIDAndFirmID($clientComboBoxSelectedOption, $firmComboBoxSelectedOption){
+        $query = "SELECT customers.CustomersID, myfirms.MyFirmID FROM `customers`, `myfirms` WHERE customers.CustomerName = '$clientComboBoxSelectedOption' AND myfirms.MyFirmName = '$firmComboBoxSelectedOption'";
+        $result = $GLOBALS['conn'] -> query($query);
+        $array = array();
+        while($row = $result -> fetch_assoc()){
+            $array[] = $row;
+        }
+        echo json_encode($array, JSON_UNESCAPED_UNICODE);
+    }
+
     function GetPrintPreviewRecipientInfo($customerId){
-        $query = "SELECT CustomerECODE, CustomerVATCODE, CustomerAddress, CustomerMOL FROM `customers` WHERE CustomersID = $customerId+1";
+        $query = "SELECT CustomerECODE, CustomerVATCODE, CustomerAddress, CustomerMOL FROM `customers` WHERE CustomersID = $customerId";
         $result = $GLOBALS['conn'] -> query($query);
         $array = array();
         while($row = $result -> fetch_assoc()){
@@ -112,7 +132,7 @@
     }
 
     function GetPrintPreviewSellerInfo($myFirmId){
-        $query = "SELECT MyFirmName, MyFirmECODE, MyFirmVATECODE, MyFirmAddress, MyFirmMOL FROM `myfirms` WHERE MyFirmId = $myFirmId+1";
+        $query = "SELECT MyFirmName, MyFirmECODE, MyFirmVATECODE, MyFirmAddress, MyFirmMOL FROM `myfirms` WHERE MyFirmId = $myFirmId";
         $result = $GLOBALS['conn'] -> query($query);
         $array = array();
         while($row = $result -> fetch_assoc()){
@@ -122,7 +142,7 @@
     }
 
     function GetPrintPreviewDatesInfo($customerId){
-        $query = "SELECT customers.CustomerAddress FROM `customers` WHERE customers.CustomersID = $customerId+1";
+        $query = "SELECT customers.CustomerAddress FROM `customers` WHERE customers.CustomersID = $customerId";
         $result = $GLOBALS['conn'] -> query($query);
         $array = array();
         while($row = $result -> fetch_assoc()){
@@ -132,7 +152,7 @@
     }
 
     function SellerBankInfo($sellerId){
-        $query = "SELECT MyFirmID, MyFirmBANKNAME, MyFirmIBAN, MyFirmBANKCODE FROM `myfirms` WHERE MyFirmID = $sellerId+1";
+        $query = "SELECT MyFirmID, MyFirmBANKNAME, MyFirmIBAN, MyFirmBANKCODE FROM `myfirms` WHERE MyFirmID = $sellerId";
         $result = $GLOBALS['conn'] -> query($query);
         $array = array();
         while($row = $result -> fetch_assoc()){
@@ -142,7 +162,7 @@
     }
 
     function ProtocolDataInfo($id){
-        $query = "SELECT MyFirmID, MyFirmMOL, MyFirmECODE FROM myfirms WHERE myfirms.MyFirmID = $id+1";
+        $query = "SELECT MyFirmID, MyFirmMOL, MyFirmECODE FROM myfirms WHERE myfirms.MyFirmID = $id";
         $result = $GLOBALS['conn'] -> query($query);
         $array = array();
         while($row = $result -> fetch_assoc()){
@@ -312,8 +332,7 @@
             InvoicesViewInvoiceProuducts($invoiceNumber);
         }
         else if($_POST['function'] == "AddSelectedProductToGrid"){
-            $selectedIndex = $_POST['selectedIndex'];
-            AddSelectedProductToGrid($selectedIndex);
+            AddSelectedProductToGrid($_POST['productID']);
         }
         else if($_POST['function'] == 'AddNewInvoiceToDb'){
             $invoiceNumber = $_POST['invoiceNumber'];
@@ -324,8 +343,11 @@
             $invoiceTotal = $_POST['invoiceTotal'];
             $invoiceVatPercent = $_POST['invoiceVatPercent'];
             $customerId = $_POST['customerId'];
-            $myFirmId = $_POST['myFirmId'];
-            AddNewInvoiceToDb($invoiceNumber, $invoiceVATDate, $invoiceDealDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId+1, $myFirmId+1);
+            $firmId = $_POST['firmId'];
+            AddNewInvoiceToDb($invoiceNumber, $invoiceVATDate, $invoiceDealDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId, $firmId);
+        }
+        else if($_POST['function'] == "GetCustomerIDAndFirmID"){
+            GetCustomerIDAndFirmID($_POST['clientComboBoxSelectedOption'], $_POST['firmComboBoxSelectedOption']);
         }
         elseif($_POST['function'] == "GetPrintPreviewRecipientInfo"){
             GetPrintPreviewRecipientInfo($_POST['customerId']);
@@ -371,6 +393,9 @@
         }
         elseif($_POST['function'] == "FirmsDeleteFirm"){
             FirmsDeleteFirm($_POST['id']);
+        }
+        elseif($_POST['function'] == "ProductsComboBoxGetSelectedOptionID"){
+            ProductsComboBoxGetSelectedOptionID($_POST['selectedOption']);
         }
     }
 ?>
