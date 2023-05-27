@@ -854,7 +854,8 @@ function printDialog() {
         $("#printPreviewPopup").css({ "overflow-y": "hidden" });
         $("#closePrintPreview").hide();
         $("#printPreviewPopup").printThis({
-            //fixed the css not appearing here via the xampp virual host config -- https://stackoverflow.com/questions/3660066/hosting-multiple-local-sites-with-xampp and https://stackoverflow.com/questions/45123122/2-sites-with-different-xampp-root-directory and https://serverfault.com/questions/582647/can-i-have-two-or-more-apache-virtualhosts-separated-by-subdirectories -- this is for the subdirectory (slash) after localhost or this -- https://stackoverflow.com/questions/6307047/different-folder-as-website-subfolder
+            //the css not appearing here is a xampp issue, should work correctly if set up on a normal server
+            //fixed the css not appearing here via the xampp virtual host config file -- https://stackoverflow.com/questions/3660066/hosting-multiple-local-sites-with-xampp and https://stackoverflow.com/questions/45123122/2-sites-with-different-xampp-root-directory and https://serverfault.com/questions/582647/can-i-have-two-or-more-apache-virtualhosts-separated-by-subdirectories -- this is for the subdirectory (slash) after localhost or this -- https://stackoverflow.com/questions/6307047/different-folder-as-website-subfolder
             afterPrint: setTimeout(function () {
                 let form = document.querySelector(".form");
                 form.style.filter = "blur(0px)";
