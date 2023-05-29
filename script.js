@@ -695,7 +695,7 @@ function fillPrintPreviewInfo() {
         $("#groupRecipientSecondRow div:eq(0)").append(`<p class="appended" style="font-weight:bold">${$("#clientsComboBox option:selected").text()}</p>`);
         $.ajax({
             url: "phpScript.php",
-            type: "POST",
+            type: "GET",
             data: {
                 function: "GetCustomerIDAndFirmID",
                 clientComboBoxSelectedOption: $("#clientsComboBox option:selected").text(),
@@ -707,7 +707,7 @@ function fillPrintPreviewInfo() {
                 let firmId = parsedJson[0].MyFirmID;
                 $.ajax({
                     url: "phpScript.php",
-                    type: "POST",
+                    type: "GET",
                     data: {
                         function: "GetPrintPreviewRecipientInfo",
                         customerId: customerId
@@ -722,7 +722,7 @@ function fillPrintPreviewInfo() {
                 });
                 $.ajax({
                     url: "phpScript.php",
-                    type: "POST",
+                    type: "GET",
                     data: {
                         function: "GetPrintPreviewSellerInfo",
                         myFirmId: firmId
@@ -742,7 +742,7 @@ function fillPrintPreviewInfo() {
                 }
                 $.ajax({
                     url: "phpScript.php",
-                    type: "POST",
+                    type: "GET",
                     data: {
                         function: "GetPrintPreviewDatesInfo",
                         customerId: customerId
@@ -761,7 +761,7 @@ function fillPrintPreviewInfo() {
                 }
                 $.ajax({
                     url: "phpScript.php",
-                    type: "POST",
+                    type: "GET",
                     data: {
                         function: "SellerBankInfo",
                         sellerId: firmId
@@ -779,7 +779,7 @@ function fillPrintPreviewInfo() {
                 $("#groupPaymentMethodAndVerbally div:eq(0) div").append(`<p class="appended">${$("#paymentMethodComboBox option:selected").text()}</p>`);
                 $.ajax({
                     url: "phpScript.php",
-                    type: "POST",
+                    type: "GET",
                     data: {
                         function: "ProtocolDataInfo",
                         id: firmId

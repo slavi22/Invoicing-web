@@ -300,6 +300,24 @@
         if($_GET['function'] == 'InvoicesDBOnLoad'){
             InvoicesDBOnLoad();
         }
+        else if($_GET['function'] == "GetCustomerIDAndFirmID"){
+            GetCustomerIDAndFirmID($_GET['clientComboBoxSelectedOption'], $_GET['firmComboBoxSelectedOption']);
+        }
+        elseif($_GET['function'] == "GetPrintPreviewRecipientInfo"){
+            GetPrintPreviewRecipientInfo($_GET['customerId']);
+        }
+        elseif($_GET['function'] == "GetPrintPreviewSellerInfo"){
+            GetPrintPreviewSellerInfo($_GET['myFirmId']);
+        }  
+        elseif($_GET['function'] == "GetPrintPreviewDatesInfo"){
+            GetPrintPreviewDatesInfo($_GET['customerId']);
+        }
+        elseif($_GET['function'] == "SellerBankInfo"){
+            SellerBankInfo($_GET['sellerId']);
+        }
+        elseif($_GET['function'] == "ProtocolDataInfo"){
+            ProtocolDataInfo($_GET['id']);
+        }
         elseif($_GET['function'] == 'NextInvoiceNumber'){
             NextInvoiceNumber();
         }
@@ -345,25 +363,7 @@
             $customerId = $_POST['customerId'];
             $firmId = $_POST['firmId'];
             AddNewInvoiceToDb($invoiceNumber, $invoiceVATDate, $invoiceDealDate, $invoiceSum, $invoiceVat, $invoiceTotal, $invoiceVatPercent, $customerId, $firmId);
-        }
-        else if($_POST['function'] == "GetCustomerIDAndFirmID"){
-            GetCustomerIDAndFirmID($_POST['clientComboBoxSelectedOption'], $_POST['firmComboBoxSelectedOption']);
-        }
-        elseif($_POST['function'] == "GetPrintPreviewRecipientInfo"){
-            GetPrintPreviewRecipientInfo($_POST['customerId']);
-        }
-        elseif($_POST['function'] == "GetPrintPreviewSellerInfo"){
-            GetPrintPreviewSellerInfo($_POST['myFirmId']);
-        }   
-        elseif($_POST['function'] == "GetPrintPreviewDatesInfo"){
-            GetPrintPreviewDatesInfo($_POST['customerId']);
-        }
-        elseif($_POST['function'] == "SellerBankInfo"){
-            SellerBankInfo($_POST['sellerId']);
-        }
-        elseif($_POST['function'] == "ProtocolDataInfo"){
-            ProtocolDataInfo($_POST['id']);
-        }
+        } 
         elseif($_POST['function'] == "AddDataToInvoiceProduct"){
             AddDataToInvoiceProduct($_POST['invProdID'], $_POST['productQuantity'], $_POST['invoiceID'], $_POST['productID']);
         }
