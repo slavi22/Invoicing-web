@@ -8,8 +8,8 @@ Here i recreate my "Invoicing" app that i made in C#, in a web variant.
     - "Customers" - here the user can add a new customer to the database.
     - "Firms" - here the user can a new firm to the database.
 # Quickstart
-- When you download the project there are a couple things you need to do in order to get it working.
-    1. Upload the project's contents to your web server, if you wish to explore the project locally you can use [xampp](https://www.apachefriends.org/index.html) (that's what I used when developing the project).
-    2. Import the "db.sql" schema to a MySQL database.
-    3. Rename the "connection-example.ini" file to "connection.ini". This file contains the credentials you need in order to access and use your database.
-    4. Fill in all the fields in the "connection.ini" file.
+When you download the project there are a couple things you need to do in order to get it working.
+1. Upload the project's contents to your web server, if you wish to explore the project locally you can use [xampp](https://www.apachefriends.org/index.html) (that's what I used when developing the project).
+2. Import the "db.sql" schema to a MySQL database.
+3. Rename the "connection-example.ini" file to "connection.ini". This file contains the credentials you need in order to access and use your database.
+4. Fill in all the fields in the "connection.ini" file.
