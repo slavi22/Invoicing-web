@@ -267,6 +267,7 @@ tr {
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
     width: 96%;
+    overflow-y: auto;
 }
 
 .invoicesInDB {
@@ -275,7 +276,6 @@ tr {
     border: 1px solid black;
     border-right: 1px solid black;
     width: 100%;
-
 }
 
 .invoicesInDB th,
@@ -292,6 +292,7 @@ td {
     border: 1px solid black;
     background-color: rgb(160, 160, 160);
     width: 96%;
+    overflow-y: auto;
 }
 
 .selectedCellInfo {
